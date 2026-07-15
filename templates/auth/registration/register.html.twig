@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Créer un compte — TrouveMoi Prestataires</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ asset('styles/auth/auth.css') }}"
+    >
+</head>
+
+<body class="auth-body">
+
+<div class="auth-layout">
+
+    <aside
+        class="auth-brand d-none d-lg-flex"
+        aria-hidden="true"
+    >
+        <a
+            href="{{ path('app_home') }}"
+            class="auth-brand__logo"
+        >
+            <svg
+                width="42"
+                height="42"
+                viewBox="0 0 48 48"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path
+                    d="M24 4C14.6 4 7 11.6 7 21c0 11.8 17 23 17 23s17-11.2 17-23C41 11.6 33.4 4 24 4z"
+                    fill="#FF8A1E"
+                    stroke="#0A1633"
+                    stroke-width="3.4"
+                    stroke-linejoin="round"
+                />
+
+                <circle
+                    cx="24"
+                    cy="20.5"
+                    r="6.6"
+                    fill="#fff"
+                />
+            </svg>
+
+            <span>
+                <span class="auth-brand__name">TrouveMoi</span>
+                <br>
+                <span class="auth-brand__sub">Prestataires</span>
+            </span>
+        </a>
+
+        <div class="auth-brand__body">
+
+            <span class="auth-eyebrow">
+                <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="M13 2 4 14h6l-1 8 9-12h-6z"/>
+                </svg>
+
+                Inscription en 2 minutes
+            </span>
+
+            <h1 class="auth-brand__title">
+                Rejoignez la communauté qui fait
+                <em>avancer vos projets</em>.
+            </h1>
+
+            <p class="auth-brand__copy">
+                Particulier ou professionnel : un seul compte pour demander
+                des devis ou développer votre activité.
+            </p>
+
+            <div class="auth-preview">
+
+                <div class="preview-card preview-card--demande">
+
+                    <span class="preview-card__thumb">
+                        <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="3"
+                                y="3"
+                                width="18"
+                                height="18"
+                                rx="2"
+                            />
+
+                            <circle
+                                cx="8.5"
+                                cy="8.5"
+                                r="1.8"
+                            />
+
+                            <path d="m21 15-4.5-4.5L6 21"/>
+                        </svg>
+                    </span>
+
+                    <span class="preview-card__lines">
+                        <i class="ph-line ph-line--fonce ph-line--70"></i>
+                        <i class="ph-line"></i>
+                        <i class="ph-line ph-line--45"></i>
+                    </span>
+
+                    <span class="preview-card__badge">
+                        Nouvelle demande
+                    </span>
+                </div>
+
+                <div class="preview-card preview-card--note">
+
+                    <span class="preview-card__note">
+                        4,8
+                        <small>/5</small>
+                    </span>
+
+                    <span class="preview-card__stars">
+
+                        {% for star in 1..5 %}
+                            <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z"
+                                    fill="currentColor"
+                                    stroke="none"
+                                />
+                            </svg>
+                        {% endfor %}
+
+                    </span>
+
+                    <span class="preview-card__sub">
+                        256 avis vérifiés
+                    </span>
+                </div>
+
+                <div class="preview-card preview-card--devis">
+
+                    <span class="preview-card__icone">
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="9"
+                            />
+
+                            <path d="m8.5 12.5 2.5 2.5 5-5.5"/>
+                        </svg>
+                    </span>
+
+                    <span>
+                        <b>Devis accepté</b>
+                        <span>
+                            2 850 € · Rénovation salle de bain
+                        </span>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="auth-brand__stats">
+
+            <div class="auth-stat">
+                <b>+ 120 000</b>
+                <span>prestataires vérifiés</span>
+            </div>
+
+            <div class="auth-stat">
+                <b>
+                    4,8
+                    <em>/5</em>
+                </b>
+
+                <span>note moyenne</span>
+            </div>
+
+            <div class="auth-stat">
+                <b>0 %</b>
+                <span>de commission</span>
+            </div>
+
+        </div>
+
+        <figure class="auth-brand__quote">
+
+            <span class="auth-avatar auth-avatar--safran">
+                SM
+            </span>
+
+            <p>
+                &ldquo;J'ai trouvé mon plombier en une soirée, devis le
+                lendemain, chantier impeccable.&rdquo;
+                —
+                <b>Sophie M., Lyon</b>
+            </p>
+
+        </figure>
+    </aside>
+
+    <main class="auth-panel">
+
+        <div class="auth-card auth-card--large">
+
+            <div class="auth-card__header">
+
+                <h2>Créer votre compte</h2>
+
+                <p>
+                    Gratuit pour les particuliers, sans engagement pour les
+                    professionnels.
+                </p>
+
+            </div>
+
+            <div
+                class="auth-switch"
+                data-profil="client"
+                role="group"
+                aria-label="Choisir le type de compte"
+            >
+                <button
+                    class="auth-switch__option is-active"
+                    type="button"
+                    data-choix="client"
+                    aria-pressed="true"
+                    aria-controls="registration-client"
+                >
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <circle
+                            cx="12"
+                            cy="8"
+                            r="4"
+                        />
+
+                        <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>
+                    </svg>
+
+                    Particulier
+                </button>
+
+                <button
+                    class="auth-switch__option"
+                    type="button"
+                    data-choix="pro"
+                    aria-pressed="false"
+                    aria-controls="registration-professional"
+                >
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <rect
+                            x="3"
+                            y="8"
+                            width="18"
+                            height="13"
+                            rx="2"
+                        />
+
+                        <path d="M9 8V6a3 3 0 0 1 6 0v2M3 13h18"/>
+                    </svg>
+
+                    Professionnel
+                </button>
+            </div>
+
+            <div
+                id="registration-client"
+                class="auth-registration"
+                data-registration-form="client"
+                aria-hidden="false"
+            >
+                {{ render(controller(
+                    'App\\Controller\\Users\\RegistrationController::register'
+                )) }}
+            </div>
+
+            <div
+                id="registration-professional"
+                class="auth-registration d-none"
+                data-registration-form="pro"
+                aria-hidden="true"
+            >
+                {{ render(controller(
+                    'App\\Controller\\Users\\ArtisanRegistrationController::register'
+                )) }}
+            </div>
+
+            <p class="auth-card__footer">
+                Déjà inscrit ?
+                <a href="{{ path('app_login') }}">
+                    Se connecter
+                </a>
+            </p>
+
+        </div>
+    </main>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    /*
+     * Sélecteur du type de compte
+     */
+    const authSwitches = document.querySelectorAll('.auth-switch');
+
+    authSwitches.forEach((authSwitch) => {
+        const buttons = authSwitch.querySelectorAll(
+            '.auth-switch__option[data-choix]'
+        );
+
+        const registrationForms = document.querySelectorAll(
+            '[data-registration-form]'
+        );
+
+        /**
+         * Active le formulaire correspondant au profil choisi.
+         *
+         * @param {string} selectedProfile
+         */
+        const activateProfile = (selectedProfile) => {
+            if (!selectedProfile) {
+                return;
+            }
+
+            authSwitch.dataset.profil = selectedProfile;
+
+            buttons.forEach((button) => {
+                const isActive =
+                    button.dataset.choix === selectedProfile;
+
+                button.classList.toggle('is-active', isActive);
+                button.setAttribute(
+                    'aria-pressed',
+                    isActive ? 'true' : 'false'
+                );
+            });
+
+            registrationForms.forEach((formContainer) => {
+                const isActive =
+                    formContainer.dataset.registrationForm === selectedProfile;
+
+                formContainer.classList.toggle('d-none', !isActive);
+
+                formContainer.setAttribute(
+                    'aria-hidden',
+                    isActive ? 'false' : 'true'
+                );
+
+                /*
+                 * Les champs du formulaire masqué sont désactivés.
+                 * Ils ne seront donc pas envoyés lors de la soumission.
+                 */
+                const fields = formContainer.querySelectorAll(
+                    'input, select, textarea, button'
+                );
+
+                fields.forEach((field) => {
+                    /*
+                     * Permet de conserver un champ actif en ajoutant
+                     * data-keep-enabled dans le HTML.
+                     */
+                    if (field.hasAttribute('data-keep-enabled')) {
+                        return;
+                    }
+
+                    field.disabled = !isActive;
+                });
+            });
+
+            document.dispatchEvent(
+                new CustomEvent('profil:change', {
+                    detail: {
+                        profil: selectedProfile,
+                    },
+                })
+            );
+        };
+
+        buttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                activateProfile(button.dataset.choix);
+            });
+        });
+
+        /*
+         * Détermine le bouton actif au chargement de la page.
+         */
+        const pressedButton = authSwitch.querySelector(
+            '.auth-switch__option[aria-pressed="true"]'
+        );
+
+        const initialProfile =
+            pressedButton?.dataset.choix
+            ?? authSwitch.dataset.profil
+            ?? 'client';
+
+        activateProfile(initialProfile);
+    });
+
+    /*
+     * Afficher ou masquer les mots de passe
+     */
+    document.querySelectorAll('.auth-input-group__toggle').forEach(
+        (toggleButton) => {
+            toggleButton.addEventListener('click', () => {
+                const inputGroup = toggleButton.closest(
+                    '.auth-input-group'
+                );
+
+                if (!inputGroup) {
+                    return;
+                }
+
+                const passwordInput = inputGroup.querySelector(
+                    'input[type="password"], input[data-password-input]'
+                );
+
+                if (!passwordInput) {
+                    return;
+                }
+
+                const passwordIsVisible =
+                    passwordInput.type === 'text';
+
+                passwordInput.type = passwordIsVisible
+                    ? 'password'
+                    : 'text';
+
+                toggleButton.setAttribute(
+                    'aria-label',
+                    passwordIsVisible
+                        ? 'Afficher le mot de passe'
+                        : 'Masquer le mot de passe'
+                );
+
+                toggleButton.setAttribute(
+                    'aria-pressed',
+                    passwordIsVisible ? 'false' : 'true'
+                );
+            });
+        }
+    );
+
+    /*
+     * Détection du verrouillage des majuscules
+     */
+    document.querySelectorAll('input[type="password"]').forEach(
+        (passwordInput) => {
+            const updateCapsLockState = (event) => {
+                const fieldContainer = passwordInput.closest(
+                    '.auth-field'
+                );
+
+                if (!fieldContainer) {
+                    return;
+                }
+
+                const capsLockAlert = fieldContainer.querySelector(
+                    '.auth-capslock'
+                );
+
+                if (
+                    !capsLockAlert
+                    || typeof event.getModifierState !== 'function'
+                ) {
+                    return;
+                }
+
+                const capsLockEnabled =
+                    event.getModifierState('CapsLock');
+
+                capsLockAlert.classList.toggle(
+                    'is-visible',
+                    capsLockEnabled
+                );
+
+                capsLockAlert.setAttribute(
+                    'aria-hidden',
+                    capsLockEnabled ? 'false' : 'true'
+                );
+            };
+
+            passwordInput.addEventListener(
+                'keydown',
+                updateCapsLockState
+            );
+
+            passwordInput.addEventListener(
+                'keyup',
+                updateCapsLockState
+            );
+
+            passwordInput.addEventListener('blur', () => {
+                const fieldContainer = passwordInput.closest(
+                    '.auth-field'
+                );
+
+                const capsLockAlert = fieldContainer?.querySelector(
+                    '.auth-capslock'
+                );
+
+                if (!capsLockAlert) {
+                    return;
+                }
+
+                capsLockAlert.classList.remove('is-visible');
+                capsLockAlert.setAttribute('aria-hidden', 'true');
+            });
+        }
+    );
+
+    /*
+     * Jauge de robustesse du mot de passe
+     *
+     * Le script recherche d'abord un champ ayant :
+     * data-password-strength-input
+     *
+     * Puis il utilise #mot-de-passe comme solution de secours.
+     */
+    const passwordStrengthInput =
+        document.querySelector('[data-password-strength-input]')
+        ?? document.getElementById('mot-de-passe');
+
+    if (passwordStrengthInput) {
+        const formContainer = passwordStrengthInput.closest(
+            '[data-registration-form], form, .auth-card'
+        );
+
+        const strengthGauge =
+            formContainer?.querySelector('.auth-strength')
+            ?? document.querySelector('.auth-strength');
+
+        const strengthLabel =
+            strengthGauge?.querySelector('.auth-strength__label')
+            ?? null;
+
+        const labels = [
+            '',
+            'Faible',
+            'Moyen',
+            'Bon',
+            'Excellent',
+        ];
+
+        const rules = {
+            longueur: (value) => value.length >= 8,
+            majuscule: (value) => /[A-ZÀ-Ý]/.test(value),
+            chiffre: (value) => /\d/.test(value),
+            special: (value) => /[^A-Za-z0-9À-ÿ]/.test(value),
+        };
+
+        const updatePasswordStrength = () => {
+            const passwordValue = passwordStrengthInput.value;
+            let score = 0;
+
+            Object.entries(rules).forEach(([ruleName, testRule]) => {
+                const isValid = testRule(passwordValue);
+
+                if (isValid) {
+                    score += 1;
+                }
+
+                const ruleElement =
+                    formContainer?.querySelector(
+                        `[data-regle="${ruleName}"]`
+                    )
+                    ?? document.querySelector(
+                        `[data-regle="${ruleName}"]`
+                    );
+
+                if (ruleElement) {
+                    ruleElement.classList.toggle(
+                        'is-valid',
+                        isValid
+                    );
+
+                    ruleElement.setAttribute(
+                        'aria-checked',
+                        isValid ? 'true' : 'false'
+                    );
+                }
+            });
+
+            if (strengthGauge) {
+                strengthGauge.dataset.niveau =
+                    passwordValue ? String(score) : '0';
+            }
+
+            if (strengthLabel) {
+                strengthLabel.textContent =
+                    passwordValue ? labels[score] : '';
+            }
+        };
+
+        passwordStrengthInput.addEventListener(
+            'input',
+            updatePasswordStrength
+        );
+
+        updatePasswordStrength();
+    }
+
+    /*
+     * Événement disponible pour les éventuels champs conditionnels.
+     */
+    document.addEventListener('profil:change', (event) => {
+        const selectedProfile = event.detail?.profil;
+        const professionalIsActive = selectedProfile === 'pro';
+
+        document.querySelectorAll('.auth-pro-fields').forEach(
+            (professionalFields) => {
+                professionalFields.classList.toggle(
+                    'is-visible',
+                    professionalIsActive
+                );
+            }
+        );
+
+        const clientSubmitButton = document.getElementById(
+            'btn-inscription-client'
+        );
+
+        const professionalSubmitButton = document.getElementById(
+            'btn-inscription-pro'
+        );
+
+        if (clientSubmitButton) {
+            clientSubmitButton.classList.toggle(
+                'd-none',
+                professionalIsActive
+            );
+        }
+
+        if (professionalSubmitButton) {
+            professionalSubmitButton.classList.toggle(
+                'd-none',
+                !professionalIsActive
+            );
+        }
+    });
+});
+</script>
+
+</body>
+</html>
