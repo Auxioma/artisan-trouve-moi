@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
@@ -33,7 +35,7 @@ final class ArtisanRegistrationFormType extends AbstractType
                     'placeholder' => 'Plomberie Express',
                 ],
             ])
-            ->add('siret', TextType::class, [
+            ->add('siret', TextType::class, [ 
                 'label' => 'SIRET',
                 'constraints' => [
                     new NotBlank(message: 'Le numéro SIRET est obligatoire.'),
@@ -88,6 +90,14 @@ final class ArtisanRegistrationFormType extends AbstractType
                 'attr' => [
                     'autocomplete' => 'username',
                     'placeholder' => 'vous@exemple.fr',
+                ],
+            ])
+                        ->add('agreeTerms', CheckboxType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new IsTrue(
+                        message: 'Vous devez accepter nos conditions générales.',
+                    ),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
