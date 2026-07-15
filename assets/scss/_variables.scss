@@ -1,0 +1,81 @@
+// ============================================================
+// TROUVEMOI — AUTH MODULE
+// Overrides Bootstrap 5.3 — Design System « Atelier de confiance »
+// À importer AVANT bootstrap
+// ============================================================
+
+// --- Couleurs du Design System ---
+$primary:   #1E49C7;   // Bleu confiance (action)
+$secondary: #5B6B85;   // Texte secondaire
+$success:   #0E9F6E;
+$info:      #2B5CFF;
+$warning:   #FF8A1E;   // Safran (CTA vitrine / pro)
+$danger:    #E5484D;
+$light:     #F4F6FA;
+$dark:      #0A1633;   // Encre
+
+$body-bg:      #F4F6FA;
+$body-color:   #233047;
+$border-color: #E3E8F1;
+
+$link-color: $primary;
+$link-decoration: none;
+$link-hover-color: #1A3DA6;
+$link-hover-decoration: underline;
+
+// --- Typographie ---
+$font-family-sans-serif: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+$headings-font-family: "Bricolage Grotesque", Inter, system-ui, sans-serif;
+$headings-font-weight: 800;
+$headings-color: #0A1633;
+$font-size-base: 1rem;
+$line-height-base: 1.6;
+
+// --- Rayons ---
+$border-radius:      .75rem;
+$border-radius-sm:   .625rem;
+$border-radius-lg:   1.125rem;
+$border-radius-xl:   1.375rem;
+$border-radius-pill: 999px;
+
+// --- Boutons ---
+$btn-font-weight: 700;
+$btn-padding-y: .8125rem;
+$btn-padding-x: 1.25rem;
+$btn-font-size: .9375rem;
+$btn-border-radius: .75rem;
+$btn-focus-width: .25rem;
+$btn-transition: background-color 150ms cubic-bezier(.2,0,0,1),
+                 border-color 150ms cubic-bezier(.2,0,0,1),
+                 box-shadow 150ms cubic-bezier(.2,0,0,1);
+
+// --- Formulaires ---
+$input-padding-y: .75rem;
+$input-padding-x: .875rem;
+$input-font-size: .9375rem;
+$input-border-width: 1.5px;
+$input-border-color: #E3E8F1;
+$input-border-radius: .6875rem;
+$input-focus-border-color: $primary;
+$input-focus-box-shadow: 0 0 0 .25rem #E6ECFC;
+$input-placeholder-color: #98A6C3;
+$form-label-font-size: .8125rem;
+$form-label-font-weight: 700;
+$form-label-margin-bottom: .5rem;
+$form-label-color: #233047;
+$form-check-input-width: 1.125em;
+$form-check-input-border: 1.5px solid #C9D3E8;
+$form-check-input-checked-bg-color: $primary;
+$form-check-input-focus-box-shadow: 0 0 0 .25rem #E6ECFC;
+$form-feedback-font-size: .78125rem;
+$form-feedback-invalid-color: #D93025;
+$form-feedback-valid-color: #0A6B4C;
+
+// --- Ombres ---
+$box-shadow-sm: 0 2px 10px rgba(10,22,51,.06);
+$box-shadow:    0 8px 24px rgba(10,22,51,.12);
+$box-shadow-lg: 0 18px 50px rgba(10,22,51,.16);
+
+// --- Divers ---
+$focus-ring-color: rgba(30,73,199,.22);
+$enable-negative-margins: true;
