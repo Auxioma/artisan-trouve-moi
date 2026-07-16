@@ -35,6 +35,21 @@
             "./migrations/.gitignore"
         ]
     },
+    "friendsofphp/php-cs-fixer": {
+        "version": "3.95",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "3.39",
+            "ref": "97aaf9026490db73b86c23d49e5774bc89d2b232"
+        },
+        "files": [
+            "./.php-cs-fixer.dist.php"
+        ]
+    },
+    "phpstan/phpstan": {
+        "version": "2.2.5"
+    },
     "phpunit/phpunit": {
         "version": "13.2",
         "recipe": {
@@ -329,6 +344,19 @@
         },
         "files": [
             "./config/packages/reset_password.yaml"
+        ]
+    },
+    "symfonycasts/sass-bundle": {
+        "version": "0.10",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "0.5",
+            "ref": "4812be2fc05dad51e05837779e9175321fb68d9f"
+        },
+        "files": [
+            "./config/packages/symfonycasts_sass.yaml",
+            "./assets/styles/app.scss"
         ]
     },
     "symfonycasts/verify-email-bundle": {
