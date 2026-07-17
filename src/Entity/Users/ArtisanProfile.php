@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: ArtisanProfileRepository::class)]
 #[ORM\Table(name: 'artisan_profile')]
@@ -57,6 +58,11 @@ class ArtisanProfile
     #[Assert\Regex(
         pattern: '/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
         message: 'Le slug doit uniquement contenir des lettres minuscules, des chiffres et des tirets.'
+    )]
+    #[Gedmo\Slug(
+        fields: ['legalName'],
+        updatable: true,
+        unique: true
     )]
     private ?string $slug = null;
 
