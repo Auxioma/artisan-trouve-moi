@@ -24,7 +24,7 @@ enum UserType: string
         return match ($this) {
             self::CUSTOMER => 'ROLE_USER',
             self::ARTISAN => 'ROLE_ARTISAN',
-            self::COMMERCIAL_PARTNER => 'ROLE_COMMERCIAL_PARTNER',
+            self::COMMERCIAL_PARTNER => 'ROLE_COMMERCIAUX',
         };
     }
 }

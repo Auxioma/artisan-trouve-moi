@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class FavorisController extends AbstractController
 {
-    #[Route('/espace-client/favoris', name: 'app_client_favoris')]
+    #[Route('/espace-client/favoris', name: 'client_favoris')]
     public function __invoke(): Response
     {
         return $this->render('client/favoris.html.twig');

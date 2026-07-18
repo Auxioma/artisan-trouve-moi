@@ -3,11 +3,14 @@
 /**
  * Copyright(c) 2026 Boolts (https://boolts.com)
  *
- * Ce fichier fait partie d’un projet développé par Auxioma Web Agency pour l’entreprise Pastelit Co.
+ * Ce fichier fait partie d’un projet développé par Auxioma Web Agency
+ * pour l’entreprise Pastelit Co.
  * Tous droits réservés.
  *
- * Ce code source est la propriété exclusive de Auxioma Web Agency et Pastelit Co.
- * Toute reproduction, modification, distribution ou utilisation sans autorisation préalable est interdite.
+ * Ce code source est la propriété exclusive de Auxioma Web Agency
+ * et Pastelit Co.
+ * Toute reproduction, modification, distribution ou utilisation
+ * sans autorisation préalable est interdite.
  */
 
 namespace App\Security;
@@ -32,39 +35,72 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator)
-    {
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator
+    ) {
     }
 
     public function authenticate(Request $request): Passport
     {
-        $email = $request->getPayload()->getString('email');
+        /*
+         * Les noms doivent correspondre exactement aux attributs "name"
+         * du formulaire Twig :
+         *
+         * name="_username"
+         * name="_password"
+         * name="_csrf_token"
+         */
+        $email = trim(
+            $request->getPayload()->getString('_username')
+        );
 
-        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
+        $password = $request->getPayload()->getString('_password');
+
+        $csrfToken = $request->getPayload()->getString('_csrf_token');
+
+        $request->getSession()->set(
+            SecurityRequestAttributes::LAST_USERNAME,
+            $email
+        );
 
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials($request->getPayload()->getString('password')),
+            new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
+                new CsrfTokenBadge(
+                    'authenticate',
+                    $csrfToken
+                ),
                 new RememberMeBadge(),
             ]
         );
     }
 
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
-    {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
+    public function onAuthenticationSuccess(
+        Request $request,
+        TokenInterface $token,
+        string $firewallName
+    ): ?Response {
+        $targetPath = $this->getTargetPath(
+            $request->getSession(),
+            $firewallName
+        );
+
+        if ($targetPath !== null) {
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        //return new RedirectResponse($this->urlGenerator->generate('app_visiteur_dashboard'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        return new RedirectResponse(
+            $this->urlGenerator->generate(
+                'client_dashboard'
+            )
+        );
     }
 
     protected function getLoginUrl(Request $request): string
     {
-        return $this->urlGenerator->generate(self::LOGIN_ROUTE);
+        return $this->urlGenerator->generate(
+            self::LOGIN_ROUTE
+        );
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AvisController extends AbstractController
 {
-    #[Route('/espace-client/mes-avis', name: 'app_client_avis')]
+    #[Route('/espace-client/mes-avis', name: 'client_avis')]
     public function __invoke(): Response
     {
         return $this->render('client/mes_avis.html.twig');

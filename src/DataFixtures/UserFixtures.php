@@ -220,7 +220,10 @@ final class UserFixtures extends Fixture
             )
             ->setType($type)
             ->setStatus($status)
-            ->setRoles($roles)
+            ->setRoles(array_values(array_unique([
+                ...$roles,
+                $type->securityRole(),
+            ])))
             ->setFirstName($firstName)
             ->setLastName($lastName)
             ->setPhoneNumber($phoneNumber)
