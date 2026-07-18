@@ -89,9 +89,80 @@
                 }) }} </div>
               </div>
               <div class="col-12">
-                <label class="form-label" for="adresse">Adresse (pour vos demandes)</label>
-                <input type="text" class="form-control" id="adresse" value="18 rue Paul Bert, 69003 Lyon" autocomplete="street-address">
-                <p class="small text-secondary mt-1 mb-0">Votre adresse exacte n'est jamais publique : les artisans voient uniquement votre quartier avant acceptation.</p>
+                <label class="form-label" for="{{ form.userProfile.label.vars.id }}">
+                  Adresse (pour vos demandes)
+                </label>
+
+                <div class="d-flex gap-2 align-items-start">
+                  <div class="flex-grow-1">
+                    {{ form_widget(form.userProfile.label, {
+                        attr: {
+                            class: 'form-control',
+                            autocomplete: 'street-address',
+                            placeholder: 'Adresse complète (rue, avenue, etc.)'
+                        }
+                    }) }}
+                  </div>
+
+                  <button
+                    class="btn btn-dash-ghost"
+                    type="button"
+                    id="detect-location"
+                  >
+                    Me localiser
+                  </button>
+                </div>
+
+                <p
+                  id="geolocation-status"
+                  class="small text-secondary mt-1 mb-0"
+                  role="status"
+                  aria-live="polite"
+                >
+                  Votre adresse exacte n'est jamais publique : les artisans voient uniquement votre ville avant acceptation.
+                </p>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label" for="{{ form.userProfile.addressLine2.vars.id }}">
+                  Complément d'adresse
+                </label>
+
+                {{ form_widget(form.userProfile.addressLine2, {
+                    attr: {
+                        class: 'form-control',
+                        autocomplete: 'address-line2',
+                        placeholder: 'Appartement, bâtiment, étage…'
+                    }
+                }) }}
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="{{ form.userProfile.postalCode.vars.id }}">
+                  Code postal
+                </label>
+
+                {{ form_widget(form.userProfile.postalCode, {
+                    attr: {
+                        class: 'form-control',
+                        autocomplete: 'postal-code',
+                        placeholder: 'Code postal'
+                    }
+                }) }}
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label" for="{{ form.userProfile.city.vars.id }}">
+                  Ville
+                </label>
+
+                {{ form_widget(form.userProfile.city, {
+                    attr: {
+                        class: 'form-control',
+                        autocomplete: 'address-level2',
+                        placeholder: 'Ville'
+                    }
+                }) }}
               </div>
             </div>
           </div>
@@ -143,7 +214,7 @@
             <p class="param-section-titre">Visibilité</p>
             <div class="ligne-switch">
               <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span>
-              <div><b>Profil visible par les artisans</b><p>Votre prénom et votre quartier sont visibles quand vous publiez une demande.</p></div>
+              <div><b>Profil visible par les artisans</b><p>Vos coordonnées sont visibles lorsque vous avez accepté un devis.</p></div>
               <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" role="switch" id="c-profil" checked aria-label="Profil visible par les artisans">
               </div>
@@ -211,15 +282,319 @@
 
       </div>
     </div>
+{{ form_widget(form.userProfile.addressLine1) }}
+{{ form_widget(form.userProfile.district) }}
+{{ form_widget(form.userProfile.region) }}
+{{ form_widget(form.userProfile.department) }}
+{{ form_widget(form.userProfile.countryCode) }}
+{{ form_widget(form.userProfile.formattedAddress) }}
+{{ form_widget(form.userProfile.providerPlaceId) }}
+{{ form_widget(form.userProfile.providerName) }}
+{{ form_widget(form.userProfile.latitude) }}
+{{ form_widget(form.userProfile.longitude) }}
 {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
 <script>
-document.querySelectorAll('.param-nav__lien').forEach(l => l.addEventListener('click', () => {
-  document.querySelectorAll('.param-nav__lien').forEach(x => x.classList.toggle('actif', x === l));
-  document.querySelectorAll('.param-panneau').forEach(p =>
-    p.classList.toggle('actif', p.id === 'panneau-' + l.dataset.panneau));
-}));
+document.addEventListener('DOMContentLoaded', () => {
+  /*
+   * Navigation entre les panneaux des paramètres.
+   */
+  document.querySelectorAll('.param-nav__lien').forEach((link) => {
+    link.addEventListener('click', () => {
+      document.querySelectorAll('.param-nav__lien').forEach((item) => {
+        item.classList.toggle('actif', item === link);
+      });
+
+      document.querySelectorAll('.param-panneau').forEach((panel) => {
+        panel.classList.toggle(
+          'actif',
+          panel.id === 'panneau-' + link.dataset.panneau
+        );
+      });
+    });
+  });
+
+  /*
+   * Géolocalisation navigateur + reverse geocoding OpenStreetMap/Nominatim.
+   */
+  const detectButton = document.getElementById('detect-location');
+  const statusElement = document.getElementById('geolocation-status');
+
+  const fields = {
+    label: document.getElementById('{{ form.userProfile.label.vars.id }}'),
+    addressLine1: document.getElementById('{{ form.userProfile.addressLine1.vars.id }}'),
+    addressLine2: document.getElementById('{{ form.userProfile.addressLine2.vars.id }}'),
+    postalCode: document.getElementById('{{ form.userProfile.postalCode.vars.id }}'),
+    city: document.getElementById('{{ form.userProfile.city.vars.id }}'),
+    district: document.getElementById('{{ form.userProfile.district.vars.id }}'),
+    region: document.getElementById('{{ form.userProfile.region.vars.id }}'),
+    department: document.getElementById('{{ form.userProfile.department.vars.id }}'),
+    countryCode: document.getElementById('{{ form.userProfile.countryCode.vars.id }}'),
+    formattedAddress: document.getElementById('{{ form.userProfile.formattedAddress.vars.id }}'),
+    providerPlaceId: document.getElementById('{{ form.userProfile.providerPlaceId.vars.id }}'),
+    providerName: document.getElementById('{{ form.userProfile.providerName.vars.id }}'),
+    latitude: document.getElementById('{{ form.userProfile.latitude.vars.id }}'),
+    longitude: document.getElementById('{{ form.userProfile.longitude.vars.id }}')
+  };
+
+  const setStatus = (message, type = 'secondary') => {
+    if (!statusElement) {
+      return;
+    }
+
+    statusElement.textContent = message;
+    statusElement.className = `small mt-1 mb-0 text-${type}`;
+  };
+
+  const setLoading = (loading) => {
+    if (!detectButton) {
+      return;
+    }
+
+    detectButton.disabled = loading;
+    detectButton.setAttribute('aria-busy', loading ? 'true' : 'false');
+    detectButton.textContent = loading
+      ? 'Localisation…'
+      : 'Me localiser';
+  };
+
+  const setFieldValue = (field, value) => {
+    if (!field) {
+      return;
+    }
+
+    field.value = value ?? '';
+
+    field.dispatchEvent(new Event('input', {
+      bubbles: true
+    }));
+
+    field.dispatchEvent(new Event('change', {
+      bubbles: true
+    }));
+  };
+
+  const firstValue = (object, keys) => {
+    for (const key of keys) {
+      const value = object?.[key];
+
+      if (typeof value === 'string' && value.trim() !== '') {
+        return value.trim();
+      }
+    }
+
+    return '';
+  };
+
+  const buildAddressLine1 = (address) => {
+    const houseNumber = firstValue(address, [
+      'house_number'
+    ]);
+
+    const road = firstValue(address, [
+      'road',
+      'pedestrian',
+      'street',
+      'residential',
+      'footway',
+      'path'
+    ]);
+
+    return [houseNumber, road]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+  };
+
+  const fillAddressFields = (data, requestedLatitude, requestedLongitude) => {
+    const address = data.address ?? {};
+
+    const addressLine1 = buildAddressLine1(address);
+
+    const city = firstValue(address, [
+      'city',
+      'town',
+      'village',
+      'municipality',
+      'hamlet',
+      'locality'
+    ]);
+
+    const district = firstValue(address, [
+      'city_district',
+      'district',
+      'borough',
+      'suburb',
+      'quarter',
+      'neighbourhood'
+    ]);
+
+    const region = firstValue(address, [
+      'state',
+      'region'
+    ]);
+
+    const department = firstValue(address, [
+      'county',
+      'state_district'
+    ]);
+
+    const postalCode = firstValue(address, [
+      'postcode'
+    ]);
+
+    const countryCode = firstValue(address, [
+      'country_code'
+    ]).toUpperCase();
+
+    const osmType = data.osm_type ?? '';
+    const osmId = data.osm_id ?? '';
+    const placeId = data.place_id ?? '';
+
+    let providerPlaceId = '';
+
+    if (osmType && osmId) {
+      providerPlaceId = `${osmType}:${osmId}`;
+    } else if (placeId) {
+      providerPlaceId = `place:${placeId}`;
+    }
+
+    setFieldValue(fields.label, addressLine1 || data.display_name || '');
+    setFieldValue(fields.addressLine1, addressLine1);
+    setFieldValue(fields.postalCode, postalCode);
+    setFieldValue(fields.city, city);
+    setFieldValue(fields.district, district);
+    setFieldValue(fields.region, region);
+    setFieldValue(fields.department, department);
+    setFieldValue(fields.countryCode, countryCode);
+    setFieldValue(fields.formattedAddress, data.display_name ?? '');
+    setFieldValue(fields.providerPlaceId, providerPlaceId);
+    setFieldValue(fields.providerName, 'OPENSTREETMAP_NOMINATIM');
+    setFieldValue(fields.latitude, data.lat ?? requestedLatitude);
+    setFieldValue(fields.longitude, data.lon ?? requestedLongitude);
+  };
+
+  const reverseGeocode = async (latitude, longitude) => {
+    const url = new URL('https://nominatim.openstreetmap.org/reverse');
+
+    url.searchParams.set('format', 'jsonv2');
+    url.searchParams.set('lat', latitude);
+    url.searchParams.set('lon', longitude);
+    url.searchParams.set('addressdetails', '1');
+    url.searchParams.set('namedetails', '1');
+    url.searchParams.set('zoom', '18');
+    url.searchParams.set('accept-language', 'fr');
+
+    setStatus(
+      'Recherche de votre adresse avec OpenStreetMap…',
+      'secondary'
+    );
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `OpenStreetMap a retourné l'erreur HTTP ${response.status}.`
+      );
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
+
+    fillAddressFields(data, latitude, longitude);
+  };
+
+  const handleGeolocationError = (error) => {
+    let message = 'Impossible de détecter votre position.';
+
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        message = 'Vous avez refusé l’accès à votre position.';
+        break;
+
+      case error.POSITION_UNAVAILABLE:
+        message = 'Votre position est actuellement indisponible.';
+        break;
+
+      case error.TIMEOUT:
+        message = 'La détection de votre position a expiré.';
+        break;
+    }
+
+    setLoading(false);
+    setStatus(message, 'danger');
+    console.error('Erreur de géolocalisation :', error);
+  };
+
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+      setStatus(
+        'La géolocalisation n’est pas prise en charge par ce navigateur.',
+        'danger'
+      );
+
+      return;
+    }
+
+    setLoading(true);
+    setStatus('Recherche de votre position…', 'secondary');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude.toFixed(7);
+        const longitude = position.coords.longitude.toFixed(7);
+
+        setFieldValue(fields.latitude, latitude);
+        setFieldValue(fields.longitude, longitude);
+
+        try {
+          await reverseGeocode(latitude, longitude);
+
+          setStatus(
+            'Votre adresse a été détectée et les champs ont été remplis.',
+            'success'
+          );
+        } catch (error) {
+          console.error('Erreur OpenStreetMap/Nominatim :', error);
+
+          setStatus(
+            error instanceof Error
+              ? error.message
+              : 'Impossible de récupérer votre adresse.',
+            'danger'
+          );
+        } finally {
+          setLoading(false);
+        }
+      },
+      handleGeolocationError,
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 300000
+      }
+    );
+  };
+
+  if (detectButton) {
+    detectButton.addEventListener('click', detectLocation);
+  }
+
+  /*
+   * Lancement automatique à l'ouverture de la page.
+   * Le navigateur demandera l'autorisation à l'utilisateur.
+   */
+  detectLocation();
+});
 </script>
 {% endblock %}

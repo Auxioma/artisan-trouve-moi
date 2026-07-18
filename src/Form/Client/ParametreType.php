@@ -3,6 +3,7 @@
 namespace App\Form\Client;
 
 use App\Entity\Users\User;
+use App\Form\Client\UserParametreType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,6 +17,7 @@ class ParametreType extends AbstractType
             ->add('firstName')
             ->add('lastName')
             ->add('phoneNumber')
+            ->add('userProfile', UserParametreType::class)
         ;
     }
 

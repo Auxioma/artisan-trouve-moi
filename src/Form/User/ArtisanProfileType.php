@@ -59,7 +59,8 @@ class ArtisanProfileType extends AbstractType
                         message: 'Le numéro SIRET doit contenir exactement 14 chiffres.',
                     ),
                 ],
-            ]);
+            ])
+        ;
     }
 
     public function configureOptions(
