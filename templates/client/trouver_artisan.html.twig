@@ -1,0 +1,214 @@
+{% extends 'client/base_client.html.twig' %}
+
+{% block title %}Trouver un artisan{% endblock %}
+
+{% set menu_actif = 'trouver' %}
+
+{% block body %}
+
+    <div class="dash-header">
+      <div>
+        <h1>Trouver un artisan</h1>
+        <p>120 000 prestataires vérifiés — identité, SIRET et assurances contrôlés.</p>
+      </div>
+    </div>
+
+    <div class="dash-card mb-3">
+      <div class="recherche-artisan">
+        <div class="filtres__recherche mw-100">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="recherche" placeholder="Quel artisan ? (peintre, plombier, électricien…)" aria-label="Métier recherché">
+        </div>
+        <div class="filtres__recherche mw-100">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+          <input type="search" value="Lyon 3e (69003)" aria-label="Localisation">
+        </div>
+        <select class="form-select" aria-label="Rayon">
+          <option>10 km</option>
+          <option selected>25 km</option>
+          <option>50 km</option>
+        </select>
+        <button class="btn btn-dash-cta" type="button"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Rechercher</button>
+      </div>
+      <div class="categories-rapides">
+        <button class="categorie-rapide est-actif" type="button">Peinture</button>
+        <button class="categorie-rapide" type="button">Plomberie</button>
+        <button class="categorie-rapide" type="button">Électricité</button>
+        <button class="categorie-rapide" type="button">Menuiserie</button>
+        <button class="categorie-rapide" type="button">Maçonnerie</button>
+        <button class="categorie-rapide" type="button">Jardin</button>
+        <button class="categorie-rapide" type="button">Rénovation complète</button>
+      </div>
+    </div>
+
+    <div class="filtres">
+      <span class="small fw-bold text-dark me-1">6 artisans trouvés</span>
+      <select class="form-select ms-auto" aria-label="Note minimale">
+        <option>Toutes les notes</option>
+        <option selected>4 ★ et plus</option>
+        <option>4,5 ★ et plus</option>
+      </select>
+      <select class="form-select" aria-label="Disponibilité">
+        <option selected>Toutes disponibilités</option>
+        <option>Sous 48 h</option>
+        <option>Cette semaine</option>
+      </select>
+      <select class="form-select" aria-label="Trier">
+        <option selected>Pertinence</option>
+        <option>Note décroissante</option>
+        <option>Distance croissante</option>
+        <option>Nombre d'avis</option>
+      </select>
+    </div>
+
+    <div class="d-grid gap-3">
+      <article class="resultat-artisan" data-texte="atelier couleurs peinture &amp; décoration lyon 6e">
+        <span class="avatar avatar--lg avatar--vert">AC</span>
+        <div class="resultat-artisan__corps">
+          <div class="resultat-artisan__nom"><b>Atelier Couleurs</b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg> <span class="chip chip--premium">EXCELLENCE</span></div>
+          <p class="resultat-artisan__sous">
+            <span>Peinture &amp; décoration</span>
+            <span class="note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg>4,9</span><span>(143 avis)</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>Lyon 6e · 3,2 km</span>
+          </p>
+          <p class="resultat-artisan__desc">Peintres décorateurs depuis 2015. Finitions soignées, chantiers propres, conseils couleurs offerts. Devis détaillé sous 48 h.</p>
+          <div class="resultat-artisan__tags"><span class="chip">Peinture intérieure</span><span class="chip">Papier peint</span><span class="chip">Enduits décoratifs</span></div>
+        </div>
+        <div class="resultat-artisan__fin">
+          <button class="btn-coeur est-favori" type="button" aria-label="Retirer des favoris"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 16.5 2 13 2 8.5A4.5 4.5 0 0 1 6.5 4c2 0 3.7 1 5.5 3 1.8-2 3.5-3 5.5-3A4.5 4.5 0 0 1 22 8.5c0 4.5-5 8-10 12.5z"/></svg></button>
+          <span class="resultat-artisan__reponse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Répond en ~ 1 h</span>
+          <div class="resultat-artisan__actions">
+            <button class="btn btn-dash-ghost" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Voir le profil</button>
+            <button class="btn btn-dash-cta" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>Demander un devis</button>
+          </div>
+        </div>
+      </article>
+      <article class="resultat-artisan" data-texte="peintures morel peinture générale lyon 3e">
+        <span class="avatar avatar--lg avatar--bleu">PM</span>
+        <div class="resultat-artisan__corps">
+          <div class="resultat-artisan__nom"><b>Peintures Morel</b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg></div>
+          <p class="resultat-artisan__sous">
+            <span>Peinture générale</span>
+            <span class="note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg>4,8</span><span>(210 avis)</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>Lyon 3e · 0,8 km</span>
+          </p>
+          <p class="resultat-artisan__desc">Entreprise familiale, 25 ans d'expérience. Spécialiste des rénovations d'appartements anciens et des grandes surfaces.</p>
+          <div class="resultat-artisan__tags"><span class="chip">Peinture intérieure</span><span class="chip">Ravalement</span><span class="chip">Boiseries</span></div>
+        </div>
+        <div class="resultat-artisan__fin">
+          <button class="btn-coeur" type="button" aria-label="Ajouter aux favoris"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 16.5 2 13 2 8.5A4.5 4.5 0 0 1 6.5 4c2 0 3.7 1 5.5 3 1.8-2 3.5-3 5.5-3A4.5 4.5 0 0 1 22 8.5c0 4.5-5 8-10 12.5z"/></svg></button>
+          <span class="resultat-artisan__reponse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Répond en ~ 2 h</span>
+          <div class="resultat-artisan__actions">
+            <button class="btn btn-dash-ghost" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Voir le profil</button>
+            <button class="btn btn-dash-cta" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>Demander un devis</button>
+          </div>
+        </div>
+      </article>
+      <article class="resultat-artisan" data-texte="décopro lyon peinture &amp; plâtrerie villeurbanne">
+        <span class="avatar avatar--lg avatar--violet">DP</span>
+        <div class="resultat-artisan__corps">
+          <div class="resultat-artisan__nom"><b>DécoPro Lyon</b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg></div>
+          <p class="resultat-artisan__sous">
+            <span>Peinture &amp; plâtrerie</span>
+            <span class="note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg>4,7</span><span>(89 avis)</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>Villeurbanne · 4,6 km</span>
+          </p>
+          <p class="resultat-artisan__desc">Équipe réactive pour vos travaux de peinture et petites reprises de plâtrerie. Intervention possible sous une semaine.</p>
+          <div class="resultat-artisan__tags"><span class="chip">Peinture intérieure</span><span class="chip">Plâtrerie</span><span class="chip">Fissures</span></div>
+        </div>
+        <div class="resultat-artisan__fin">
+          <button class="btn-coeur" type="button" aria-label="Ajouter aux favoris"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 16.5 2 13 2 8.5A4.5 4.5 0 0 1 6.5 4c2 0 3.7 1 5.5 3 1.8-2 3.5-3 5.5-3A4.5 4.5 0 0 1 22 8.5c0 4.5-5 8-10 12.5z"/></svg></button>
+          <span class="resultat-artisan__reponse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Répond en ~ 3 h</span>
+          <div class="resultat-artisan__actions">
+            <button class="btn btn-dash-ghost" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Voir le profil</button>
+            <button class="btn btn-dash-cta" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>Demander un devis</button>
+          </div>
+        </div>
+      </article>
+      <article class="resultat-artisan" data-texte="plomberie express plomberie &amp; chauffage lyon 3e">
+        <span class="avatar avatar--lg avatar--encre">PE</span>
+        <div class="resultat-artisan__corps">
+          <div class="resultat-artisan__nom"><b>Plomberie Express</b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg> <span class="chip chip--premium">EXCELLENCE</span></div>
+          <p class="resultat-artisan__sous">
+            <span>Plomberie &amp; chauffage</span>
+            <span class="note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg>4,8</span><span>(256 avis)</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>Lyon 3e · 1,1 km</span>
+          </p>
+          <p class="resultat-artisan__desc">Artisan plombier-chauffagiste depuis 2012. Rénovation de salle de bain, dépannage rapide, installation de chauffe-eau.</p>
+          <div class="resultat-artisan__tags"><span class="chip">Salle de bain</span><span class="chip">Dépannage</span><span class="chip">Chauffe-eau</span></div>
+        </div>
+        <div class="resultat-artisan__fin">
+          <button class="btn-coeur est-favori" type="button" aria-label="Retirer des favoris"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 16.5 2 13 2 8.5A4.5 4.5 0 0 1 6.5 4c2 0 3.7 1 5.5 3 1.8-2 3.5-3 5.5-3A4.5 4.5 0 0 1 22 8.5c0 4.5-5 8-10 12.5z"/></svg></button>
+          <span class="resultat-artisan__reponse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Répond en ~ 1 h</span>
+          <div class="resultat-artisan__actions">
+            <button class="btn btn-dash-ghost" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Voir le profil</button>
+            <button class="btn btn-dash-cta" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>Demander un devis</button>
+          </div>
+        </div>
+      </article>
+      <article class="resultat-artisan" data-texte="élec+ lyon électricité générale lyon 7e">
+        <span class="avatar avatar--lg avatar--bleu">EL</span>
+        <div class="resultat-artisan__corps">
+          <div class="resultat-artisan__nom"><b>Élec+ Lyon</b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg></div>
+          <p class="resultat-artisan__sous">
+            <span>Électricité générale</span>
+            <span class="note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg>4,9</span><span>(178 avis)</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>Lyon 7e · 3,9 km</span>
+          </p>
+          <p class="resultat-artisan__desc">Électriciens certifiés Qualifelec. Mise aux normes, tableaux, domotique et bornes de recharge. Diagnostic gratuit.</p>
+          <div class="resultat-artisan__tags"><span class="chip">Mise aux normes</span><span class="chip">Tableau</span><span class="chip">Domotique</span></div>
+        </div>
+        <div class="resultat-artisan__fin">
+          <button class="btn-coeur est-favori" type="button" aria-label="Retirer des favoris"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 16.5 2 13 2 8.5A4.5 4.5 0 0 1 6.5 4c2 0 3.7 1 5.5 3 1.8-2 3.5-3 5.5-3A4.5 4.5 0 0 1 22 8.5c0 4.5-5 8-10 12.5z"/></svg></button>
+          <span class="resultat-artisan__reponse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Répond en ~ 2 h</span>
+          <div class="resultat-artisan__actions">
+            <button class="btn btn-dash-ghost" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Voir le profil</button>
+            <button class="btn btn-dash-cta" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>Demander un devis</button>
+          </div>
+        </div>
+      </article>
+      <article class="resultat-artisan" data-texte="menuiserie blanc menuiserie intérieure caluire">
+        <span class="avatar avatar--lg avatar--violet">MB</span>
+        <div class="resultat-artisan__corps">
+          <div class="resultat-artisan__nom"><b>Menuiserie Blanc</b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg></div>
+          <p class="resultat-artisan__sous">
+            <span>Menuiserie intérieure</span>
+            <span class="note"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg>4,7</span><span>(96 avis)</span>
+            <span><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>Caluire · 5,4 km</span>
+          </p>
+          <p class="resultat-artisan__desc">Menuisier agenceur : placards sur mesure, parquets, portes et dressing. Bois certifiés, fabrication locale.</p>
+          <div class="resultat-artisan__tags"><span class="chip">Placards</span><span class="chip">Parquet</span><span class="chip">Dressing</span></div>
+        </div>
+        <div class="resultat-artisan__fin">
+          <button class="btn-coeur est-favori" type="button" aria-label="Retirer des favoris"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 16.5 2 13 2 8.5A4.5 4.5 0 0 1 6.5 4c2 0 3.7 1 5.5 3 1.8-2 3.5-3 5.5-3A4.5 4.5 0 0 1 22 8.5c0 4.5-5 8-10 12.5z"/></svg></button>
+          <span class="resultat-artisan__reponse"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Répond en ~ 4 h</span>
+          <div class="resultat-artisan__actions">
+            <button class="btn btn-dash-ghost" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Voir le profil</button>
+            <button class="btn btn-dash-cta" type="button"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 13h6M9 17h4"/></svg>Demander un devis</button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <nav class="dash-pagination" aria-label="Pagination des résultats">
+      <p class="dash-pagination__info mb-0">Affichage de <b>1 – 6</b> sur <b>48</b> artisans</p>
+      <div class="dash-pagination__pages">
+        <button class="dash-pagination__page actif" type="button" aria-current="page">1</button>
+        <button class="dash-pagination__page" type="button">2</button>
+        <button class="dash-pagination__page" type="button">3</button>
+        <button class="dash-pagination__page" type="button">…</button>
+        <button class="dash-pagination__page" type="button">8</button>
+      </div>
+    </nav>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.querySelectorAll('.btn-coeur').forEach(b => b.addEventListener('click', () => {
+  b.classList.toggle('est-favori');
+  const fav = b.classList.contains('est-favori');
+  b.setAttribute('aria-label', fav ? 'Retirer des favoris' : 'Ajouter aux favoris');
+}));
+</script>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends 'client/base_client.html.twig' %}
+
+{% block title %}Mes avis{% endblock %}
+
+{% set menu_actif = 'avis' %}
+
+{% block body %}
+
+    <div class="dash-header">
+      <div>
+        <h1>Mes avis</h1>
+        <p>Vous avez publié 2 avis — ils aident la communauté à choisir en confiance.</p>
+      </div>
+    </div>
+
+    <div class="avis-invite mb-4">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <span class="avatar avatar--encre">PE</span>
+        <div class="flex-grow-1">
+          <b class="d-block">Comment s'est passé votre débouchage avec Plomberie Express ?</b>
+          <span class="small text-secondary">Intervention du 12 mars 2024 — votre avis prend 2 minutes.</span>
+        </div>
+        <div class="saisie-etoiles" role="radiogroup" aria-label="Votre note sur 5">
+          <button type="button" data-note="1" aria-label="1 étoile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></button>
+          <button type="button" data-note="2" aria-label="2 étoiles"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></button>
+          <button type="button" data-note="3" aria-label="3 étoiles"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></button>
+          <button type="button" data-note="4" aria-label="4 étoiles"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></button>
+          <button type="button" data-note="5" aria-label="5 étoiles"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></button>
+        </div>
+      </div>
+      <div class="avis-invite__zone" id="zone-avis">
+        <textarea class="form-control" rows="3" placeholder="Racontez votre expérience : ponctualité, qualité du travail, propreté du chantier…" aria-label="Votre avis"></textarea>
+        <div class="d-flex gap-2 justify-content-end mt-2">
+          <button class="btn btn-dash-ghost" type="button" id="btn-annuler-avis">Annuler</button>
+          <button class="btn btn-dash-primary" type="button">Publier mon avis</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card__header"><h2 class="h5 mb-0">Avis publiés</h2></div>
+    <div class="d-grid gap-3 mt-2">
+      <article class="carte-avis-page">
+        <div class="carte-avis-page__haut">
+          <span class="avatar avatar--encre">PE</span>
+          <div class="carte-avis-page__id">
+            <b>Plomberie Express</b>
+            <span>Débouchage évier de cuisine · mars 2024</span>
+          </div>
+          <div class="carte-avis-page__droite">
+            <span class="etoiles"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></span>
+            <p>14/03/2024</p>
+          </div>
+        </div>
+        <p class="carte-avis-page__texte">&ldquo;Intervention rapide et efficace, moins de 24 h après ma demande. Tarif annoncé respecté, travail propre. Je fais de nouveau appel à eux pour ma salle de bain !&rdquo;</p>
+        <div class="avis-reponse">
+          <b><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg>Réponse de Plomberie Express</b>
+          <p>Merci Madame Martin pour votre confiance renouvelée, au plaisir de démarrer votre salle de bain !</p>
+        </div>
+        <div class="carte-demande__actions mt-3">
+          <button class="btn btn-dash-ghost btn-sm" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>Modifier mon avis</button>
+        </div>
+      </article>
+
+      <article class="carte-avis-page">
+        <div class="carte-avis-page__haut">
+          <span class="avatar avatar--bleu">EL</span>
+          <div class="carte-avis-page__id">
+            <b>Élec+ Lyon</b>
+            <span>Remplacement du tableau électrique · janvier 2024</span>
+          </div>
+          <div class="carte-avis-page__droite">
+            <span class="etoiles"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><span class="text-secondary opacity-50"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z"/></svg></span></span>
+            <p>22/01/2024</p>
+          </div>
+        </div>
+        <p class="carte-avis-page__texte">&ldquo;Très bon travail, électricien compétent et pédagogue. Un jour de retard sur la date prévue, mais j'ai été prévenue à l'avance. Je recommande.&rdquo;</p>
+        <div class="carte-demande__actions mt-3">
+          <button class="btn btn-dash-ghost btn-sm" type="button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>Modifier mon avis</button>
+        </div>
+      </article>
+    </div>
+
+    <div class="conseil mt-3">
+      <p class="conseil__titre mb-0"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.9.7 1.5 1.3 1.5 2.1h4c0-.8.6-1.4 1.5-2.1A6 6 0 0 0 12 3z"/></svg>Pourquoi laisser un avis ?</p>
+      <p>Vos avis sont vérifiés et liés à une prestation réelle : ils aident les autres particuliers à choisir, et récompensent les artisans sérieux.</p>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+// ============ Saisie de note à étoiles ============
+const etoilesBtns = document.querySelectorAll('.saisie-etoiles button');
+const zoneAvis = document.getElementById('zone-avis');
+etoilesBtns.forEach(b => b.addEventListener('click', () => {
+  const note = parseInt(b.dataset.note, 10);
+  etoilesBtns.forEach(x => x.classList.toggle('est-actif', parseInt(x.dataset.note, 10) <= note));
+  zoneAvis.classList.add('est-ouvert');
+}));
+document.getElementById('btn-annuler-avis').addEventListener('click', () => {
+  zoneAvis.classList.remove('est-ouvert');
+  etoilesBtns.forEach(x => x.classList.remove('est-actif'));
+});
+</script>
+{% endblock %}

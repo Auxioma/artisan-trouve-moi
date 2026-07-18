@@ -490,7 +490,7 @@
                             Mot de passe
                         </label>
 
-                        <a href="mot-de-passe-oublie.html">
+                        <a href="{{ path('app_forgot_password_request') }}">
                             Mot de passe oublié ?
                         </a>
 
@@ -699,7 +699,7 @@
 
             <p class="auth-card__footer">
                 Pas encore de compte ?
-                <a href="inscription.html">
+                <a href="{{ path('app_register') }}">
                     Créer un compte
                 </a>
             </p>
