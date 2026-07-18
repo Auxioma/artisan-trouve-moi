@@ -10,9 +10,11 @@ use App\Repository\User\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'app_user')]
@@ -21,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     columns: ['email']
 )]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 #[UniqueEntity(
     fields: ['email'],
     message: 'Un compte utilise déjà cette adresse e-mail.'
@@ -117,6 +120,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatarFilename = null;
+
+    #[Vich\UploadableField(mapping: 'user_avatar', fileNameProperty: 'avatarFilename')]
+    private ?File $avatarFile = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
@@ -435,6 +441,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatarFilename(?string $avatarFilename): static
     {
         $this->avatarFilename = $avatarFilename;
+
+        return $this;
+    }
+
+    public function getAvatarFile(): ?File
+    {
+        return $this->avatarFile;
+    }
+
+    public function setAvatarFile(?File $avatarFile): static
+    {
+        $this->avatarFile = $avatarFile;
+
+        if (null !== $avatarFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
 
         return $this;
     }
