@@ -10,6 +10,7 @@
 /vendor/
 /.agents
 /.codex
+/.idea
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

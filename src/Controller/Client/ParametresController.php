@@ -55,20 +55,20 @@ final class ParametresController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /*
-             * Cascade persist sur les relations OneToOne :
-             * persister User suffit.
-             */
-            $entityManager->persist($parametre);
-            $entityManager->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $entityManager->persist($parametre);
+                $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'Vos paramètres ont été enregistrés.'
-            );
+                return $this->redirectToRoute('client_parametres');
+            }
 
-            return $this->redirectToRoute('client_parametres');
+            foreach ($form->getErrors(true) as $error) {
+                dump([
+                    'champ' => $error->getOrigin()?->getName(),
+                    'message' => $error->getMessage(),
+                ]);
+            }
         }
 
         $sessions = $userSessionRepository->findBy(['user' => $parametre->getId()], ['id' => 'DESC']);
