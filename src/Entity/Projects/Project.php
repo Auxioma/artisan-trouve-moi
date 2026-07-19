@@ -57,19 +57,19 @@ class Project
     #[Assert\Range(min: 0, max: 100)]
     private int $progressPercent = 0;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $amountTtc = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $addressLine1 = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $postalCode = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $city = null;
 
@@ -79,7 +79,7 @@ class Project
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $endsAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $actualStartedAt = null;
 
@@ -89,12 +89,12 @@ class Project
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $cancelledAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 500)]
     private ?string $cancellationReason = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 2000)]
     private ?string $internalNotes = null;

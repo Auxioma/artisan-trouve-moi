@@ -200,7 +200,7 @@ class Category
 
     public function isRoot(): bool
     {
-        return $this->parent === null;
+        return null === $this->parent;
     }
 
     public function getCreatedAt(): \DateTimeImmutable

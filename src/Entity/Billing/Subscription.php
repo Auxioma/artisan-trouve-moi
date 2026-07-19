@@ -10,7 +10,6 @@ use App\Repository\Billing\SubscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Abonnement d’un artisan. Porte le compteur de devis consommés sur la période (cœur du forfait).
@@ -33,7 +32,7 @@ class Subscription
     #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private ?SubscriptionPlan $plan = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\ManyToOne(targetEntity: PaymentMethod::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?PaymentMethod $paymentMethod = null;
@@ -53,11 +52,11 @@ class Subscription
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $currentPeriodEndsAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private int $quotesUsedInPeriod = 0;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private bool $cancelAtPeriodEnd = false;
 
@@ -298,7 +297,7 @@ class Subscription
 
         $max = $this->plan?->getMaxQuotesPerMonth();
 
-        return $max === null || $this->quotesUsedInPeriod < $max;
+        return null === $max || $this->quotesUsedInPeriod < $max;
     }
 
     public function incrementQuotesUsed(): static

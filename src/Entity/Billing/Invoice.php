@@ -42,19 +42,19 @@ class Invoice
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private string $amountTtc = '0.00';
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $periodStartsAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $periodEndsAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 180, nullable: true)]
     private ?string $billingName = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $billingAddress = null;
 
@@ -67,11 +67,11 @@ class Invoice
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $paidAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $providerInvoiceId = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pdfFilename = null;
 

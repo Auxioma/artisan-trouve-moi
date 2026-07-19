@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright(c) 2026 Boolts (https://boolts.com)
+ * Copyright(c) 2026 Boolts (https://boolts.com).
  *
  * Ce fichier fait partie d’un projet développé par Auxioma Web Agency
  * pour l’entreprise Pastelit Co.
@@ -36,7 +36,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
 
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
@@ -79,14 +79,14 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     public function onAuthenticationSuccess(
         Request $request,
         TokenInterface $token,
-        string $firewallName
+        string $firewallName,
     ): ?Response {
         $targetPath = $this->getTargetPath(
             $request->getSession(),
             $firewallName
         );
 
-        if ($targetPath !== null) {
+        if (null !== $targetPath) {
             return new RedirectResponse($targetPath);
         }
 

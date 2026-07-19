@@ -47,7 +47,7 @@ class ArtisanService
     #[ORM\Column(enumType: PriceUnit::class)]
     private PriceUnit $priceUnit = PriceUnit::FLAT;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     #[Assert\Positive]
     private ?int $estimatedDurationHours = null;

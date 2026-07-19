@@ -37,7 +37,7 @@ final class ArtisanProfileFixtures extends Fixture implements DependentFixtureIn
             );
 
             if ($index <= FixtureReferences::PUBLISHED_ARTISAN_PROFILE_COUNT) {
-                $underQualifiedControl = $index % 4 === 0;
+                $underQualifiedControl = 0 === $index % 4;
 
                 $profile = $this->createPublishedArtisanProfile(
                     user: $user,
@@ -200,7 +200,7 @@ final class ArtisanProfileFixtures extends Fixture implements DependentFixtureIn
     private function persistProfile(
         ObjectManager $manager,
         string $reference,
-        ArtisanProfile $profile
+        ArtisanProfile $profile,
     ): void {
         $manager->persist($profile);
         $this->addReference($reference, $profile);
@@ -224,7 +224,7 @@ final class ArtisanProfileFixtures extends Fixture implements DependentFixtureIn
         bool $underQualifiedPersonControl = false,
         ?string $qualifiedPersonFirstName = null,
         ?string $qualifiedPersonLastName = null,
-        ?string $qualifiedPersonPosition = null
+        ?string $qualifiedPersonPosition = null,
     ): ArtisanProfile {
         $profile = (new ArtisanProfile())
             ->setUser($user)
@@ -242,7 +242,7 @@ final class ArtisanProfileFixtures extends Fixture implements DependentFixtureIn
             ->setQualificationTitle($qualificationTitle)
             ->setQualificationNumber($qualificationNumber)
             ->setQualificationObtainedAt(
-                $qualificationType !== null
+                null !== $qualificationType
                     ? $createdAt->modify('-10 years')
                     : null
             )
@@ -304,7 +304,7 @@ final class ArtisanProfileFixtures extends Fixture implements DependentFixtureIn
         string $legalForm,
         int $experienceYears,
         string $description,
-        \DateTimeImmutable $createdAt
+        \DateTimeImmutable $createdAt,
     ): ArtisanProfile {
         return (new ArtisanProfile())
             ->setUser($user)
@@ -348,7 +348,7 @@ final class ArtisanProfileFixtures extends Fixture implements DependentFixtureIn
     private function randomDateBetween(
         Generator $faker,
         string $start,
-        string $end
+        string $end,
     ): \DateTimeImmutable {
         return \DateTimeImmutable::createFromMutable(
             $faker->dateTimeBetween($start, $end)

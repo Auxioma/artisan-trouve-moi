@@ -48,11 +48,11 @@ class InterventionZone
     #[Assert\Range(min: 1, max: 200)]
     private int $radiusKm = 25;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $extraTravelFeeHt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $travelNote = null;
 

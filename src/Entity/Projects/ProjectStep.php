@@ -30,7 +30,7 @@ class ProjectStep
     #[Assert\NotBlank]
     private ?string $label = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 500)]
     private ?string $description = null;
@@ -140,7 +140,7 @@ class ProjectStep
 
     public function isDone(): bool
     {
-        return $this->doneAt !== null;
+        return null !== $this->doneAt;
     }
 
     public function markDone(): static

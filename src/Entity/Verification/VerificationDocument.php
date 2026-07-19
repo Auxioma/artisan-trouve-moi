@@ -45,12 +45,12 @@ class VerificationDocument
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $reviewedAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $reviewedBy = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expiresAt = null;
 
@@ -231,7 +231,7 @@ class VerificationDocument
     {
         $this->documentFile = $documentFile;
 
-        if ($documentFile !== null) {
+        if (null !== $documentFile) {
             // Force Doctrine à détecter un changement pour déclencher l’upload Vich.
             $this->updatedAt = new \DateTimeImmutable();
         }
@@ -273,7 +273,7 @@ class VerificationDocument
 
     public function isExpired(): bool
     {
-        return $this->expiresAt !== null && $this->expiresAt < new \DateTimeImmutable();
+        return null !== $this->expiresAt && $this->expiresAt < new \DateTimeImmutable();
     }
 
     public function getCreatedAt(): \DateTimeImmutable

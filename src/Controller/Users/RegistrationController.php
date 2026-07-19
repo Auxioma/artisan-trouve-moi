@@ -19,7 +19,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private EmailVerifier $emailVerifier
+        private EmailVerifier $emailVerifier,
     ) {
     }
 
@@ -27,7 +27,7 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): Response {
         $user = new User();
 
@@ -52,7 +52,7 @@ class RegistrationController extends AbstractController
              * un particulier ne doit jamais conserver
              * un ArtisanProfile.
              */
-            if ($accountType === 'client') {
+            if ('client' === $accountType) {
                 $user->setArtisanProfile(null);
             }
 
@@ -102,7 +102,7 @@ class RegistrationController extends AbstractController
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(
         Request $request,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
     ): Response {
         $this->denyAccessUnlessGranted(
             'IS_AUTHENTICATED_FULLY'

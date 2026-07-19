@@ -7,7 +7,6 @@ namespace App\Entity\Requests;
 use App\Repository\Requests\RequestPhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
@@ -25,7 +24,7 @@ class RequestPhoto
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ServiceRequest $request = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $caption = null;
 
@@ -145,7 +144,7 @@ class RequestPhoto
     {
         $this->imageFile = $imageFile;
 
-        if ($imageFile !== null) {
+        if (null !== $imageFile) {
             // Force Doctrine à détecter un changement pour déclencher l’upload Vich.
             $this->updatedAt = new \DateTimeImmutable();
         }

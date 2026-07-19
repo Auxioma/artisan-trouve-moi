@@ -42,22 +42,22 @@ class Review
     #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'La note doit être comprise entre {{ min }} et {{ max }}.')]
     private int $rating = 5;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
     private ?int $qualityRating = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
     private ?int $punctualityRating = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
     private ?int $cleanlinessRating = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?bool $wouldRecommend = null;
 
@@ -78,7 +78,7 @@ class Review
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $publishedAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $moderatedAt = null;
 

@@ -144,7 +144,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
                 ->setFeatures(['devis', 'messagerie', 'statistiques'])
                 ->setProviderPriceId(sprintf('price_fixture_%d', $position + 1))
                 ->setPosition($position + 1)
-                ->setIsPopular($position === 1)
+                ->setIsPopular(1 === $position)
                 ->setIsActive(true);
             $manager->persist($plan);
             $plans[] = $plan;
@@ -160,7 +160,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
         for ($index = 0; $index < 5; ++$index) {
             $method = (new PaymentMethod())
                 ->setUser($artisans[$index]->getUser())
-                ->setBrand($index % 2 === 0 ? 'visa' : 'mastercard')
+                ->setBrand(0 === $index % 2 ? 'visa' : 'mastercard')
                 ->setLast4(sprintf('%04d', 1100 + $index))
                 ->setExpiresMonth(6 + $index)
                 ->setExpiresYear(2028)
@@ -258,7 +258,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
                 ->setArtisanProfile($artisans[$index])
                 ->setTitle(sprintf('Realisation %d', $index + 1))
                 ->setCity('Paris')->setCompletedAt($now->modify(sprintf('-%d months', $index + 1)))
-                ->setPosition($index + 1)->setIsCover($index === 0)
+                ->setPosition($index + 1)->setIsCover(0 === $index)
                 ->setImageName(sprintf('artisan-%02d.jpg', $index + 1))
                 ->setImageSize(120000)->setImageMimeType('image/jpeg');
             $manager->persist($photo);
@@ -317,7 +317,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
         for ($index = 0; $index < 8; ++$index) {
             $request = (new ServiceRequest())->setClient($customers[$index])->setCategory($categories[$index])
                 ->setTitle(sprintf('Demande de travaux %d', $index + 1))->setDescription('Besoin de travaux avec visite technique.')
-                ->setStatus(RequestStatus::PUBLISHED)->setIsUrgent($index % 3 === 0)
+                ->setStatus(RequestStatus::PUBLISHED)->setIsUrgent(0 === $index % 3)
                 ->setBudgetMin('500.00')->setBudgetMax('2500.00')->setDesiredStartAt($now->modify('+1 month'))
                 ->setPropertyType('Appartement')->setSurfaceM2('65.00')->setAddressLine1('12 rue des Clients')
                 ->setPostalCode(sprintf('750%02d', $index + 1))->setCity('Paris')->setPublishedAt($now)
@@ -435,7 +435,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
         $messages = [];
         for ($index = 0; $index < 5; ++$index) {
             $message = (new Message())->setConversation($conversations[$index % count($conversations)])
-                ->setAuthor($index % 2 === 0 ? $customers[$index % 3] : $artisans[$index % 3]->getUser())
+                ->setAuthor(0 === $index % 2 ? $customers[$index % 3] : $artisans[$index % 3]->getUser())
                 ->setContent('Message de demonstration pour la conversation.')->setIsSystem(false)
                 ->setReadAt($now);
             $manager->persist($message);

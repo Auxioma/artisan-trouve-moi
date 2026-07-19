@@ -9,9 +9,9 @@ use App\Entity\Enum\VerificationStatus;
 use App\Repository\User\ArtisanProfileRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: ArtisanProfileRepository::class)]
 #[ORM\Table(name: 'artisan_profile')]
@@ -289,7 +289,7 @@ class ArtisanProfile
 
     public function setCommercialName(?string $commercialName): static
     {
-        $this->commercialName = $commercialName !== null
+        $this->commercialName = null !== $commercialName
             ? trim($commercialName)
             : null;
 
@@ -320,7 +320,7 @@ class ArtisanProfile
 
     public function setSiren(?string $siren): static
     {
-        $this->siren = $siren !== null
+        $this->siren = null !== $siren
             ? preg_replace('/\D/', '', $siren)
             : null;
 
@@ -334,11 +334,11 @@ class ArtisanProfile
 
     public function setSiret(?string $siret): static
     {
-        $this->siret = $siret !== null
+        $this->siret = null !== $siret
             ? preg_replace('/\D/', '', $siret)
             : null;
 
-        if ($this->siret !== null && strlen($this->siret) >= 9) {
+        if (null !== $this->siret && strlen($this->siret) >= 9) {
             $this->siren = substr($this->siret, 0, 9);
         }
 
@@ -352,7 +352,7 @@ class ArtisanProfile
 
     public function setVatNumber(?string $vatNumber): static
     {
-        $this->vatNumber = $vatNumber !== null
+        $this->vatNumber = null !== $vatNumber
             ? strtoupper(str_replace(' ', '', trim($vatNumber)))
             : null;
 
@@ -366,7 +366,7 @@ class ArtisanProfile
 
     public function setApeCode(?string $apeCode): static
     {
-        $this->apeCode = $apeCode !== null
+        $this->apeCode = null !== $apeCode
             ? strtoupper(trim($apeCode))
             : null;
 
@@ -380,7 +380,7 @@ class ArtisanProfile
 
     public function setLegalForm(?string $legalForm): static
     {
-        $this->legalForm = $legalForm !== null
+        $this->legalForm = null !== $legalForm
             ? trim($legalForm)
             : null;
 
@@ -393,7 +393,7 @@ class ArtisanProfile
     }
 
     public function setIdentityVerificationStatus(
-        VerificationStatus $status
+        VerificationStatus $status,
     ): static {
         $this->identityVerificationStatus = $status;
 
@@ -406,7 +406,7 @@ class ArtisanProfile
     }
 
     public function setCompanyVerificationStatus(
-        VerificationStatus $status
+        VerificationStatus $status,
     ): static {
         $this->companyVerificationStatus = $status;
 
@@ -419,11 +419,11 @@ class ArtisanProfile
     }
 
     public function setRneVerificationStatus(
-        VerificationStatus $status
+        VerificationStatus $status,
     ): static {
         $this->rneVerificationStatus = $status;
 
-        if ($status === VerificationStatus::VERIFIED) {
+        if (VerificationStatus::VERIFIED === $status) {
             $this->isRegisteredInRne = true;
             $this->rneVerifiedAt = new \DateTimeImmutable();
         }
@@ -449,7 +449,7 @@ class ArtisanProfile
     }
 
     public function setRneVerifiedAt(
-        ?\DateTimeImmutable $rneVerifiedAt
+        ?\DateTimeImmutable $rneVerifiedAt,
     ): static {
         $this->rneVerifiedAt = $rneVerifiedAt;
 
@@ -462,7 +462,7 @@ class ArtisanProfile
     }
 
     public function setQualificationType(
-        ?QualificationType $qualificationType
+        ?QualificationType $qualificationType,
     ): static {
         $this->qualificationType = $qualificationType;
 
@@ -475,7 +475,7 @@ class ArtisanProfile
     }
 
     public function setQualificationTitle(
-        ?string $qualificationTitle
+        ?string $qualificationTitle,
     ): static {
         $this->qualificationTitle = $qualificationTitle;
 
@@ -488,7 +488,7 @@ class ArtisanProfile
     }
 
     public function setQualificationNumber(
-        ?string $qualificationNumber
+        ?string $qualificationNumber,
     ): static {
         $this->qualificationNumber = $qualificationNumber;
 
@@ -501,7 +501,7 @@ class ArtisanProfile
     }
 
     public function setQualificationObtainedAt(
-        ?\DateTimeImmutable $qualificationObtainedAt
+        ?\DateTimeImmutable $qualificationObtainedAt,
     ): static {
         $this->qualificationObtainedAt = $qualificationObtainedAt;
 
@@ -514,7 +514,7 @@ class ArtisanProfile
     }
 
     public function setQualificationVerificationStatus(
-        VerificationStatus $status
+        VerificationStatus $status,
     ): static {
         $this->qualificationVerificationStatus = $status;
 
@@ -527,7 +527,7 @@ class ArtisanProfile
     }
 
     public function setUnderQualifiedPersonControl(
-        bool $underQualifiedPersonControl
+        bool $underQualifiedPersonControl,
     ): static {
         $this->underQualifiedPersonControl = $underQualifiedPersonControl;
 
@@ -540,7 +540,7 @@ class ArtisanProfile
     }
 
     public function setQualifiedPersonFirstName(
-        ?string $qualifiedPersonFirstName
+        ?string $qualifiedPersonFirstName,
     ): static {
         $this->qualifiedPersonFirstName = $qualifiedPersonFirstName;
 
@@ -553,7 +553,7 @@ class ArtisanProfile
     }
 
     public function setQualifiedPersonLastName(
-        ?string $qualifiedPersonLastName
+        ?string $qualifiedPersonLastName,
     ): static {
         $this->qualifiedPersonLastName = $qualifiedPersonLastName;
 
@@ -566,7 +566,7 @@ class ArtisanProfile
     }
 
     public function setQualifiedPersonPosition(
-        ?string $qualifiedPersonPosition
+        ?string $qualifiedPersonPosition,
     ): static {
         $this->qualifiedPersonPosition = $qualifiedPersonPosition;
 
@@ -603,7 +603,7 @@ class ArtisanProfile
     }
 
     public function setProfessionalLiabilityInsuranceRequired(
-        bool $required
+        bool $required,
     ): static {
         $this->professionalLiabilityInsuranceRequired = $required;
 
@@ -616,7 +616,7 @@ class ArtisanProfile
     }
 
     public function setHasProfessionalLiabilityInsurance(
-        bool $hasInsurance
+        bool $hasInsurance,
     ): static {
         $this->hasProfessionalLiabilityInsurance = $hasInsurance;
 
@@ -629,7 +629,7 @@ class ArtisanProfile
     }
 
     public function setProfessionalLiabilityInsurer(
-        ?string $insurer
+        ?string $insurer,
     ): static {
         $this->professionalLiabilityInsurer = $insurer;
 
@@ -642,7 +642,7 @@ class ArtisanProfile
     }
 
     public function setProfessionalLiabilityPolicyNumber(
-        ?string $policyNumber
+        ?string $policyNumber,
     ): static {
         $this->professionalLiabilityPolicyNumber = $policyNumber;
 
@@ -655,7 +655,7 @@ class ArtisanProfile
     }
 
     public function setProfessionalLiabilityStartsAt(
-        ?\DateTimeImmutable $startsAt
+        ?\DateTimeImmutable $startsAt,
     ): static {
         $this->professionalLiabilityStartsAt = $startsAt;
 
@@ -668,7 +668,7 @@ class ArtisanProfile
     }
 
     public function setProfessionalLiabilityExpiresAt(
-        ?\DateTimeImmutable $expiresAt
+        ?\DateTimeImmutable $expiresAt,
     ): static {
         $this->professionalLiabilityExpiresAt = $expiresAt;
 
@@ -681,7 +681,7 @@ class ArtisanProfile
     }
 
     public function setProfessionalLiabilityVerificationStatus(
-        VerificationStatus $status
+        VerificationStatus $status,
     ): static {
         $this->professionalLiabilityVerificationStatus = $status;
 
@@ -730,7 +730,7 @@ class ArtisanProfile
     }
 
     public function setDecennialPolicyNumber(
-        ?string $policyNumber
+        ?string $policyNumber,
     ): static {
         $this->decennialPolicyNumber = $policyNumber;
 
@@ -743,7 +743,7 @@ class ArtisanProfile
     }
 
     public function setDecennialInsuranceStartsAt(
-        ?\DateTimeImmutable $startsAt
+        ?\DateTimeImmutable $startsAt,
     ): static {
         $this->decennialInsuranceStartsAt = $startsAt;
 
@@ -756,7 +756,7 @@ class ArtisanProfile
     }
 
     public function setDecennialInsuranceExpiresAt(
-        ?\DateTimeImmutable $expiresAt
+        ?\DateTimeImmutable $expiresAt,
     ): static {
         $this->decennialInsuranceExpiresAt = $expiresAt;
 
@@ -769,7 +769,7 @@ class ArtisanProfile
     }
 
     public function setDecennialGeographicalCoverage(
-        ?string $coverage
+        ?string $coverage,
     ): static {
         $this->decennialGeographicalCoverage = $coverage;
 
@@ -782,7 +782,7 @@ class ArtisanProfile
     }
 
     public function setDecennialInsuranceVerificationStatus(
-        VerificationStatus $status
+        VerificationStatus $status,
     ): static {
         $this->decennialInsuranceVerificationStatus = $status;
 
@@ -796,13 +796,13 @@ class ArtisanProfile
         }
 
         if (
-            $this->professionalLiabilityVerificationStatus
-            !== VerificationStatus::VERIFIED
+            VerificationStatus::VERIFIED
+            !== $this->professionalLiabilityVerificationStatus
         ) {
             return false;
         }
 
-        return $this->professionalLiabilityExpiresAt === null
+        return null === $this->professionalLiabilityExpiresAt
             || $this->professionalLiabilityExpiresAt > new \DateTimeImmutable();
     }
 
@@ -813,34 +813,34 @@ class ArtisanProfile
         }
 
         if (
-            $this->decennialInsuranceVerificationStatus
-            !== VerificationStatus::VERIFIED
+            VerificationStatus::VERIFIED
+            !== $this->decennialInsuranceVerificationStatus
         ) {
             return false;
         }
 
-        return $this->decennialInsuranceExpiresAt === null
+        return null === $this->decennialInsuranceExpiresAt
             || $this->decennialInsuranceExpiresAt > new \DateTimeImmutable();
     }
 
     public function isLegallyReadyForPublication(): bool
     {
         if (
-            $this->companyVerificationStatus
-            !== VerificationStatus::VERIFIED
+            VerificationStatus::VERIFIED
+            !== $this->companyVerificationStatus
         ) {
             return false;
         }
 
         if (
-            $this->rneVerificationStatus
-            !== VerificationStatus::VERIFIED
+            VerificationStatus::VERIFIED
+            !== $this->rneVerificationStatus
         ) {
             return false;
         }
 
-        $hasQualification = $this->qualificationVerificationStatus
-            === VerificationStatus::VERIFIED;
+        $hasQualification = VerificationStatus::VERIFIED
+            === $this->qualificationVerificationStatus;
 
         if (!$hasQualification && !$this->underQualifiedPersonControl) {
             return false;
@@ -871,9 +871,7 @@ class ArtisanProfile
     public function publish(): static
     {
         if (!$this->isLegallyReadyForPublication()) {
-            throw new \LogicException(
-                'Le profil artisan ne respecte pas toutes les conditions nécessaires à sa publication.'
-            );
+            throw new \LogicException('Le profil artisan ne respecte pas toutes les conditions nécessaires à sa publication.');
         }
 
         $this->isPublished = true;

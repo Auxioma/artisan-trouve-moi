@@ -34,7 +34,7 @@ class Message
     #[Assert\Length(max: 5000)]
     private ?string $content = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private bool $isSystem = false;
 
@@ -156,7 +156,7 @@ class Message
 
     public function markAsRead(): static
     {
-        if ($this->readAt === null) {
+        if (null === $this->readAt) {
             $this->readAt = new \DateTimeImmutable();
         }
 

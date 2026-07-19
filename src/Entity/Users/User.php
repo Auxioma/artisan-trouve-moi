@@ -7,6 +7,8 @@ namespace App\Entity\Users;
 use App\Entity\Enum\UserStatus;
 use App\Entity\Enum\UserType;
 use App\Repository\User\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -191,12 +193,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?UserProfile $userProfile = null;
 
+    #[ORM\OneToOne(
+        mappedBy: 'user',
+        targetEntity: UserPreferences::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private ?UserPreferences $preferences = null;
+
+    /**
+     * @var Collection<int, UserSession>
+     */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserSession::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $sessions;
+
     public function __construct()
     {
         $now = new \DateTimeImmutable();
 
         $this->createdAt = $now;
         $this->updatedAt = $now;
+        $this->sessions = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -250,7 +267,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         foreach ($roles as $role) {
             $role = strtoupper(trim($role));
 
-            if ($role === '') {
+            if ('' === $role) {
                 continue;
             }
 
@@ -314,10 +331,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $data = (array) $this;
 
         $passwordKey = "\0".self::class."\0password";
+        $avatarFileKey = "\0".self::class."\0avatarFile";
 
         if (isset($data[$passwordKey]) && is_string($data[$passwordKey])) {
             $data[$passwordKey] = hash('crc32c', $data[$passwordKey]);
         }
+
+        /*
+         * Un UploadedFile ne peut pas être sérialisé dans la session Symfony.
+         * VichUploaderBundle continue de gérer avatarFile normalement pendant
+         * la soumission du formulaire, mais le fichier temporaire n'est pas
+         * conservé dans le token de sécurité.
+         */
+        unset($data[$avatarFileKey]);
 
         return $data;
     }
@@ -393,7 +419,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPhoneNumber(?string $phoneNumber): static
     {
-        $this->phoneNumber = $phoneNumber !== null
+        $this->phoneNumber = null !== $phoneNumber
             ? trim($phoneNumber)
             : null;
 
@@ -520,7 +546,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setTermsAcceptedAt(
-        ?\DateTimeImmutable $termsAcceptedAt
+        ?\DateTimeImmutable $termsAcceptedAt,
     ): static {
         $this->termsAcceptedAt = $termsAcceptedAt;
 
@@ -545,7 +571,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setHasAcceptedPrivacyPolicy(
-        bool $hasAcceptedPrivacyPolicy
+        bool $hasAcceptedPrivacyPolicy,
     ): static {
         $this->hasAcceptedPrivacyPolicy = $hasAcceptedPrivacyPolicy;
 
@@ -572,7 +598,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setPrivacyPolicyAcceptedAt(
-        ?\DateTimeImmutable $privacyPolicyAcceptedAt
+        ?\DateTimeImmutable $privacyPolicyAcceptedAt,
     ): static {
         $this->privacyPolicyAcceptedAt = $privacyPolicyAcceptedAt;
 
@@ -585,7 +611,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setPrivacyPolicyVersion(
-        ?string $privacyPolicyVersion
+        ?string $privacyPolicyVersion,
     ): static {
         $this->privacyPolicyVersion = $privacyPolicyVersion;
 
@@ -613,7 +639,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setMarketingConsentAt(
-        ?\DateTimeImmutable $marketingConsentAt
+        ?\DateTimeImmutable $marketingConsentAt,
     ): static {
         $this->marketingConsentAt = $marketingConsentAt;
 
@@ -626,7 +652,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setLastLoginAt(
-        ?\DateTimeImmutable $lastLoginAt
+        ?\DateTimeImmutable $lastLoginAt,
     ): static {
         $this->lastLoginAt = $lastLoginAt;
 
@@ -684,7 +710,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isDeleted(): bool
     {
-        return $this->deletedAt !== null;
+        return null !== $this->deletedAt;
     }
 
     public function canLogin(): bool
@@ -724,10 +750,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setArtisanProfile(
-        ?ArtisanProfile $artisanProfile
+        ?ArtisanProfile $artisanProfile,
     ): static {
         if (
-            $artisanProfile !== null
+            null !== $artisanProfile
             && $artisanProfile->getUser() !== $this
         ) {
             $artisanProfile->setUser($this);
@@ -744,10 +770,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function setCommercialPartnerProfile(
-        ?CommercialPartnerProfile $commercialPartnerProfile
+        ?CommercialPartnerProfile $commercialPartnerProfile,
     ): static {
         if (
-            $commercialPartnerProfile !== null
+            null !== $commercialPartnerProfile
             && $commercialPartnerProfile->getUser() !== $this
         ) {
             $commercialPartnerProfile->setUser($this);
@@ -766,16 +792,69 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserProfile(?UserProfile $userProfile): static
     {
         // unset the owning side of the relation if necessary
-        if ($userProfile === null && $this->userProfile !== null) {
+        if (null === $userProfile && null !== $this->userProfile) {
             $this->userProfile->setUser(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($userProfile !== null && $userProfile->getUser() !== $this) {
+        if (null !== $userProfile && $userProfile->getUser() !== $this) {
             $userProfile->setUser($this);
         }
 
         $this->userProfile = $userProfile;
+
+        return $this;
+    }
+
+    public function getPreferences(): ?UserPreferences
+    {
+        return $this->preferences;
+    }
+
+    public function setPreferences(?UserPreferences $preferences): static
+    {
+        if (null !== $preferences && $preferences->getUser() !== $this) {
+            $preferences->setUser($this);
+        }
+
+        $this->preferences = $preferences;
+
+        return $this;
+    }
+
+    /**
+     * Garantit qu'un objet de préférences existe (valeurs par défaut).
+     */
+    public function getOrCreatePreferences(): UserPreferences
+    {
+        if (null === $this->preferences) {
+            $this->setPreferences(new UserPreferences());
+        }
+
+        return $this->preferences;
+    }
+
+    /**
+     * @return Collection<int, UserSession>
+     */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(UserSession $session): static
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->sessions->add($session);
+            $session->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(UserSession $session): static
+    {
+        $this->sessions->removeElement($session);
 
         return $this;
     }

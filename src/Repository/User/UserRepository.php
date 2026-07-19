@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 final class UserRepository extends ServiceEntityRepository
 {
     public function __construct(
-        ManagerRegistry $registry
+        ManagerRegistry $registry,
     ) {
         parent::__construct($registry, User::class);
     }
@@ -42,7 +42,7 @@ final class UserRepository extends ServiceEntityRepository
 
     public function upgradePassword(
         User $user,
-        string $newHashedPassword
+        string $newHashedPassword,
     ): void {
         $user->setPassword($newHashedPassword);
 
@@ -52,7 +52,7 @@ final class UserRepository extends ServiceEntityRepository
     public function changePassword(
         User $user,
         string $plainPassword,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
     ): void {
         $hashedPassword = $passwordHasher->hashPassword(
             $user,

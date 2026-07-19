@@ -17,7 +17,7 @@ class SecurityController extends AbstractController
         $user = $this->getUser();
 
         if ($user instanceof User) {
-            return $user->getType() === UserType::ARTISAN
+            return UserType::ARTISAN === $user->getType()
                 ? $this->redirectToRoute('app_artisan_account')
                 : $this->redirectToRoute('app_account');
         }
@@ -47,7 +47,7 @@ class SecurityController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        if ($user->getType() === UserType::ARTISAN) {
+        if (UserType::ARTISAN === $user->getType()) {
             return $this->redirectToRoute('app_artisan_account');
         }
 

@@ -14,14 +14,14 @@ use Doctrine\Persistence\ManagerRegistry;
 final class CommercialPartnerProfileRepository extends ServiceEntityRepository
 {
     public function __construct(
-        ManagerRegistry $registry
+        ManagerRegistry $registry,
     ) {
         parent::__construct($registry, CommercialPartnerProfile::class);
     }
 
     public function save(
         CommercialPartnerProfile $partnerProfile,
-        bool $flush = false
+        bool $flush = false,
     ): void {
         $this->getEntityManager()->persist($partnerProfile);
 
@@ -32,7 +32,7 @@ final class CommercialPartnerProfileRepository extends ServiceEntityRepository
 
     public function remove(
         CommercialPartnerProfile $partnerProfile,
-        bool $flush = false
+        bool $flush = false,
     ): void {
         $this->getEntityManager()->remove($partnerProfile);
 

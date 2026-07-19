@@ -58,11 +58,11 @@ class Quote
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private string $totalTtc = '0.00';
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $discountHt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $depositPercent = null;
 
@@ -82,22 +82,22 @@ class Quote
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $sentAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $viewedByClientAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $remindedAt = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $acceptedAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $signedAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 45, nullable: true)]
     private ?string $signatureIp = null;
 
@@ -108,11 +108,11 @@ class Quote
     #[Assert\Length(max: 1000)]
     private ?string $refusalReason = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $pdfFilename = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $termsAndConditions = null;
 
@@ -478,7 +478,7 @@ class Quote
             $totalHt = bcadd($totalHt, $line->getTotalHt(), 2);
         }
 
-        if ($this->discountHt !== null) {
+        if (null !== $this->discountHt) {
             $totalHt = bcsub($totalHt, $this->discountHt, 2);
         }
 
@@ -494,7 +494,7 @@ class Quote
         $this->status = QuoteStatus::SENT;
         $this->sentAt = new \DateTimeImmutable();
 
-        if ($this->validUntil === null) {
+        if (null === $this->validUntil) {
             $this->validUntil = $this->sentAt->modify('+30 days');
         }
 
@@ -503,7 +503,7 @@ class Quote
 
     public function markViewedByClient(): static
     {
-        if ($this->viewedByClientAt === null) {
+        if (null === $this->viewedByClientAt) {
             $this->viewedByClientAt = new \DateTimeImmutable();
         }
 

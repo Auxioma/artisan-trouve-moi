@@ -5,6 +5,7 @@ namespace App\Controller\Client;
 use App\Entity\Users\User;
 use App\Entity\Users\UserProfile;
 use App\Form\Client\ParametreType;
+use App\Repository\Users\UserSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,35 +21,32 @@ final class ParametresController extends AbstractController
     )]
     public function parametres(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserSessionRepository $userSessionRepository,
     ): Response {
         /** @var User|null $parametre */
         $parametre = $this->getUser();
 
         if (!$parametre instanceof User) {
-            throw $this->createAccessDeniedException(
-                'Vous devez être connecté pour accéder à cette page.'
-            );
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
         /*
-         * On crée le profil uniquement s’il n’existe pas déjà.
+         * Adresse : créée uniquement si absente.
          */
-        if ($parametre->getUserProfile() === null) {
+        if (null === $parametre->getUserProfile()) {
             $userProfile = new UserProfile();
-
-            $userProfile->setProviderName(
-                'OPENSTREETMAP_NOMINATIM'
-            );
-
+            $userProfile->setProviderName('OPENSTREETMAP_NOMINATIM');
             $userProfile->setIsDefault(true);
 
-            /*
-             * Très important :
-             * on relie le profil à l’utilisateur.
-             */
             $parametre->setUserProfile($userProfile);
         }
+
+        /*
+         * Préférences : on garantit qu'un objet existe
+         * (valeurs par défaut) pour les anciens comptes.
+         */
+        $parametre->getOrCreatePreferences();
 
         $form = $this->createForm(
             ParametreType::class,
@@ -59,7 +57,7 @@ final class ParametresController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             /*
-             * Avec cascade persist sur la relation OneToOne,
+             * Cascade persist sur les relations OneToOne :
              * persister User suffit.
              */
             $entityManager->persist($parametre);
@@ -70,15 +68,18 @@ final class ParametresController extends AbstractController
                 'Vos paramètres ont été enregistrés.'
             );
 
-            return $this->redirectToRoute(
-                'client_parametres'
-            );
+            return $this->redirectToRoute('client_parametres');
         }
+
+        $sessions = $userSessionRepository->findBy(['user' => $parametre->getId()], ['id' => 'DESC']);
+        $currentToken = $request->getSession()->get('_user_session_token');
 
         return $this->render(
             'client/parametres.html.twig',
             [
                 'form' => $form->createView(),
+                'sessions' => $sessions,
+                'currentSessionToken' => $currentToken,
             ]
         );
     }

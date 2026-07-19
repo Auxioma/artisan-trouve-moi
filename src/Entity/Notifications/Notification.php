@@ -42,11 +42,11 @@ class Notification
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $readAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $emailSentAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $pushSentAt = null;
 
@@ -173,12 +173,12 @@ class Notification
 
     public function isRead(): bool
     {
-        return $this->readAt !== null;
+        return null !== $this->readAt;
     }
 
     public function markAsRead(): static
     {
-        if ($this->readAt === null) {
+        if (null === $this->readAt) {
             $this->readAt = new \DateTimeImmutable();
         }
 

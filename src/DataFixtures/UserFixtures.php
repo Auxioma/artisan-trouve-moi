@@ -21,7 +21,7 @@ final class UserFixtures extends Fixture
     private const PRIVACY_VERSION = '2026.07';
 
     public function __construct(
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -42,7 +42,7 @@ final class UserFixtures extends Fixture
 
     private function loadCustomers(
         ObjectManager $manager,
-        Generator $faker
+        Generator $faker,
     ): void {
         for ($index = 1; $index <= FixtureReferences::CUSTOMER_USER_COUNT; ++$index) {
             $isActive = $index <= 20;
@@ -72,7 +72,7 @@ final class UserFixtures extends Fixture
                     createdAt: $createdAt,
                     updatedAt: $updatedAt,
                     lastLoginAt: $lastLoginAt,
-                    marketingConsent: $index % 3 !== 0
+                    marketingConsent: 0 !== $index % 3
                 )
             );
         }
@@ -80,7 +80,7 @@ final class UserFixtures extends Fixture
 
     private function loadArtisans(
         ObjectManager $manager,
-        Generator $faker
+        Generator $faker,
     ): void {
         for ($index = 1; $index <= FixtureReferences::ARTISAN_USER_COUNT; ++$index) {
             $createdAt = $this->randomDateBetween(
@@ -104,7 +104,7 @@ final class UserFixtures extends Fixture
                     createdAt: $createdAt,
                     updatedAt: $updatedAt,
                     lastLoginAt: $updatedAt->modify(sprintf('+%d hours', $index % 6)),
-                    marketingConsent: $index % 2 === 0
+                    marketingConsent: 0 === $index % 2
                 )
             );
         }
@@ -112,7 +112,7 @@ final class UserFixtures extends Fixture
 
     private function loadCommercialPartners(
         ObjectManager $manager,
-        Generator $faker
+        Generator $faker,
     ): void {
         for (
             $index = 1;
@@ -186,7 +186,7 @@ final class UserFixtures extends Fixture
     private function persistUser(
         ObjectManager $manager,
         string $reference,
-        User $user
+        User $user,
     ): void {
         $manager->persist($user);
         $this->addReference($reference, $user);
@@ -205,7 +205,7 @@ final class UserFixtures extends Fixture
         ?\DateTimeImmutable $lastLoginAt = null,
         bool $marketingConsent = false,
         array $roles = [],
-        string $password = self::DEFAULT_PASSWORD
+        string $password = self::DEFAULT_PASSWORD,
     ): User {
         $user = new User();
         $acceptedAt = $createdAt->modify('+1 day');
@@ -231,7 +231,7 @@ final class UserFixtures extends Fixture
             ->setCountryCode('FR')
             ->setTimezone('Europe/Paris')
             ->setIsVerified($isVerified)
-            ->setIsPhoneVerified($isVerified && $phoneNumber !== null)
+            ->setIsPhoneVerified($isVerified && null !== $phoneNumber)
             ->setHasAcceptedTerms(true)
             ->setTermsAcceptedAt($acceptedAt)
             ->setTermsVersion(self::TERMS_VERSION)
@@ -253,7 +253,7 @@ final class UserFixtures extends Fixture
     private function randomDateBetween(
         Generator $faker,
         string $start,
-        string $end
+        string $end,
     ): \DateTimeImmutable {
         return \DateTimeImmutable::createFromMutable(
             $faker->dateTimeBetween($start, $end)

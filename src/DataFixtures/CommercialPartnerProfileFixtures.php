@@ -95,7 +95,7 @@ final class CommercialPartnerProfileFixtures extends Fixture implements Dependen
     private function persistProfile(
         ObjectManager $manager,
         string $reference,
-        CommercialPartnerProfile $profile
+        CommercialPartnerProfile $profile,
     ): void {
         $manager->persist($profile);
         $this->addReference($reference, $profile);
@@ -112,7 +112,7 @@ final class CommercialPartnerProfileFixtures extends Fixture implements Dependen
         string $commercialArea,
         float $commissionRate,
         \DateTimeImmutable $createdAt,
-        bool $validated
+        bool $validated,
     ): CommercialPartnerProfile {
         $profile = (new CommercialPartnerProfile())
             ->setUser($user)
@@ -162,7 +162,7 @@ final class CommercialPartnerProfileFixtures extends Fixture implements Dependen
     private function randomDateBetween(
         Generator $faker,
         string $start,
-        string $end
+        string $end,
     ): \DateTimeImmutable {
         return \DateTimeImmutable::createFromMutable(
             $faker->dateTimeBetween($start, $end)

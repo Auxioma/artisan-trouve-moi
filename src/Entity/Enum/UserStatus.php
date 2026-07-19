@@ -25,6 +25,6 @@ enum UserStatus: string
 
     public function canLogin(): bool
     {
-        return $this === self::ACTIVE;
+        return self::ACTIVE === $this;
     }
 }

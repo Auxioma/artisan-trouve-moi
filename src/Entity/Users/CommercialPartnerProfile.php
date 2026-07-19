@@ -184,7 +184,7 @@ class CommercialPartnerProfile
 
     public function setBusinessEmail(?string $businessEmail): static
     {
-        $this->businessEmail = $businessEmail !== null
+        $this->businessEmail = null !== $businessEmail
             ? mb_strtolower(trim($businessEmail))
             : null;
 
@@ -210,7 +210,7 @@ class CommercialPartnerProfile
 
     public function setSiren(?string $siren): static
     {
-        $this->siren = $siren !== null
+        $this->siren = null !== $siren
             ? preg_replace('/\D/', '', $siren)
             : null;
 
@@ -224,11 +224,11 @@ class CommercialPartnerProfile
 
     public function setSiret(?string $siret): static
     {
-        $this->siret = $siret !== null
+        $this->siret = null !== $siret
             ? preg_replace('/\D/', '', $siret)
             : null;
 
-        if ($this->siret !== null && strlen($this->siret) >= 9) {
+        if (null !== $this->siret && strlen($this->siret) >= 9) {
             $this->siren = substr($this->siret, 0, 9);
         }
 
@@ -242,7 +242,7 @@ class CommercialPartnerProfile
 
     public function setVatNumber(?string $vatNumber): static
     {
-        $this->vatNumber = $vatNumber !== null
+        $this->vatNumber = null !== $vatNumber
             ? strtoupper(str_replace(' ', '', $vatNumber))
             : null;
 
@@ -291,7 +291,7 @@ class CommercialPartnerProfile
     }
 
     public function setVerificationStatus(
-        VerificationStatus $verificationStatus
+        VerificationStatus $verificationStatus,
     ): static {
         $this->verificationStatus = $verificationStatus;
 
@@ -316,7 +316,7 @@ class CommercialPartnerProfile
     }
 
     public function setContractStartsAt(
-        ?\DateTimeImmutable $contractStartsAt
+        ?\DateTimeImmutable $contractStartsAt,
     ): static {
         $this->contractStartsAt = $contractStartsAt;
 
@@ -329,7 +329,7 @@ class CommercialPartnerProfile
     }
 
     public function setContractEndsAt(
-        ?\DateTimeImmutable $contractEndsAt
+        ?\DateTimeImmutable $contractEndsAt,
     ): static {
         $this->contractEndsAt = $contractEndsAt;
 
@@ -342,7 +342,7 @@ class CommercialPartnerProfile
     }
 
     public function setContractReference(
-        ?string $contractReference
+        ?string $contractReference,
     ): static {
         $this->contractReference = $contractReference;
 
@@ -355,14 +355,12 @@ class CommercialPartnerProfile
     }
 
     public function setCommissionRate(
-        string|float|int $commissionRate
+        string|float|int $commissionRate,
     ): static {
         $rate = (float) $commissionRate;
 
         if ($rate < 0 || $rate > 100) {
-            throw new \InvalidArgumentException(
-                'Le taux de commission doit être compris entre 0 et 100.'
-            );
+            throw new \InvalidArgumentException('Le taux de commission doit être compris entre 0 et 100.');
         }
 
         $this->commissionRate = number_format($rate, 2, '.', '');
@@ -405,14 +403,14 @@ class CommercialPartnerProfile
         }
 
         if (
-            $this->contractStartsAt !== null
+            null !== $this->contractStartsAt
             && $this->contractStartsAt > $now
         ) {
             return false;
         }
 
         if (
-            $this->contractEndsAt !== null
+            null !== $this->contractEndsAt
             && $this->contractEndsAt < $now
         ) {
             return false;

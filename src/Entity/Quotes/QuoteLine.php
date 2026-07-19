@@ -43,7 +43,7 @@ class QuoteLine
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private string $unitPriceHt = '0.00';
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2, nullable: true)]
     private ?string $vatRate = null;
 

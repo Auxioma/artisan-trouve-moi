@@ -60,20 +60,20 @@ class ServiceRequest
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $desiredStartAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $propertyType = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 8, scale: 2, nullable: true)]
     private ?string $surfaceM2 = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 1000)]
     private ?string $accessDetails = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $availabilityNote = null;
 
@@ -103,37 +103,37 @@ class ServiceRequest
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $expiresAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\OneToOne(targetEntity: Quote::class)]
     #[ORM\JoinColumn(nullable: true, unique: true, onDelete: 'SET NULL')]
     private ?Quote $awardedQuote = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     #[Assert\Range(min: 1, max: 10)]
     private int $maxQuotes = 5;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private int $quotesCount = 0;
 
     #[ORM\Column]
     private int $viewsCount = 0;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $cancelledAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Assert\Length(max: 500)]
     private ?string $cancellationReason = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $moderatedAt = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $source = null;
 
@@ -544,7 +544,7 @@ class ServiceRequest
         $this->status = RequestStatus::PUBLISHED;
         $this->publishedAt = new \DateTimeImmutable();
 
-        if ($this->expiresAt === null) {
+        if (null === $this->expiresAt) {
             $this->expiresAt = $this->publishedAt->modify('+30 days');
         }
 
@@ -561,7 +561,7 @@ class ServiceRequest
 
     public function canReceiveMoreQuotes(): bool
     {
-        return $this->status === RequestStatus::PUBLISHED
+        return RequestStatus::PUBLISHED === $this->status
             && $this->quotesCount < $this->maxQuotes;
     }
 

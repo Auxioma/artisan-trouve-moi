@@ -27,7 +27,6 @@ class UserParametreType extends AbstractType
             ->add('providerName', HiddenType::class)
             ->add('latitude', HiddenType::class)
             ->add('longitude', HiddenType::class);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

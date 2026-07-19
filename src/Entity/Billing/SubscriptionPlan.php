@@ -34,42 +34,42 @@ class SubscriptionPlan
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private string $monthlyPriceHt = '0.00';
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $yearlyPriceHt = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private string $vatRate = '20.00';
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private int $trialDays = 30;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     #[Assert\Positive]
     private ?int $maxQuotesPerMonth = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?int $maxCategories = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(nullable: true)]
     private ?int $maxPhotos = null;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private bool $hasUrgentAccess = false;
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column]
     private bool $hasPriorityRanking = false;
 
     #[ORM\Column(type: Types::JSON)]
     private array $features = [];
 
-        // ── Champ optionnel ajouté lors de l’audit SaaS ──
+    // ── Champ optionnel ajouté lors de l’audit SaaS ──
     #[ORM\Column(length: 100, nullable: true)]
     private ?string $providerPriceId = null;
 

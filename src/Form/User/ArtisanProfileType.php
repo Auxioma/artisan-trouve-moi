@@ -17,7 +17,7 @@ class ArtisanProfileType extends AbstractType
 {
     public function buildForm(
         FormBuilderInterface $builder,
-        array $options
+        array $options,
     ): void {
         $builder
             ->add('legalName', TextType::class, [
@@ -64,7 +64,7 @@ class ArtisanProfileType extends AbstractType
     }
 
     public function configureOptions(
-        OptionsResolver $resolver
+        OptionsResolver $resolver,
     ): void {
         $resolver->setDefaults([
             'data_class' => ArtisanProfile::class,

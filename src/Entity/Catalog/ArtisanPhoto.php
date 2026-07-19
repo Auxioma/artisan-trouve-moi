@@ -8,7 +8,6 @@ use App\Entity\Users\ArtisanProfile;
 use App\Repository\Catalog\ArtisanPhotoRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -193,7 +192,7 @@ class ArtisanPhoto
     {
         $this->imageFile = $imageFile;
 
-        if ($imageFile !== null) {
+        if (null !== $imageFile) {
             // Force Doctrine à détecter un changement pour déclencher l’upload Vich.
             $this->updatedAt = new \DateTimeImmutable();
         }

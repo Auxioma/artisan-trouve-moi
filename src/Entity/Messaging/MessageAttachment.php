@@ -7,7 +7,6 @@ namespace App\Entity\Messaging;
 use App\Repository\Messaging\MessageAttachmentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[Vich\Uploadable]
@@ -129,7 +128,7 @@ class MessageAttachment
     {
         $this->documentFile = $documentFile;
 
-        if ($documentFile !== null) {
+        if (null !== $documentFile) {
             // Force Doctrine à détecter un changement pour déclencher l’upload Vich.
             $this->updatedAt = new \DateTimeImmutable();
         }
