@@ -6,20 +6,21 @@ namespace App\DataFixtures;
 
 final class FixtureReferences
 {
-    public const MAX_TOTAL_RECORDS = 104;
+    public const MAX_TOTAL_RECORDS = 200;
 
-    public const USER_COUNT = 64;
-    public const ARTISAN_USER_COUNT = 25;
-    public const COMMERCIAL_PARTNER_USER_COUNT = 10;
-    public const CUSTOMER_USER_COUNT = 25;
+    public const USER_COUNT = 50;
+    public const ARTISAN_USER_COUNT = 15;
+    public const COMMERCIAL_PARTNER_USER_COUNT = 5;
+    public const CUSTOMER_USER_COUNT = 26;
     public const TEST_USER_COUNT = 4;
 
-    public const ARTISAN_PROFILE_COUNT = 25;
-    public const COMMERCIAL_PARTNER_PROFILE_COUNT = 10;
-    public const RESET_PASSWORD_REQUEST_COUNT = 5;
+    public const ARTISAN_PROFILE_COUNT = 15;
+    public const COMMERCIAL_PARTNER_PROFILE_COUNT = 5;
+    public const RESET_PASSWORD_REQUEST_COUNT = 3;
+    public const MARKETPLACE_RECORD_COUNT = 127;
 
-    public const PUBLISHED_ARTISAN_PROFILE_COUNT = 18;
-    public const VALIDATED_COMMERCIAL_PARTNER_PROFILE_COUNT = 6;
+    public const PUBLISHED_ARTISAN_PROFILE_COUNT = 12;
+    public const VALIDATED_COMMERCIAL_PARTNER_PROFILE_COUNT = 4;
 
     public const USER_FIXTURES_SEED = 20260717;
     public const ARTISAN_PROFILE_FIXTURES_SEED = 20260718;
@@ -64,7 +65,8 @@ final class FixtureReferences
         return self::USER_COUNT
             + self::ARTISAN_PROFILE_COUNT
             + self::COMMERCIAL_PARTNER_PROFILE_COUNT
-            + self::RESET_PASSWORD_REQUEST_COUNT;
+            + self::RESET_PASSWORD_REQUEST_COUNT
+            + self::MARKETPLACE_RECORD_COUNT;
     }
 
     public static function assertLimits(): void
@@ -95,7 +97,7 @@ final class FixtureReferences
         }
 
         if (self::totalRecordCount() > self::MAX_TOTAL_RECORDS) {
-            throw new \LogicException('Le jeu de fixtures depasse la limite maximale de 100 donnees.');
+            throw new \LogicException('Le jeu de fixtures depasse la limite maximale de 200 donnees.');
         }
     }
 }
