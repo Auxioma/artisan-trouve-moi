@@ -18,7 +18,7 @@ class SecurityController extends AbstractController
 
         if ($user instanceof User) {
             return UserType::ARTISAN === $user->getType()
-                ? $this->redirectToRoute('app_artisan_account')
+                ? $this->redirectToRoute('app_artisan_dashboard') 
                 : $this->redirectToRoute('app_account');
         }
 
@@ -48,7 +48,7 @@ class SecurityController extends AbstractController
         }
 
         if (UserType::ARTISAN === $user->getType()) {
-            return $this->redirectToRoute('app_artisan_account');
+            return $this->redirectToRoute('app_artisan_dashboard');
         }
 
         return $this->render('security/account.html.twig', [

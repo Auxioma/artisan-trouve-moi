@@ -8,6 +8,8 @@ use App\Entity\Enum\QualificationType;
 use App\Entity\Enum\VerificationStatus;
 use App\Repository\User\ArtisanProfileRepository;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -357,12 +359,28 @@ class ArtisanProfile
     )]
     private ?ArtisanNotificationPreferences $notificationPreferences = null;
 
+
+    /**
+     * @var Collection<int, \App\Entity\Catalog\ArtisanService>
+     */
+    #[ORM\OneToMany(
+        mappedBy: 'artisanProfile',
+        targetEntity: \App\Entity\Catalog\ArtisanService::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[ORM\OrderBy(['position' => 'ASC', 'id' => 'ASC'])]
+    private Collection $services;
+
     public function __construct()
     {
         $now = new \DateTimeImmutable();
 
         $this->createdAt = $now;
         $this->updatedAt = $now;
+        $this->services = new ArrayCollection();
+
+        $this->setNotificationPreferences(new ArtisanNotificationPreferences());
     }
 
     #[ORM\PreUpdate]
@@ -1472,5 +1490,32 @@ class ArtisanProfile
         }
 
         return $this->notificationPreferences;
+    }
+
+    /**
+     * @return Collection<int, \App\Entity\Catalog\ArtisanService>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(\App\Entity\Catalog\ArtisanService $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setArtisanProfile($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(\App\Entity\Catalog\ArtisanService $service): static
+    {
+        if ($this->services->removeElement($service) && $service->getArtisanProfile() === $this) {
+            $service->setArtisanProfile(null);
+        }
+
+        return $this;
     }
 }

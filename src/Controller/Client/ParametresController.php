@@ -69,7 +69,7 @@ final class ParametresController extends AbstractController
                     'message' => $error->getMessage(),
                 ]);
             }
-        }
+        } 
 
         $sessions = $userSessionRepository->findBy(['user' => $parametre->getId()], ['id' => 'DESC']);
         $currentToken = $request->getSession()->get('_user_session_token');

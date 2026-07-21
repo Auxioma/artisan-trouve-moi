@@ -7,6 +7,7 @@ namespace App\Form\Artisan;
 use App\Entity\Users\ArtisanProfile;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
@@ -308,7 +309,7 @@ class ArtisanProfileType extends AbstractType
             ->add('travelRadiusKm', RangeType::class, [
                 'label' => 'Rayon d’intervention',
                 'required' => false,
-                'data' => 25,
+                'empty_data' => '25',
                 'attr' => [
                     'class' => 'form-range',
                     'min' => 5,
@@ -426,7 +427,23 @@ class ArtisanProfileType extends AbstractType
                     'placeholder' => 'Exemple : France métropolitaine',
                 ],
             ])
-        ->add('notificationPreferences', NotificationType::class)
+            ->add('notificationPreferences', NotificationType::class, [
+                'label' => false,
+                'required' => false,
+            ])
+
+            ->add('services', CollectionType::class, [
+                'label' => false,
+                'entry_type' => ServiceType::class,
+                'entry_options' => [
+                    'label' => false,
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'required' => false,
+            ])
         ;
     }
 

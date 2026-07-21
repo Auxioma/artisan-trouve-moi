@@ -40,7 +40,9 @@ use App\Entity\Reviews\Review;
 use App\Entity\Scheduling\Appointment;
 use App\Entity\Users\ArtisanProfile;
 use App\Entity\Users\User;
+use App\Entity\Users\UserPreferences;
 use App\Entity\Users\UserProfile;
+use App\Entity\Users\UserSession;
 use App\Entity\Verification\VerificationDocument;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -71,6 +73,8 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
         $this->loadZones($manager, $artisans);
         $this->loadFavorites($manager, $customers, $artisans);
         $this->loadUserProfiles($manager, $customers, $now);
+        $this->loadUserPreferences($manager, $customers);
+        $this->loadUserSessions($manager, $customers, $now);
 
         $requests = $this->loadRequests($manager, $customers, $categories, $now);
         $this->loadRequestPhotos($manager, $requests);
@@ -236,7 +240,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     /** @param list<ArtisanProfile> $artisans @param list<Category> $categories */
     private function loadServices(ObjectManager $manager, array $artisans, array $categories): void
     {
-        for ($index = 0; $index < 10; ++$index) {
+        for ($index = 0; $index < 8; ++$index) {
             $service = (new ArtisanService())
                 ->setArtisanProfile($artisans[$index])
                 ->setCategory($categories[$index % count($categories)])
@@ -253,7 +257,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     /** @param list<ArtisanProfile> $artisans */
     private function loadArtisanPhotos(ObjectManager $manager, array $artisans, \DateTimeImmutable $now): void
     {
-        for ($index = 0; $index < 5; ++$index) {
+        for ($index = 0; $index < 3; ++$index) {
             $photo = (new ArtisanPhoto())
                 ->setArtisanProfile($artisans[$index])
                 ->setTitle(sprintf('Realisation %d', $index + 1))
@@ -279,7 +283,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
             $manager->persist($zone);
             $zones[] = $zone;
         }
-        for ($index = 0; $index < 8; ++$index) {
+        for ($index = 0; $index < 5; ++$index) {
             $city = (new InterventionCity())->setZone($zones[$index % count($zones)])
                 ->setCityName(['Paris', 'Boulogne-Billancourt', 'Montreuil', 'Versailles'][$index % 4])
                 ->setPostalCode(sprintf('92%03d', 100 + $index))->setPosition($index + 1);
@@ -298,7 +302,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     /** @param list<User> $customers */
     private function loadUserProfiles(ObjectManager $manager, array $customers, \DateTimeImmutable $now): void
     {
-        for ($index = 0; $index < 5; ++$index) {
+        for ($index = 0; $index < 4; ++$index) {
             $profile = (new UserProfile())->setUser($customers[$index])->setType('home')
                 ->setLabel('Domicile')->setAddressLine1(sprintf('%d rue de Paris', $index + 1))
                 ->setPostalCode(sprintf('750%02d', $index + 1))->setCity('Paris')->setCountryCode('FR')
@@ -310,14 +314,57 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
         }
     }
 
+    /** @param list<User> $customers */
+    private function loadUserPreferences(ObjectManager $manager, array $customers): void
+    {
+        for ($index = 0; $index < 5; ++$index) {
+            $manager->persist((new UserPreferences())
+                ->setUser($customers[$index])
+                ->setNewQuotesEnabled(0 !== $index % 2)
+                ->setArtisanMessagesEnabled(true)
+                ->setAppointmentRemindersEnabled(0 !== $index % 3)
+                ->setReviewInvitationsEnabled(true)
+                ->setProfileVisibleToArtisans(0 !== $index % 4)
+                ->setPhoneSharedAfterAcceptance(true));
+        }
+    }
+
+    /** @param list<User> $customers */
+    private function loadUserSessions(ObjectManager $manager, array $customers, \DateTimeImmutable $now): void
+    {
+        foreach (['Chrome - Windows', 'Safari - iPhone', 'Firefox - Windows', 'Chrome - Android'] as $index => $deviceLabel) {
+            $manager->persist((new UserSession())
+                ->setUser($customers[$index])
+                ->setSessionToken(hash('sha256', sprintf('fixture-client-session-%d', $index + 1)))
+                ->setUserAgent('Fixture client browser')
+                ->setDeviceLabel($deviceLabel)
+                ->setIpAddress(sprintf('192.0.2.%d', $index + 10))
+                ->setCity('Paris')
+                ->setCountryCode('FR')
+                ->setCreatedAt($now->modify(sprintf('-%d days', $index + 1)))
+                ->setLastActivityAt($now->modify(sprintf('-%d hours', $index + 1))));
+        }
+    }
+
     /** @param list<User> $customers @param list<Category> $categories @return list<ServiceRequest> */
     private function loadRequests(ObjectManager $manager, array $customers, array $categories, \DateTimeImmutable $now): array
     {
         $requests = [];
-        for ($index = 0; $index < 8; ++$index) {
+        $statuses = [
+            RequestStatus::AWARDED,
+            RequestStatus::AWARDED,
+            RequestStatus::COMPLETED,
+            RequestStatus::COMPLETED,
+            RequestStatus::EXPIRED,
+            RequestStatus::CANCELLED,
+            RequestStatus::DRAFT,
+            RequestStatus::PUBLISHED,
+        ];
+
+        for ($index = 0; $index < count($statuses); ++$index) {
             $request = (new ServiceRequest())->setClient($customers[$index])->setCategory($categories[$index])
                 ->setTitle(sprintf('Demande de travaux %d', $index + 1))->setDescription('Besoin de travaux avec visite technique.')
-                ->setStatus(RequestStatus::PUBLISHED)->setIsUrgent(0 === $index % 3)
+                ->setStatus($statuses[$index])->setIsUrgent(0 === $index % 3)
                 ->setBudgetMin('500.00')->setBudgetMax('2500.00')->setDesiredStartAt($now->modify('+1 month'))
                 ->setPropertyType('Appartement')->setSurfaceM2('65.00')->setAddressLine1('12 rue des Clients')
                 ->setPostalCode(sprintf('750%02d', $index + 1))->setCity('Paris')->setPublishedAt($now)
@@ -344,9 +391,20 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     private function loadQuotes(ObjectManager $manager, array $requests, array $artisans, \DateTimeImmutable $now): array
     {
         $quotes = [];
-        for ($index = 0; $index < 8; ++$index) {
+        $statuses = [
+            QuoteStatus::ACCEPTED,
+            QuoteStatus::ACCEPTED,
+            QuoteStatus::ACCEPTED,
+            QuoteStatus::ACCEPTED,
+            QuoteStatus::REFUSED,
+            QuoteStatus::EXPIRED,
+            QuoteStatus::DRAFT,
+            QuoteStatus::SENT,
+        ];
+
+        for ($index = 0; $index < count($statuses); ++$index) {
             $quote = (new Quote())->setServiceRequest($requests[$index])->setArtisanProfile($artisans[$index])
-                ->setReference(sprintf('DEV-2026-%04d', $index + 1))->setStatus(QuoteStatus::SENT)
+                ->setReference(sprintf('DEV-2026-%04d', $index + 1))->setStatus($statuses[$index])
                 ->setMessage('Proposition detaillee pour votre projet.')->setVatRate('20.00')
                 ->setTotalHt('1000.00')->setTotalVat('200.00')->setTotalTtc('1200.00')
                 ->setWorkDurationDays(4)->setCanStartAt($now->modify('+14 days'))->setWarrantyMonths(24)
@@ -361,7 +419,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     /** @param list<Quote> $quotes */
     private function loadQuoteLines(ObjectManager $manager, array $quotes): void
     {
-        for ($index = 0; $index < 12; ++$index) {
+        for ($index = 0; $index < 9; ++$index) {
             $manager->persist((new QuoteLine())->setQuote($quotes[$index % count($quotes)])
                 ->setPosition($index + 1)->setLabel(sprintf('Poste de travaux %d', $index + 1))
                 ->setDescription('Fourniture et pose.')->setQuantity('1.00')->setUnit('forfait')
@@ -373,10 +431,17 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     private function loadProjects(ObjectManager $manager, array $quotes, array $customers, array $artisans, \DateTimeImmutable $now): array
     {
         $projects = [];
-        for ($index = 0; $index < 4; ++$index) {
+        $statuses = [
+            ProjectStatus::PLANNED,
+            ProjectStatus::IN_PROGRESS,
+            ProjectStatus::COMPLETED,
+            ProjectStatus::CANCELLED,
+        ];
+
+        for ($index = 0; $index < count($statuses); ++$index) {
             $project = (new Project())->setQuote($quotes[$index])->setClient($customers[$index])
                 ->setArtisanProfile($artisans[$index])->setReference(sprintf('PRJ-2026-%04d', $index + 1))
-                ->setTitle(sprintf('Chantier %d', $index + 1))->setStatus(ProjectStatus::IN_PROGRESS)
+                ->setTitle(sprintf('Chantier %d', $index + 1))->setStatus($statuses[$index])
                 ->setProgressPercent(25 + $index * 15)->setAmountTtc('1200.00')->setAddressLine1('12 rue des Clients')
                 ->setPostalCode('75001')->setCity('Paris')->setStartsAt($now->modify('-5 days'))
                 ->setEndsAt($now->modify('+15 days'))->setActualStartedAt($now->modify('-5 days'));
@@ -411,11 +476,17 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     /** @param list<Project> $projects @param list<ServiceRequest> $requests @param list<User> $customers @param list<ArtisanProfile> $artisans */
     private function loadAppointments(ObjectManager $manager, array $projects, array $requests, array $customers, array $artisans, \DateTimeImmutable $now): void
     {
-        for ($index = 0; $index < 3; ++$index) {
+        $statuses = [
+            AppointmentStatus::PROPOSED,
+            AppointmentStatus::CONFIRMED,
+            AppointmentStatus::COMPLETED,
+        ];
+
+        for ($index = 0; $index < count($statuses); ++$index) {
             $startsAt = $now->modify(sprintf('+%d days', $index + 1));
             $manager->persist((new Appointment())->setArtisanProfile($artisans[$index])->setClient($customers[$index])
                 ->setProject($projects[$index])->setServiceRequest($requests[$index])
-                ->setType(AppointmentType::TECHNICAL_VISIT)->setStatus(AppointmentStatus::CONFIRMED)
+                ->setType(AppointmentType::TECHNICAL_VISIT)->setStatus($statuses[$index])
                 ->setTitle('Visite technique')->setStartsAt($startsAt)->setEndsAt($startsAt->modify('+1 hour'))
                 ->setLocation('12 rue des Clients, Paris')->setNotes('Rendez-vous confirme.'));
         }
@@ -455,7 +526,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     /** @param list<User> $customers */
     private function loadNotifications(ObjectManager $manager, array $customers, \DateTimeImmutable $now): void
     {
-        foreach ([NotificationType::NEW_REQUEST, NotificationType::NEW_QUOTE, NotificationType::NEW_MESSAGE, NotificationType::SYSTEM] as $index => $type) {
+        foreach (NotificationType::cases() as $index => $type) {
             $manager->persist((new Notification())->setUser($customers[$index])->setType($type)
                 ->setTitle('Notification de demonstration')->setContent('Une nouvelle action est disponible.')
                 ->setLinkUrl('/')->setEmailSentAt($now));
@@ -466,7 +537,7 @@ final class MarketplaceFixtures extends Fixture implements DependentFixtureInter
     private function loadVerificationDocuments(ObjectManager $manager, array $artisans, \DateTimeImmutable $now): void
     {
         $types = [VerificationDocumentType::IDENTITY, VerificationDocumentType::KBIS, VerificationDocumentType::RNE_EXTRACT, VerificationDocumentType::DECENNIAL_INSURANCE, VerificationDocumentType::QUALIFICATION];
-        for ($index = 0; $index < 5; ++$index) {
+        for ($index = 0; $index < 3; ++$index) {
             $manager->persist((new VerificationDocument())->setArtisanProfile($artisans[$index])->setType($types[$index])
                 ->setStatus(VerificationStatus::VERIFIED)->setSubmittedAt($now->modify('-10 days'))
                 ->setReviewedAt($now->modify('-5 days'))->setReviewedBy($artisans[0]->getUser())

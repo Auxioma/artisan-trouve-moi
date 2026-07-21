@@ -7,6 +7,7 @@ namespace App\Controller\Artisan;
 use App\Entity\Users\ArtisanProfile;
 use App\Entity\Users\User;
 use App\Form\Artisan\ParametreArtisanType;
+use App\Repository\Users\UserSessionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,52 +26,23 @@ final class ParametresController extends AbstractController
     public function __invoke(
         Request $request,
         EntityManagerInterface $entityManager,
+        UserSessionRepository $userSessionRepository,
     ): Response {
         /** @var User $artisan */
         $artisan = $this->getUser();
-
-        /*
-         * ============================================================
-         * CRÉATION DU PROFIL ARTISAN SI NÉCESSAIRE
-         * ============================================================
-         */
 
         $profile = $artisan->getArtisanProfile();
 
         if (null === $profile) {
             $profile = new ArtisanProfile();
 
-            /*
-             * setArtisanProfile() synchronise déjà normalement
-             * le côté ArtisanProfile::user.
-             */
             $artisan->setArtisanProfile($profile);
         }
 
-        /*
-         * ============================================================
-         * CRÉATION DES PRÉFÉRENCES DE NOTIFICATION SI NÉCESSAIRE
-         * ============================================================
-         *
-         * Cette méthode crée ArtisanNotificationPreferences
-         * et configure automatiquement la relation OneToOne.
-         */
         $notificationPreferences =
             $profile->getOrCreateNotificationPreferences();
 
-        /*
-         * ============================================================
-         * FORMULAIRE PRINCIPAL
-         * ============================================================
-         *
-         * ParametreArtisanType reçoit l'entité User.
-         *
-         * Sa structure est normalement :
-         *
-         * User
-         * └── artisanProfile
-         *     └── notificationPreferences
-         */
+
         $form = $this->createForm(
             ParametreArtisanType::class,
             $artisan
@@ -79,17 +51,6 @@ final class ParametresController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /*
-             * Grâce aux cascades :
-             *
-             * User
-             *   cascade persist vers ArtisanProfile
-             *
-             * ArtisanProfile
-             *   cascade persist vers ArtisanNotificationPreferences
-             *
-             * Doctrine enregistrera les trois entités.
-             */
             $entityManager->persist($artisan);
             $entityManager->flush();
 
@@ -103,11 +64,16 @@ final class ParametresController extends AbstractController
             );
         }
 
+        $sessions = $userSessionRepository->findBy(['user' => $artisan->getId()], ['id' => 'DESC']);
+        $currentToken = $request->getSession()->get('_user_session_token');
+
         return $this->render('artisan/parametres.html.twig', [
             'form' => $form->createView(),
             'artisan' => $artisan,
             'profile' => $profile,
             'notificationPreferences' => $notificationPreferences,
+            'sessions' => $sessions,
+            'currentSessionToken' => $currentToken,
         ]);
     }
 }

@@ -24,7 +24,7 @@ class ArtisanService
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: ArtisanProfile::class)]
+    #[ORM\ManyToOne(targetEntity: ArtisanProfile::class, inversedBy: 'services')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?ArtisanProfile $artisanProfile = null;
 
