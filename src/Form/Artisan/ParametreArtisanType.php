@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Form\Client;
+namespace App\Form\Artisan;
 
 use App\Entity\Users\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class ParametreType extends AbstractType
+class ParametreArtisanType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -18,12 +17,6 @@ class ParametreType extends AbstractType
             ->add('firstName')
             ->add('lastName')
             ->add('phoneNumber')
-            ->add('marketingConsent', CheckboxType::class, [
-                'label' => 'Conseils et inspirations TrouveMoi',
-                'required' => false,
-            ])
-            ->add('userProfile', UserParametreType::class)
-            ->add('preferences', UserPreferenceType::class)
             ->add('avatarFile', VichImageType::class, [
                 'label' => 'Photo de profil',
                 'required' => false,
@@ -32,6 +25,7 @@ class ParametreType extends AbstractType
                 'image_uri' => true,
                 'asset_helper' => true,
             ])
+            ->add('artisanProfile', ArtisanProfileType::class)
         ;
     }
 

@@ -217,6 +217,120 @@ class ArtisanProfile
     private VerificationStatus $decennialInsuranceVerificationStatus =
         VerificationStatus::NOT_SUBMITTED;
 
+    /*
+     * Coordonnées postales et géographiques OpenStreetMap / Nominatim.
+     */
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    private ?string $houseNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $road = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $addressComplement = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $neighbourhood = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $suburb = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $cityDistrict = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $hamlet = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $village = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $town = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $municipality = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $county = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $stateDistrict = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $state = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $region = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
+    private ?string $postalCode = null;
+
+    #[ORM\Column(length: 180, nullable: true)]
+    #[Assert\Length(max: 180)]
+    private ?string $country = null;
+
+    #[ORM\Column(length: 2, nullable: true)]
+    #[Assert\Country]
+    private ?string $countryCode = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    #[Assert\Length(max: 500)]
+    private ?string $osmDisplayName = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
+    private ?string $latitude = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
+    private ?string $longitude = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $osmId = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Choice(choices: ['node', 'way', 'relation'])]
+    private ?string $osmType = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
+    private ?string $osmCategory = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Length(max: 100)]
+    private ?string $osmPlaceType = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nominatimPlaceId = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
+    private ?int $travelRadiusKm = null;
+
+    #[ORM\Column]
+    private bool $worksAtCustomerAddress = true;
+
+    #[ORM\Column]
+    private bool $receivesCustomers = false;
+
     #[ORM\Column]
     private bool $isPublished = false;
 
@@ -234,6 +348,14 @@ class ArtisanProfile
 
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
+
+    #[ORM\OneToOne(
+        mappedBy: 'artisanProfile',
+        targetEntity: ArtisanNotificationPreferences::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    private ?ArtisanNotificationPreferences $notificationPreferences = null;
 
     public function __construct()
     {
@@ -920,6 +1042,380 @@ class ArtisanProfile
         return $this->rejectionReason;
     }
 
+    public function getHouseNumber(): ?string
+    {
+        return $this->houseNumber;
+    }
+
+    public function setHouseNumber(?string $houseNumber): static
+    {
+        $this->houseNumber = null !== $houseNumber ? trim($houseNumber) : null;
+
+        return $this;
+    }
+
+    public function getRoad(): ?string
+    {
+        return $this->road;
+    }
+
+    public function setRoad(?string $road): static
+    {
+        $this->road = null !== $road ? trim($road) : null;
+
+        return $this;
+    }
+
+    public function getAddressComplement(): ?string
+    {
+        return $this->addressComplement;
+    }
+
+    public function setAddressComplement(?string $addressComplement): static
+    {
+        $this->addressComplement = null !== $addressComplement ? trim($addressComplement) : null;
+
+        return $this;
+    }
+
+    public function getNeighbourhood(): ?string
+    {
+        return $this->neighbourhood;
+    }
+
+    public function setNeighbourhood(?string $neighbourhood): static
+    {
+        $this->neighbourhood = null !== $neighbourhood ? trim($neighbourhood) : null;
+
+        return $this;
+    }
+
+    public function getSuburb(): ?string
+    {
+        return $this->suburb;
+    }
+
+    public function setSuburb(?string $suburb): static
+    {
+        $this->suburb = null !== $suburb ? trim($suburb) : null;
+
+        return $this;
+    }
+
+    public function getCityDistrict(): ?string
+    {
+        return $this->cityDistrict;
+    }
+
+    public function setCityDistrict(?string $cityDistrict): static
+    {
+        $this->cityDistrict = null !== $cityDistrict ? trim($cityDistrict) : null;
+
+        return $this;
+    }
+
+    public function getHamlet(): ?string
+    {
+        return $this->hamlet;
+    }
+
+    public function setHamlet(?string $hamlet): static
+    {
+        $this->hamlet = null !== $hamlet ? trim($hamlet) : null;
+
+        return $this;
+    }
+
+    public function getVillage(): ?string
+    {
+        return $this->village;
+    }
+
+    public function setVillage(?string $village): static
+    {
+        $this->village = null !== $village ? trim($village) : null;
+
+        return $this;
+    }
+
+    public function getTown(): ?string
+    {
+        return $this->town;
+    }
+
+    public function setTown(?string $town): static
+    {
+        $this->town = null !== $town ? trim($town) : null;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = null !== $city ? trim($city) : null;
+
+        return $this;
+    }
+
+    public function getMunicipality(): ?string
+    {
+        return $this->municipality;
+    }
+
+    public function setMunicipality(?string $municipality): static
+    {
+        $this->municipality = null !== $municipality ? trim($municipality) : null;
+
+        return $this;
+    }
+
+    public function getCounty(): ?string
+    {
+        return $this->county;
+    }
+
+    public function setCounty(?string $county): static
+    {
+        $this->county = null !== $county ? trim($county) : null;
+
+        return $this;
+    }
+
+    public function getStateDistrict(): ?string
+    {
+        return $this->stateDistrict;
+    }
+
+    public function setStateDistrict(?string $stateDistrict): static
+    {
+        $this->stateDistrict = null !== $stateDistrict ? trim($stateDistrict) : null;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): static
+    {
+        $this->state = null !== $state ? trim($state) : null;
+
+        return $this;
+    }
+
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?string $region): static
+    {
+        $this->region = null !== $region ? trim($region) : null;
+
+        return $this;
+    }
+
+    public function getPostalCode(): ?string
+    {
+        return $this->postalCode;
+    }
+
+    public function setPostalCode(?string $postalCode): static
+    {
+        $this->postalCode = null !== $postalCode ? strtoupper(trim($postalCode)) : null;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?string $country): static
+    {
+        $this->country = null !== $country ? trim($country) : null;
+
+        return $this;
+    }
+
+    public function getCountryCode(): ?string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(?string $countryCode): static
+    {
+        $this->countryCode = null !== $countryCode ? strtoupper(trim($countryCode)) : null;
+
+        return $this;
+    }
+
+    public function getOsmDisplayName(): ?string
+    {
+        return $this->osmDisplayName;
+    }
+
+    public function setOsmDisplayName(?string $osmDisplayName): static
+    {
+        $this->osmDisplayName = null !== $osmDisplayName ? trim($osmDisplayName) : null;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(string|float|int|null $latitude): static
+    {
+        $this->latitude = null !== $latitude ? number_format((float) $latitude, 7, '.', '') : null;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(string|float|int|null $longitude): static
+    {
+        $this->longitude = null !== $longitude ? number_format((float) $longitude, 7, '.', '') : null;
+
+        return $this;
+    }
+
+    public function getOsmId(): ?int
+    {
+        return $this->osmId;
+    }
+
+    public function setOsmId(?int $osmId): static
+    {
+        $this->osmId = $osmId;
+
+        return $this;
+    }
+
+    public function getOsmType(): ?string
+    {
+        return $this->osmType;
+    }
+
+    public function setOsmType(?string $osmType): static
+    {
+        $this->osmType = null !== $osmType ? mb_strtolower(trim($osmType)) : null;
+
+        return $this;
+    }
+
+    public function getOsmCategory(): ?string
+    {
+        return $this->osmCategory;
+    }
+
+    public function setOsmCategory(?string $osmCategory): static
+    {
+        $this->osmCategory = null !== $osmCategory ? trim($osmCategory) : null;
+
+        return $this;
+    }
+
+    public function getOsmPlaceType(): ?string
+    {
+        return $this->osmPlaceType;
+    }
+
+    public function setOsmPlaceType(?string $osmPlaceType): static
+    {
+        $this->osmPlaceType = null !== $osmPlaceType ? trim($osmPlaceType) : null;
+
+        return $this;
+    }
+
+    public function getNominatimPlaceId(): ?int
+    {
+        return $this->nominatimPlaceId;
+    }
+
+    public function setNominatimPlaceId(?int $nominatimPlaceId): static
+    {
+        $this->nominatimPlaceId = $nominatimPlaceId;
+
+        return $this;
+    }
+
+    public function getTravelRadiusKm(): ?int
+    {
+        return $this->travelRadiusKm;
+    }
+
+    public function setTravelRadiusKm(?int $travelRadiusKm): static
+    {
+        $this->travelRadiusKm = null !== $travelRadiusKm ? max(0, $travelRadiusKm) : null;
+
+        return $this;
+    }
+
+    public function worksAtCustomerAddress(): bool
+    {
+        return $this->worksAtCustomerAddress;
+    }
+
+    public function setWorksAtCustomerAddress(bool $worksAtCustomerAddress): static
+    {
+        $this->worksAtCustomerAddress = $worksAtCustomerAddress;
+
+        return $this;
+    }
+
+    public function receivesCustomers(): bool
+    {
+        return $this->receivesCustomers;
+    }
+
+    public function setReceivesCustomers(bool $receivesCustomers): static
+    {
+        $this->receivesCustomers = $receivesCustomers;
+
+        return $this;
+    }
+
+    public function getLocality(): ?string
+    {
+        return $this->city
+            ?? $this->town
+            ?? $this->village
+            ?? $this->municipality
+            ?? $this->hamlet;
+    }
+
+    public function getShortAddress(): string
+    {
+        $street = trim(sprintf('%s %s', $this->houseNumber ?? '', $this->road ?? ''));
+
+        return implode(', ', array_filter([
+            '' !== $street ? $street : null,
+            $this->postalCode,
+            $this->getLocality(),
+            $this->country,
+        ]));
+    }
+
+    public function hasCoordinates(): bool
+    {
+        return null !== $this->latitude && null !== $this->longitude;
+    }
+
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
@@ -942,5 +1438,39 @@ class ArtisanProfile
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function getNotificationPreferences(): ?ArtisanNotificationPreferences
+    {
+        return $this->notificationPreferences;
+    }
+
+    public function setNotificationPreferences(
+        ?ArtisanNotificationPreferences $notificationPreferences,
+    ): static {
+        if (
+            null !== $notificationPreferences
+            && $notificationPreferences->getArtisanProfile() !== $this
+        ) {
+            $notificationPreferences->setArtisanProfile($this);
+        }
+
+        $this->notificationPreferences = $notificationPreferences;
+
+        return $this;
+    }
+
+    /**
+     * Retourne les préférences existantes ou les crée avec
+     * les valeurs par défaut.
+     */
+    public function getOrCreateNotificationPreferences(): ArtisanNotificationPreferences
+    {
+        if (null === $this->notificationPreferences) {
+            $preferences = new ArtisanNotificationPreferences();
+            $this->setNotificationPreferences($preferences);
+        }
+
+        return $this->notificationPreferences;
     }
 }
