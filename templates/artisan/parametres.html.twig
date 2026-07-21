@@ -329,6 +329,24 @@
     color: var(--dash-muted, #777770);
 }
 
+
+
+/* Champs obligatoires non remplis avant un changement de section */
+.param-panneau .form-control.is-invalid,
+.param-panneau .form-select.is-invalid,
+.param-panneau textarea.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, .12) !important;
+    background-image: none;
+}
+
+.param-panneau .form-control.is-invalid:focus,
+.param-panneau .form-select.is-invalid:focus,
+.param-panneau textarea.is-invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, .18) !important;
+}
+
 @media (max-width: 575.98px) {
     .service-card__corps    { padding: .875rem; }
     .service-card__meta     { display: none; }
@@ -681,15 +699,15 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-4">
                         <label class="form-label" for="mdp-actuel">Mot de passe actuel</label>
-                        <input type="password" class="form-control" id="mdp-actuel" autocomplete="current-password" placeholder="••••••••">
+                        <input type="password" class="form-control" id="mdp-actuel" autocomplete="current-password" placeholder="••••••••" data-navigation-optional>
                     </div>
                     <div class="col-12 col-md-4">
                         <label class="form-label" for="mdp-nouveau">Nouveau mot de passe</label>
-                        <input type="password" class="form-control" id="mdp-nouveau" autocomplete="new-password" placeholder="8 caractères minimum">
+                        <input type="password" class="form-control" id="mdp-nouveau" autocomplete="new-password" placeholder="8 caractères minimum" data-navigation-optional>
                     </div>
                     <div class="col-12 col-md-4">
                         <label class="form-label" for="mdp-confirme">Confirmation</label>
-                        <input type="password" class="form-control" id="mdp-confirme" autocomplete="new-password" placeholder="Retapez le mot de passe">
+                        <input type="password" class="form-control" id="mdp-confirme" autocomplete="new-password" placeholder="Retapez le mot de passe" data-navigation-optional>
                     </div>
                 </div>
                 <button class="btn btn-dash-ghost mt-3" type="button">
@@ -882,11 +900,142 @@ adrBtn?.addEventListener('click',async()=>{
 });
 f.addressSearch?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adrBtn?.click();}});
 
-document.querySelectorAll('.param-nav__lien').forEach(l=>{
-    l.addEventListener('click',()=>{
-        document.querySelectorAll('.param-nav__lien').forEach(x=>x.classList.toggle('actif',x===l));
-        document.querySelectorAll('.param-panneau').forEach(p=>p.classList.toggle('actif',p.id===`panneau-${l.dataset.panneau}`));
-        if(l.dataset.panneau==='zone'&&map)setTimeout(()=>map.invalidateSize(),100);
+/**
+ * Retourne true uniquement si tous les champs visibles du panneau actif
+ * sont remplis. Les champs cachés, désactivés, en lecture seule, les fichiers,
+ * les cases à cocher, les boutons radio et les champs explicitement facultatifs
+ * sont ignorés.
+ */
+const validateCurrentPanel = () => {
+    const currentPanel = document.querySelector('.param-panneau.actif');
+
+    if (!currentPanel) return true;
+
+    const fields = currentPanel.querySelectorAll(
+        'input:not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea'
+    );
+
+    let firstInvalidField = null;
+
+    fields.forEach(field => {
+        const style = window.getComputedStyle(field);
+        const isVisible =
+            field.getClientRects().length > 0 &&
+            style.display !== 'none' &&
+            style.visibility !== 'hidden';
+
+        const isIgnored =
+            field.disabled ||
+            field.readOnly ||
+            field.hasAttribute('data-navigation-optional') ||
+            !isVisible;
+
+        if (isIgnored) {
+            field.classList.remove('is-invalid');
+            field.removeAttribute('aria-invalid');
+            return;
+        }
+
+        const value = String(field.value ?? '').trim();
+        const isEmpty = value === '';
+
+        if (isEmpty) {
+            field.classList.add('is-invalid');
+            field.setAttribute('aria-invalid', 'true');
+
+            if (!firstInvalidField) {
+                firstInvalidField = field;
+            }
+        } else {
+            field.classList.remove('is-invalid');
+            field.removeAttribute('aria-invalid');
+        }
+    });
+
+    if (!firstInvalidField) return true;
+
+    firstInvalidField.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
+
+    window.setTimeout(() => firstInvalidField.focus(), 300);
+
+    return false;
+};
+
+/**
+ * Retire immédiatement l'erreur lorsque le champ est rempli.
+ */
+document.addEventListener('input', event => {
+    const field = event.target;
+
+    if (!(field instanceof HTMLInputElement) &&
+        !(field instanceof HTMLSelectElement) &&
+        !(field instanceof HTMLTextAreaElement)) {
+        return;
+    }
+
+    if (!field.classList.contains('is-invalid')) return;
+
+    if (String(field.value ?? '').trim() !== '') {
+        field.classList.remove('is-invalid');
+        field.removeAttribute('aria-invalid');
+    }
+});
+
+document.addEventListener('change', event => {
+    const field = event.target;
+
+    if (!(field instanceof HTMLInputElement) &&
+        !(field instanceof HTMLSelectElement) &&
+        !(field instanceof HTMLTextAreaElement)) {
+        return;
+    }
+
+    if (!field.classList.contains('is-invalid')) return;
+
+    if (String(field.value ?? '').trim() !== '') {
+        field.classList.remove('is-invalid');
+        field.removeAttribute('aria-invalid');
+    }
+});
+
+/**
+ * Navigation entre les panneaux.
+ */
+document.querySelectorAll('.param-nav__lien').forEach(link => {
+    link.addEventListener('click', event => {
+        event.preventDefault();
+
+        const currentLink = document.querySelector('.param-nav__lien.actif');
+
+        if (currentLink === link) return;
+
+        if (!validateCurrentPanel()) return;
+
+        document.querySelectorAll('.param-nav__lien').forEach(navLink => {
+            navLink.classList.toggle('actif', navLink === link);
+        });
+
+        document.querySelectorAll('.param-panneau').forEach(panel => {
+            panel.classList.toggle(
+                'actif',
+                panel.id === `panneau-${link.dataset.panneau}`
+            );
+        });
+
+        if (link.dataset.panneau === 'zone') {
+            initMap();
+
+            window.setTimeout(() => {
+                map?.invalidateSize();
+
+                if (h.latitude?.value && h.longitude?.value) {
+                    updMap(h.latitude.value, h.longitude.value);
+                }
+            }, 150);
+        }
     });
 });
 

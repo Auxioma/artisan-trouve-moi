@@ -42,14 +42,6 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        /*
-         * Les noms doivent correspondre exactement aux attributs "name"
-         * du formulaire Twig :
-         *
-         * name="_username"
-         * name="_password"
-         * name="_csrf_token"
-         */
         $email = trim(
             $request->getPayload()->getString('_username')
         );
@@ -81,6 +73,10 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         TokenInterface $token,
         string $firewallName,
     ): ?Response {
+        /*
+         * Si l’utilisateur tentait d’accéder à une page protégée
+         * avant la connexion, on l’y renvoie en priorité.
+         */
         $targetPath = $this->getTargetPath(
             $request->getSession(),
             $firewallName
@@ -90,10 +86,29 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
+        /*
+         * Redirection selon le rôle, du plus privilégié
+         * au moins privilégié :
+         *   ROLE_ADMIN   → back-office EasyAdmin
+         *   ROLE_ARTISAN → espace prestataire
+         *   ROLE_USER    → espace client (défaut)
+         */
+        $roles = $token->getRoleNames();
+
+        if (\in_array('ROLE_ADMIN', $roles, true)) {
+            return new RedirectResponse(
+                $this->urlGenerator->generate('admin')
+            );
+        }
+
+        if (\in_array('ROLE_ARTISAN', $roles, true)) {
+            return new RedirectResponse(
+                $this->urlGenerator->generate('app_artisan_dashboard')
+            );
+        }
+
         return new RedirectResponse(
-            $this->urlGenerator->generate(
-                'client_dashboard'
-            )
+            $this->urlGenerator->generate('client_dashboard')
         );
     }
 
