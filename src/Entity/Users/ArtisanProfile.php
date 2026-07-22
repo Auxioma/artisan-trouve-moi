@@ -305,7 +305,7 @@ class ArtisanProfile
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 7, nullable: true)]
     private ?string $longitude = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: Types::BIGINT, nullable: true)]
     private ?int $osmId = null;
 
     #[ORM\Column(length: 20, nullable: true)]
