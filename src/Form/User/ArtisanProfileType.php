@@ -6,6 +6,7 @@ namespace App\Form\User;
 
 use App\Entity\Users\ArtisanProfile;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -60,6 +61,130 @@ class ArtisanProfileType extends AbstractType
                     ),
                 ],
             ])
+
+            ->add('commercialName', HiddenType::class, [
+    'required' => false,
+])
+
+->add('siren', HiddenType::class, [
+    'required' => false,
+])
+
+->add('vatNumber', HiddenType::class, [
+    'required' => false,
+])
+
+->add('apeCode', HiddenType::class, [
+    'required' => false,
+])
+
+->add('legalForm', HiddenType::class, [
+    'required' => false,
+])
+
+->add('houseNumber', HiddenType::class, [
+    'required' => false,
+])
+
+->add('road', HiddenType::class, [
+    'required' => false,
+])
+
+->add('addressComplement', HiddenType::class, [
+    'required' => false,
+])
+
+->add('neighbourhood', HiddenType::class, [
+    'required' => false,
+])
+
+->add('suburb', HiddenType::class, [
+    'required' => false,
+])
+
+->add('cityDistrict', HiddenType::class, [
+    'required' => false,
+])
+
+->add('hamlet', HiddenType::class, [
+    'required' => false,
+])
+
+->add('village', HiddenType::class, [
+    'required' => false,
+])
+
+->add('town', HiddenType::class, [
+    'required' => false,
+])
+
+->add('city', HiddenType::class, [
+    'required' => false,
+])
+
+->add('municipality', HiddenType::class, [
+    'required' => false,
+])
+
+->add('county', HiddenType::class, [
+    'required' => false,
+])
+
+->add('stateDistrict', HiddenType::class, [
+    'required' => false,
+])
+
+->add('state', HiddenType::class, [
+    'required' => false,
+])
+
+->add('region', HiddenType::class, [
+    'required' => false,
+])
+
+->add('postalCode', HiddenType::class, [
+    'required' => false,
+])
+
+->add('country', HiddenType::class, [
+    'required' => false,
+])
+
+->add('countryCode', HiddenType::class, [
+    'required' => false,
+])
+
+->add('osmDisplayName', HiddenType::class, [
+    'required' => false,
+])
+
+->add('latitude', HiddenType::class, [
+    'required' => false,
+])
+
+->add('longitude', HiddenType::class, [
+    'required' => false,
+])
+
+->add('osmId', HiddenType::class, [
+    'required' => false,
+])
+
+->add('osmType', HiddenType::class, [
+    'required' => false,
+])
+
+->add('osmCategory', HiddenType::class, [
+    'required' => false,
+])
+
+->add('osmPlaceType', HiddenType::class, [
+    'required' => false,
+])
+
+->add('nominatimPlaceId', HiddenType::class, [
+    'required' => false,
+])
         ;
     }
 

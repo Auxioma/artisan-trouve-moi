@@ -140,20 +140,14 @@ class RegistrationFormType extends AbstractType
                         message: 'Vous devez accepter les conditions générales.',
                     ),
                 ],
-            ]);
+            ])
 
-        /*
-         * À l’affichage, le champ existe pour que Twig puisse
-         * afficher les champs professionnels.
-         *
-         * empty_data => null empêche la création d’un profil
-         * artisan lorsque les champs sont vides.
-         */
-        $builder->add('artisanProfile', ArtisanProfileType::class, [
-            'label' => false,
-            'required' => false,
-            'empty_data' => null,
-        ]);
+            ->add('artisanProfile', ArtisanProfileType::class, [
+                'label' => false,
+                'required' => false,
+                'empty_data' => null,
+            ])
+        ;
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
@@ -165,8 +159,7 @@ class RegistrationFormType extends AbstractType
                     return;
                 }
 
-                $accountType = $submittedData['accountType']
-                    ?? 'client';
+                $accountType = $submittedData['accountType'] ?? 'client';
 
                 if ('pro' === $accountType) {
                     $this->addArtisanProfileField($form);
@@ -174,10 +167,6 @@ class RegistrationFormType extends AbstractType
                     return;
                 }
 
-                /*
-                 * Pour un particulier, on retire complètement
-                 * artisanProfile des données envoyées.
-                 */
                 unset($submittedData['artisanProfile']);
 
                 $event->setData($submittedData);
@@ -192,14 +181,10 @@ class RegistrationFormType extends AbstractType
     private function addArtisanProfileField(
         FormInterface $form,
     ): void {
-        $form->add(
-            'artisanProfile',
-            ArtisanProfileType::class,
-            [
-                'label' => false,
-                'required' => true,
-            ]
-        );
+        $form->add('artisanProfile', ArtisanProfileType::class, [
+            'label' => false,
+            'required' => true,
+        ]);
     }
 
     public function configureOptions(

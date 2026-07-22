@@ -1,475 +1,2020 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Créer un compte — TrouveMoi Prestataires</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('styles/auth/auth.css') }}">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Créer un compte — TrouveMoi Prestataires</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ asset('styles/auth/auth.css') }}"
+    >
 </head>
+
 <body class="auth-body">
 
-  <div class="auth-layout">
-    <aside class="auth-brand d-none d-lg-flex" aria-hidden="true">
-      <a href="trouvemoi-accueil.html" class="auth-brand__logo">
-        <svg width="42" height="42" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M24 4C14.6 4 7 11.6 7 21c0 11.8 17 23 17 23s17-11.2 17-23C41 11.6 33.4 4 24 4z" fill="#FF8A1E" stroke="#0A1633" stroke-width="3.4" stroke-linejoin="round"/><circle cx="24" cy="20.5" r="6.6" fill="#fff"/></svg>
-        <span><span class="auth-brand__name">TrouveMoi</span><br><span class="auth-brand__sub">Prestataires</span></span>
-      </a>
+<div class="auth-layout">
 
-      <div class="auth-brand__body">
-        <span class="auth-eyebrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>Inscription en 2 minutes</span>
-        <h1 class="auth-brand__title">Rejoignez la communauté qui fait <em>avancer vos projets</em>.</h1>
-        <p class="auth-brand__copy">Particulier ou professionnel : un seul compte pour demander des devis ou développer votre activité.</p>
+    <aside
+        class="auth-brand d-none d-lg-flex"
+        aria-hidden="true"
+    >
+        <a
+            href="{{ path('app_home') }}"
+            class="auth-brand__logo"
+        >
+            <svg
+                width="42"
+                height="42"
+                viewBox="0 0 48 48"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path
+                    d="M24 4C14.6 4 7 11.6 7 21c0 11.8 17 23 17 23s17-11.2 17-23C41 11.6 33.4 4 24 4z"
+                    fill="#FF8A1E"
+                    stroke="#0A1633"
+                    stroke-width="3.4"
+                    stroke-linejoin="round"
+                />
 
-        <!-- Aperçu produit — pur CSS, aucun visuel externe -->
-        <div class="auth-preview">
-          <div class="preview-card preview-card--demande">
-            <span class="preview-card__thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.8"/><path d="m21 15-4.5-4.5L6 21"/></svg></span>
-            <span class="preview-card__lines">
-              <i class="ph-line ph-line--fonce ph-line--70"></i>
-              <i class="ph-line"></i>
-              <i class="ph-line ph-line--45"></i>
+                <circle
+                    cx="24"
+                    cy="20.5"
+                    r="6.6"
+                    fill="#fff"
+                />
+            </svg>
+
+            <span>
+                <span class="auth-brand__name">
+                    TrouveMoi
+                </span>
+
+                <br>
+
+                <span class="auth-brand__sub">
+                    Prestataires
+                </span>
             </span>
-            <span class="preview-card__badge">NOUVELLE DEMANDE</span>
-          </div>
+        </a>
 
-          <div class="preview-card preview-card--note">
-            <span class="preview-card__note">4,8<small>/5</small></span>
-            <span class="preview-card__stars"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z" fill="currentColor" stroke="none"/></svg></span>
-            <span class="preview-card__sub">256 avis vérifiés</span>
-          </div>
+        <div class="auth-brand__body">
 
-          <div class="preview-card preview-card--devis">
-            <span class="preview-card__icone"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg></span>
-            <span><b>Devis accepté</b><span>2 850 € · Rénovation salle de bain</span></span>
-          </div>
+            <span class="auth-eyebrow">
+                <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="M13 2 4 14h6l-1 8 9-12h-6z"/>
+                </svg>
+
+                Inscription en 2 minutes
+            </span>
+
+            <h1 class="auth-brand__title">
+                Rejoignez la communauté qui fait
+                <em>avancer vos projets</em>.
+            </h1>
+
+            <p class="auth-brand__copy">
+                Particulier ou professionnel : un seul compte pour demander
+                des devis ou développer votre activité.
+            </p>
+
+            <div class="auth-preview">
+
+                <div class="preview-card preview-card--demande">
+
+                    <span class="preview-card__thumb">
+                        <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <rect
+                                x="3"
+                                y="3"
+                                width="18"
+                                height="18"
+                                rx="2"
+                            />
+
+                            <circle
+                                cx="8.5"
+                                cy="8.5"
+                                r="1.8"
+                            />
+
+                            <path d="m21 15-4.5-4.5L6 21"/>
+                        </svg>
+                    </span>
+
+                    <span class="preview-card__lines">
+                        <i class="ph-line ph-line--fonce ph-line--70"></i>
+                        <i class="ph-line"></i>
+                        <i class="ph-line ph-line--45"></i>
+                    </span>
+
+                    <span class="preview-card__badge">
+                        NOUVELLE DEMANDE
+                    </span>
+                </div>
+
+                <div class="preview-card preview-card--note">
+
+                    <span class="preview-card__note">
+                        4,8
+                        <small>/5</small>
+                    </span>
+
+                    <span class="preview-card__stars">
+
+                        {% for i in 1..5 %}
+                            <svg
+                                width="10"
+                                height="10"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z"
+                                    fill="currentColor"
+                                    stroke="none"
+                                />
+                            </svg>
+                        {% endfor %}
+
+                    </span>
+
+                    <span class="preview-card__sub">
+                        256 avis vérifiés
+                    </span>
+                </div>
+
+                <div class="preview-card preview-card--devis">
+
+                    <span class="preview-card__icone">
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="9"
+                            />
+
+                            <path d="m8.5 12.5 2.5 2.5 5-5.5"/>
+                        </svg>
+                    </span>
+
+                    <span>
+                        <b>Devis accepté</b>
+
+                        <span>
+                            2 850 € · Rénovation salle de bain
+                        </span>
+                    </span>
+                </div>
+
+            </div>
         </div>
-      </div>
 
-      <div class="auth-brand__stats">
-        <div class="auth-stat"><b>+ 120 000</b><span>prestataires vérifiés</span></div>
-        <div class="auth-stat"><b>4,8<em>/5</em></b><span>note moyenne</span></div>
-        <div class="auth-stat"><b>0 %</b><span>de commission</span></div>
-      </div>
+        <div class="auth-brand__stats">
 
-      <figure class="auth-brand__quote">
-        <span class="auth-avatar auth-avatar--safran">SM</span>
-        <p>&ldquo;J'ai trouvé mon plombier en une soirée, devis le lendemain, chantier impeccable.&rdquo; — <b>Sophie M., Lyon</b></p>
-      </figure>
+            <div class="auth-stat">
+                <b>+ 120 000</b>
+                <span>prestataires vérifiés</span>
+            </div>
+
+            <div class="auth-stat">
+                <b>
+                    4,8
+                    <em>/5</em>
+                </b>
+
+                <span>note moyenne</span>
+            </div>
+
+            <div class="auth-stat">
+                <b>0 %</b>
+                <span>de commission</span>
+            </div>
+
+        </div>
+
+        <figure class="auth-brand__quote">
+
+            <span class="auth-avatar auth-avatar--safran">
+                SM
+            </span>
+
+            <p>
+                &ldquo;J'ai trouvé mon plombier en une soirée, devis le lendemain,
+                chantier impeccable.&rdquo; —
+                <b>Sophie M., Lyon</b>
+            </p>
+
+        </figure>
     </aside>
 
     <main class="auth-panel">
-      <div class="auth-card auth-card--large">
-        <div class="auth-card__header">
-          <h2>Créer votre compte</h2>
-          <p>Gratuit pour les particuliers, sans engagement pour les pros.</p>
-        </div>
 
-        <div class="auth-switch" data-profil="client" role="group" aria-label="Type de compte">
-          <button class="auth-switch__option" type="button" data-choix="client" aria-pressed="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>Particulier</button>
-          <button class="auth-switch__option" type="button" data-choix="pro" aria-pressed="false"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2M3 13h18"/></svg>Professionnel</button>
-        </div>
+        <div class="auth-card auth-card--large">
 
-        {{ form_start(registrationForm, {
-          attr: {
-            novalidate: 'novalidate'
-          }
-        }) }}
+            <div class="auth-card__header">
 
-        {{ form_widget(registrationForm.accountType, {
-    id: 'account-type'
-}) }}
+                <h2>
+                    Créer votre compte
+                </h2>
 
-          <div class="auth-pro-fields"><div>
-            <div class="row g-2">
-              <div class="col-7">
-                <div class="auth-field">
-                  <label class="form-label" for="entreprise">Nom de l'entreprise</label>
+                <p>
+                    Gratuit pour les particuliers, sans engagement pour les pros.
+                </p>
 
-                  <div class="auth-input-group">
-                    <span class="auth-input-group__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M8 7h2M8 11h2M8 15h2M13 7h1M13 11h1M16 9h4v12M18 13h.01M18 17h.01"/><path d="M2 21h20"/></svg></span>
-
-                    {{ form_widget(registrationForm.artisanProfile.legalName, {
-                      id: 'entreprise',
-                      attr: {
-                        class: 'form-control',
-                        placeholder: 'Plomberie Express',
-                        autocomplete: 'organization'
-                      }
-                    }) }}
-                  </div>
-
-                  {{ form_errors(registrationForm.artisanProfile.legalName) }}
-                </div>
-              </div>
-
-              <div class="col-5">
-                <div class="auth-field">
-                  <label class="form-label" for="siret">SIRET</label>
-
-                  {{ form_widget(registrationForm.artisanProfile.siret, {
-                    id: 'siret',
-                    attr: {
-                      class: 'form-control',
-                      placeholder: '812 345 678 00015',
-                      inputmode: 'numeric'
-                    }
-                  }) }}
-
-                  {{ form_errors(registrationForm.artisanProfile.siret) }}
-                </div>
-              </div>
-            </div>
-          </div></div>
-
-          <div class="row g-2">
-            <div class="col-6">
-              <div class="auth-field">
-                <label class="form-label" for="prenom">Prénom</label>
-
-                {{ form_widget(registrationForm.firstName, {
-                  id: 'prenom',
-                  attr: {
-                    class: 'form-control',
-                    placeholder: 'Sophie',
-                    autocomplete: 'given-name'
-                  }
-                }) }}
-
-                {{ form_errors(registrationForm.firstName) }}
-              </div>
             </div>
 
-            <div class="col-6">
-              <div class="auth-field">
-                <label class="form-label" for="nom">Nom</label>
+            {% set currentAccountType =
+                registrationForm.accountType.vars.value == 'pro'
+                    ? 'pro'
+                    : 'client'
+            %}
 
-                {{ form_widget(registrationForm.lastName, {
-                  id: 'nom',
-                  attr: {
-                    class: 'form-control',
-                    placeholder: 'Martin',
-                    autocomplete: 'family-name'
-                  }
-                }) }}
+            <div
+                class="auth-switch"
+                data-profil="{{ currentAccountType }}"
+                role="group"
+                aria-label="Type de compte"
+            >
+                <button
+                    class="auth-switch__option"
+                    type="button"
+                    data-choix="client"
+                    aria-pressed="{{ currentAccountType == 'client' ? 'true' : 'false' }}"
+                >
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <circle
+                            cx="12"
+                            cy="8"
+                            r="4"
+                        />
 
-                {{ form_errors(registrationForm.lastName) }}
-              </div>
+                        <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/>
+                    </svg>
+
+                    Particulier
+                </button>
+
+                <button
+                    class="auth-switch__option"
+                    type="button"
+                    data-choix="pro"
+                    aria-pressed="{{ currentAccountType == 'pro' ? 'true' : 'false' }}"
+                >
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <rect
+                            x="3"
+                            y="8"
+                            width="18"
+                            height="13"
+                            rx="2"
+                        />
+
+                        <path d="M9 8V6a3 3 0 0 1 6 0v2M3 13h18"/>
+                    </svg>
+
+                    Professionnel
+                </button>
             </div>
-          </div>
 
-          <div class="auth-field">
-            <label class="form-label" for="email">Adresse e-mail</label>
-
-            <div class="auth-input-group">
-              <span class="auth-input-group__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></span>
-
-              {{ form_widget(registrationForm.email, {
-                id: 'email',
+            {{ form_start(registrationForm, {
                 attr: {
-                  class: 'form-control',
-                  placeholder: 'vous@exemple.fr',
-                  autocomplete: 'username'
+                    novalidate: 'novalidate'
                 }
-              }) }}
-            </div>
-
-            {{ form_errors(registrationForm.email) }}
-          </div>
-
-          <div class="auth-field">
-            <label class="form-label" for="mot-de-passe">Mot de passe</label>
-
-            <div class="auth-input-group auth-input-group--toggle">
-              <span class="auth-input-group__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10" width="18" height="11" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg></span>
-
-              {{ form_widget(registrationForm.plainPassword, {
-                id: 'mot-de-passe',
-                attr: {
-                  class: 'form-control',
-                  placeholder: '8 caractères minimum',
-                  autocomplete: 'new-password',
-                  'aria-describedby': 'regles-mdp'
-                }
-              }) }}
-
-              <button class="auth-input-group__toggle" type="button" aria-label="Afficher le mot de passe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            </div>
-
-            {{ form_errors(registrationForm.plainPassword) }}
-
-            <span class="auth-capslock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg>Verr. Maj activée</span>
-
-            <div class="auth-strength" data-niveau="0" aria-hidden="true">
-              <span class="auth-strength__bars"><i></i><i></i><i></i><i></i></span>
-              <span class="auth-strength__label"></span>
-            </div>
-
-            <div class="auth-rules" id="regles-mdp">
-              <span class="auth-rules__item" data-regle="longueur"><span class="auth-rules__dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>8 caractères min.</span>
-              <span class="auth-rules__item" data-regle="majuscule"><span class="auth-rules__dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Une majuscule</span>
-              <span class="auth-rules__item" data-regle="chiffre"><span class="auth-rules__dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Un chiffre</span>
-              <span class="auth-rules__item" data-regle="special"><span class="auth-rules__dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>Un caractère spécial</span>
-            </div>
-          </div>
-
-          <div class="form-check mb-3 mt-2">
-            {{ form_widget(registrationForm.agreeTerms, {
-              id: 'cgu',
-              attr: {
-                class: 'form-check-input'
-              }
             }) }}
 
-            <label class="form-check-label small" for="cgu">J'accepte les <a href="trouvemoi-cgu.html">conditions générales</a> et la <a href="trouvemoi-confidentialite.html">politique de confidentialité</a>.</label>
+                {{ form_widget(registrationForm.accountType, {
+                    id: 'account-type'
+                }) }}
 
-            {{ form_errors(registrationForm.agreeTerms) }}
-          </div>
+                {{ form_errors(registrationForm) }}
 
-          <button class="btn-auth-primary" type="submit" id="btn-inscription-client">Créer mon compte <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                <div class="auth-pro-fields">
 
-          <button class="btn-auth-cta d-none" type="submit" id="btn-inscription-pro">Créer mon compte professionnel <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+                    <div>
 
-        {{ form_end(registrationForm) }}
+                        <div class="row g-2">
 
-        <p class="auth-card__footer">Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a></p>
-      </div>
+                            <div class="col-7">
+
+                                <div class="auth-field">
+
+                                    <label
+                                        class="form-label"
+                                        for="entreprise"
+                                    >
+                                        Nom de l'entreprise
+                                    </label>
+
+                                    <div class="auth-input-group">
+
+                                        <span class="auth-input-group__icon">
+                                            <svg
+                                                width="15"
+                                                height="15"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                aria-hidden="true"
+                                            >
+                                                <path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M8 7h2M8 11h2M8 15h2M13 7h1M13 11h1M16 9h4v12M18 13h.01M18 17h.01"/>
+                                                <path d="M2 21h20"/>
+                                            </svg>
+                                        </span>
+
+                                        {{ form_widget(
+                                            registrationForm.artisanProfile.legalName,
+                                            {
+                                                id: 'entreprise',
+                                                attr: {
+                                                    class: 'form-control',
+                                                    placeholder: 'Plomberie Express',
+                                                    autocomplete: 'organization',
+                                                    'data-company-field': 'legalName'
+                                                }
+                                            }
+                                        ) }}
+
+                                    </div>
+
+                                    {{ form_errors(
+                                        registrationForm.artisanProfile.legalName
+                                    ) }}
+
+                                </div>
+                            </div>
+
+                            <div class="col-5">
+
+                                <div class="auth-field">
+
+                                    <label
+                                        class="form-label"
+                                        for="siret"
+                                    >
+                                        SIRET
+                                    </label>
+
+                                    {{ form_widget(
+                                        registrationForm.artisanProfile.siret,
+                                        {
+                                            id: 'siret',
+                                            attr: {
+                                                class: 'form-control',
+                                                placeholder: '812 345 678 00015',
+                                                inputmode: 'numeric',
+                                                autocomplete: 'off',
+                                                maxlength: 17,
+                                                'data-lookup-url': path(
+                                                    'app_company_lookup_siret',
+                                                    {
+                                                        siret: '__SIRET__'
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    ) }}
+
+                                    <div
+                                        id="siret-lookup-status"
+                                        class="form-text"
+                                        aria-live="polite"
+                                    ></div>
+
+                                    {{ form_errors(
+                                        registrationForm.artisanProfile.siret
+                                    ) }}
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        {#
+                            Tous les champs ci-dessous restent invisibles,
+                            mais seront envoyés avec le formulaire Symfony.
+                        #}
+
+                        <div
+                            class="d-none"
+                            aria-hidden="true"
+                        >
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.commercialName,
+                                {
+                                    attr: {
+                                        'data-company-field': 'commercialName'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.siren,
+                                {
+                                    attr: {
+                                        'data-company-field': 'siren'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.vatNumber,
+                                {
+                                    attr: {
+                                        'data-company-field': 'vatNumber'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.apeCode,
+                                {
+                                    attr: {
+                                        'data-company-field': 'apeCode'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.legalForm,
+                                {
+                                    attr: {
+                                        'data-company-field': 'legalForm'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.houseNumber,
+                                {
+                                    attr: {
+                                        'data-company-field': 'houseNumber'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.road,
+                                {
+                                    attr: {
+                                        'data-company-field': 'road'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.addressComplement,
+                                {
+                                    attr: {
+                                        'data-company-field': 'addressComplement'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.neighbourhood,
+                                {
+                                    attr: {
+                                        'data-company-field': 'neighbourhood'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.suburb,
+                                {
+                                    attr: {
+                                        'data-company-field': 'suburb'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.cityDistrict,
+                                {
+                                    attr: {
+                                        'data-company-field': 'cityDistrict'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.hamlet,
+                                {
+                                    attr: {
+                                        'data-company-field': 'hamlet'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.village,
+                                {
+                                    attr: {
+                                        'data-company-field': 'village'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.town,
+                                {
+                                    attr: {
+                                        'data-company-field': 'town'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.city,
+                                {
+                                    attr: {
+                                        'data-company-field': 'city'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.municipality,
+                                {
+                                    attr: {
+                                        'data-company-field': 'municipality'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.county,
+                                {
+                                    attr: {
+                                        'data-company-field': 'county'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.stateDistrict,
+                                {
+                                    attr: {
+                                        'data-company-field': 'stateDistrict'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.state,
+                                {
+                                    attr: {
+                                        'data-company-field': 'state'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.region,
+                                {
+                                    attr: {
+                                        'data-company-field': 'region'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.postalCode,
+                                {
+                                    attr: {
+                                        'data-company-field': 'postalCode'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.country,
+                                {
+                                    attr: {
+                                        'data-company-field': 'country'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.countryCode,
+                                {
+                                    attr: {
+                                        'data-company-field': 'countryCode'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.osmDisplayName,
+                                {
+                                    attr: {
+                                        'data-company-field': 'osmDisplayName'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.latitude,
+                                {
+                                    attr: {
+                                        'data-company-field': 'latitude'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.longitude,
+                                {
+                                    attr: {
+                                        'data-company-field': 'longitude'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.osmId,
+                                {
+                                    attr: {
+                                        'data-company-field': 'osmId'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.osmType,
+                                {
+                                    attr: {
+                                        'data-company-field': 'osmType'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.osmCategory,
+                                {
+                                    attr: {
+                                        'data-company-field': 'osmCategory'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.osmPlaceType,
+                                {
+                                    attr: {
+                                        'data-company-field': 'osmPlaceType'
+                                    }
+                                }
+                            ) }}
+
+                            {{ form_widget(
+                                registrationForm.artisanProfile.nominatimPlaceId,
+                                {
+                                    attr: {
+                                        'data-company-field': 'nominatimPlaceId'
+                                    }
+                                }
+                            ) }}
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row g-2">
+
+                    <div class="col-6">
+
+                        <div class="auth-field">
+
+                            <label
+                                class="form-label"
+                                for="prenom"
+                            >
+                                Prénom
+                            </label>
+
+                            {{ form_widget(registrationForm.firstName, {
+                                id: 'prenom',
+                                attr: {
+                                    class: 'form-control',
+                                    placeholder: 'Sophie',
+                                    autocomplete: 'given-name'
+                                }
+                            }) }}
+
+                            {{ form_errors(registrationForm.firstName) }}
+
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+
+                        <div class="auth-field">
+
+                            <label
+                                class="form-label"
+                                for="nom"
+                            >
+                                Nom
+                            </label>
+
+                            {{ form_widget(registrationForm.lastName, {
+                                id: 'nom',
+                                attr: {
+                                    class: 'form-control',
+                                    placeholder: 'Martin',
+                                    autocomplete: 'family-name'
+                                }
+                            }) }}
+
+                            {{ form_errors(registrationForm.lastName) }}
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="auth-field">
+
+                    <label
+                        class="form-label"
+                        for="email"
+                    >
+                        Adresse e-mail
+                    </label>
+
+                    <div class="auth-input-group">
+
+                        <span class="auth-input-group__icon">
+                            <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <rect
+                                    x="2"
+                                    y="4"
+                                    width="20"
+                                    height="16"
+                                    rx="2"
+                                />
+
+                                <path d="m2 7 10 6 10-6"/>
+                            </svg>
+                        </span>
+
+                        {{ form_widget(registrationForm.email, {
+                            id: 'email',
+                            attr: {
+                                class: 'form-control',
+                                placeholder: 'vous@exemple.fr',
+                                autocomplete: 'username'
+                            }
+                        }) }}
+
+                    </div>
+
+                    {{ form_errors(registrationForm.email) }}
+
+                </div>
+
+                <div class="auth-field">
+
+                    <label
+                        class="form-label"
+                        for="mot-de-passe"
+                    >
+                        Mot de passe
+                    </label>
+
+                    <div class="auth-input-group auth-input-group--toggle">
+
+                        <span class="auth-input-group__icon">
+                            <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <rect
+                                    x="3"
+                                    y="10"
+                                    width="18"
+                                    height="11"
+                                    rx="2"
+                                />
+
+                                <path d="M7 10V7a5 5 0 0 1 10 0v3"/>
+                            </svg>
+                        </span>
+
+                        {{ form_widget(registrationForm.plainPassword, {
+                            id: 'mot-de-passe',
+                            attr: {
+                                class: 'form-control',
+                                placeholder: '8 caractères minimum',
+                                autocomplete: 'new-password',
+                                'aria-describedby': 'regles-mdp'
+                            }
+                        }) }}
+
+                        <button
+                            class="auth-input-group__toggle"
+                            type="button"
+                            aria-label="Afficher le mot de passe"
+                        >
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3"
+                                />
+                            </svg>
+                        </button>
+
+                    </div>
+
+                    {{ form_errors(registrationForm.plainPassword) }}
+
+                    <span class="auth-capslock">
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <path d="M12 3 2 20h20z"/>
+                            <path d="M12 10v4M12 17h.01"/>
+                        </svg>
+
+                        Verr. Maj activée
+                    </span>
+
+                    <div
+                        class="auth-strength"
+                        data-niveau="0"
+                        aria-hidden="true"
+                    >
+                        <span class="auth-strength__bars">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                        </span>
+
+                        <span class="auth-strength__label"></span>
+                    </div>
+
+                    <div
+                        class="auth-rules"
+                        id="regles-mdp"
+                    >
+                        <span
+                            class="auth-rules__item"
+                            data-regle="longueur"
+                        >
+                            <span class="auth-rules__dot">
+                                <svg
+                                    width="9"
+                                    height="9"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3.4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+
+                            8 caractères min.
+                        </span>
+
+                        <span
+                            class="auth-rules__item"
+                            data-regle="majuscule"
+                        >
+                            <span class="auth-rules__dot">
+                                <svg
+                                    width="9"
+                                    height="9"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3.4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+
+                            Une majuscule
+                        </span>
+
+                        <span
+                            class="auth-rules__item"
+                            data-regle="chiffre"
+                        >
+                            <span class="auth-rules__dot">
+                                <svg
+                                    width="9"
+                                    height="9"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3.4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+
+                            Un chiffre
+                        </span>
+
+                        <span
+                            class="auth-rules__item"
+                            data-regle="special"
+                        >
+                            <span class="auth-rules__dot">
+                                <svg
+                                    width="9"
+                                    height="9"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="3.4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M20 6 9 17l-5-5"/>
+                                </svg>
+                            </span>
+
+                            Un caractère spécial
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="form-check mb-3 mt-2">
+
+                    {{ form_widget(registrationForm.agreeTerms, {
+                        id: 'cgu',
+                        attr: {
+                            class: 'form-check-input'
+                        }
+                    }) }}
+
+                    <label
+                        class="form-check-label small"
+                        for="cgu"
+                    >
+                        J'accepte les
+                        <a href="#">conditions générales</a>
+                        et la
+                        <a href="#">politique de confidentialité</a>.
+                    </label>
+
+                    {{ form_errors(registrationForm.agreeTerms) }}
+
+                </div>
+
+                <button
+                    class="btn-auth-primary"
+                    type="submit"
+                    id="btn-inscription-client"
+                >
+                    Créer mon compte
+
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </button>
+
+                <button
+                    class="btn-auth-cta d-none"
+                    type="submit"
+                    id="btn-inscription-pro"
+                >
+                    Créer mon compte professionnel
+
+                    <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </button>
+
+            {{ form_end(registrationForm) }}
+
+            <p class="auth-card__footer">
+                Déjà inscrit ?
+
+                <a href="{{ path('app_login') }}">
+                    Se connecter
+                </a>
+            </p>
+
+        </div>
     </main>
-  </div>
+
+</div>
 
 <script>
-
 document.addEventListener('DOMContentLoaded', () => {
-  const accountTypeInput = document.getElementById('account-type');
 
-  // ---------- Sélecteur de profil ----------
-  document.querySelectorAll('.auth-switch').forEach(sw => {
-    const boutons = sw.querySelectorAll('.auth-switch__option');
+    // ---------------------------------------------------------
+    // Sélecteur particulier / professionnel
+    // ---------------------------------------------------------
 
-    const appliquerProfil = profil => {
-      const pro = profil === 'pro';
+    document.querySelectorAll('.auth-switch').forEach(switchElement => {
+        switchElement
+            .querySelectorAll('.auth-switch__option')
+            .forEach(button => {
+                button.addEventListener('click', () => {
+                    switchElement
+                        .querySelectorAll('.auth-switch__option')
+                        .forEach(currentButton => {
+                            currentButton.setAttribute(
+                                'aria-pressed',
+                                currentButton === button
+                                    ? 'true'
+                                    : 'false'
+                            );
+                        });
 
-      sw.dataset.profil = profil;
+                    switchElement.dataset.profil =
+                        button.dataset.choix;
 
-      boutons.forEach(btn => {
-        btn.setAttribute(
-          'aria-pressed',
-          btn.dataset.choix === profil ? 'true' : 'false'
-        );
-      });
+                    const accountTypeInput =
+                        document.getElementById('account-type');
 
-      if (accountTypeInput) {
-        accountTypeInput.value = profil;
-      }
+                    if (accountTypeInput) {
+                        accountTypeInput.value =
+                            button.dataset.choix;
+                    }
 
-      document.querySelectorAll('.auth-pro-fields').forEach(zone => {
-        zone.classList.toggle('is-visible', pro);
+                    document.dispatchEvent(
+                        new CustomEvent('profil:change', {
+                            detail: button.dataset.choix
+                        })
+                    );
+                });
+            });
+    });
 
-        zone.querySelectorAll('input, select, textarea').forEach(champ => {
-          champ.disabled = !pro;
+    // ---------------------------------------------------------
+    // Afficher ou masquer le mot de passe
+    // ---------------------------------------------------------
+
+    document
+        .querySelectorAll('.auth-input-group__toggle')
+        .forEach(toggleButton => {
+            toggleButton.addEventListener('click', () => {
+                const inputGroup =
+                    toggleButton.closest('.auth-input-group');
+
+                const passwordInput =
+                    inputGroup
+                        ? inputGroup.querySelector('input')
+                        : null;
+
+                if (!passwordInput) {
+                    return;
+                }
+
+                const isVisible =
+                    passwordInput.type === 'text';
+
+                passwordInput.type =
+                    isVisible
+                        ? 'password'
+                        : 'text';
+
+                toggleButton.setAttribute(
+                    'aria-label',
+                    isVisible
+                        ? 'Afficher le mot de passe'
+                        : 'Masquer le mot de passe'
+                );
+            });
         });
-      });
 
-      const btnClient = document.getElementById(
-        'btn-inscription-client'
-      );
+    // ---------------------------------------------------------
+    // Détection verrouillage majuscules
+    // ---------------------------------------------------------
 
-      const btnPro = document.getElementById(
-        'btn-inscription-pro'
-      );
+    document
+        .querySelectorAll('input[type="password"]')
+        .forEach(passwordInput => {
+            passwordInput.addEventListener('keyup', event => {
+                const fieldContainer =
+                    passwordInput.closest('.auth-field');
 
-      if (btnClient) {
-        btnClient.classList.toggle('d-none', pro);
-      }
+                const capsLockWarning =
+                    fieldContainer
+                        ? fieldContainer.querySelector(
+                            '.auth-capslock'
+                        )
+                        : null;
 
-      if (btnPro) {
-        btnPro.classList.toggle('d-none', !pro);
-      }
+                if (
+                    capsLockWarning &&
+                    event.getModifierState
+                ) {
+                    capsLockWarning.classList.toggle(
+                        'is-visible',
+                        event.getModifierState('CapsLock')
+                    );
+                }
+            });
+        });
+
+    // ---------------------------------------------------------
+    // Jauge de robustesse du mot de passe
+    // ---------------------------------------------------------
+
+    const passwordInput =
+        document.getElementById('mot-de-passe');
+
+    if (passwordInput) {
+        const fieldContainer =
+            passwordInput.closest('.auth-field');
+
+        const strengthElement =
+            fieldContainer
+                ? fieldContainer.querySelector(
+                    '.auth-strength'
+                )
+                : null;
+
+        const strengthLabel =
+            strengthElement
+                ? strengthElement.querySelector(
+                    '.auth-strength__label'
+                )
+                : null;
+
+        const strengthLabels = [
+            '',
+            'Faible',
+            'Moyen',
+            'Bon',
+            'Excellent'
+        ];
+
+        const passwordRules = {
+            longueur: value => value.length >= 8,
+            majuscule: value => /[A-ZÀ-Ý]/.test(value),
+            chiffre: value => /\d/.test(value),
+            special: value => /[^A-Za-z0-9À-ÿ]/.test(value)
+        };
+
+        const updatePasswordStrength = () => {
+            const value = passwordInput.value;
+            let score = 0;
+
+            Object.entries(passwordRules)
+                .forEach(([ruleName, validator]) => {
+                    const isValid =
+                        validator(value);
+
+                    if (isValid) {
+                        score++;
+                    }
+
+                    const ruleElement =
+                        fieldContainer
+                            ? fieldContainer.querySelector(
+                                `[data-regle="${ruleName}"]`
+                            )
+                            : null;
+
+                    if (ruleElement) {
+                        ruleElement.classList.toggle(
+                            'is-valid',
+                            isValid
+                        );
+                    }
+                });
+
+            if (strengthElement) {
+                strengthElement.dataset.niveau =
+                    value
+                        ? String(score)
+                        : '0';
+            }
+
+            if (strengthLabel) {
+                strengthLabel.textContent =
+                    value
+                        ? strengthLabels[score]
+                        : '';
+            }
+        };
+
+        passwordInput.addEventListener(
+            'input',
+            updatePasswordStrength
+        );
+
+        updatePasswordStrength();
+    }
+
+    // ---------------------------------------------------------
+    // Affichage des champs professionnels
+    // ---------------------------------------------------------
+
+    const applyProfile = profile => {
+        const isProfessional =
+            profile === 'pro';
+
+        document
+            .querySelectorAll('.auth-pro-fields')
+            .forEach(professionalZone => {
+                professionalZone.classList.toggle(
+                    'is-visible',
+                    isProfessional
+                );
+
+                professionalZone
+                    .querySelectorAll(
+                        'input, select, textarea'
+                    )
+                    .forEach(field => {
+                        field.disabled =
+                            !isProfessional;
+                    });
+            });
+
+        const clientSubmitButton =
+            document.getElementById(
+                'btn-inscription-client'
+            );
+
+        const professionalSubmitButton =
+            document.getElementById(
+                'btn-inscription-pro'
+            );
+
+        if (clientSubmitButton) {
+            clientSubmitButton.classList.toggle(
+                'd-none',
+                isProfessional
+            );
+        }
+
+        if (professionalSubmitButton) {
+            professionalSubmitButton.classList.toggle(
+                'd-none',
+                !isProfessional
+            );
+        }
     };
 
-    /*
-     * Récupère la valeur envoyée précédemment par Symfony.
-     * Cela permet de conserver le profil professionnel
-     * après une erreur de validation.
-     */
-    const profilInitial =
-      accountTypeInput?.value === 'pro'
-        ? 'pro'
-        : 'client';
-
-    appliquerProfil(profilInitial);
-
-    boutons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const profil = btn.dataset.choix;
-
-        if (profil !== 'client' && profil !== 'pro') {
-          return;
+    document.addEventListener(
+        'profil:change',
+        event => {
+            applyProfile(event.detail);
         }
-
-        appliquerProfil(profil);
-      });
-    });
-  });
-
-  // ---------- Afficher / masquer le mot de passe ----------
-  document
-    .querySelectorAll('.auth-input-group__toggle')
-    .forEach(toggle => {
-      toggle.addEventListener('click', () => {
-        const groupe = toggle.closest('.auth-input-group');
-
-        if (!groupe) {
-          return;
-        }
-
-        const champ = groupe.querySelector('input');
-
-        if (!champ) {
-          return;
-        }
-
-        const visible = champ.type === 'text';
-
-        champ.type = visible ? 'password' : 'text';
-
-        toggle.setAttribute(
-          'aria-label',
-          visible
-            ? 'Afficher le mot de passe'
-            : 'Masquer le mot de passe'
-        );
-      });
-    });
-
-  // ---------- Détection Verr. Maj ----------
-  document
-    .querySelectorAll('input[type="password"]')
-    .forEach(champ => {
-      const afficherAlerteMajuscule = evenement => {
-        const zone = champ.closest('.auth-field');
-
-        if (!zone) {
-          return;
-        }
-
-        const alerte = zone.querySelector('.auth-capslock');
-
-        if (!alerte || !evenement.getModifierState) {
-          return;
-        }
-
-        alerte.classList.toggle(
-          'is-visible',
-          evenement.getModifierState('CapsLock')
-        );
-      };
-
-      champ.addEventListener(
-        'keydown',
-        afficherAlerteMajuscule
-      );
-
-      champ.addEventListener(
-        'keyup',
-        afficherAlerteMajuscule
-      );
-
-      champ.addEventListener('blur', () => {
-        const zone = champ.closest('.auth-field');
-        const alerte = zone?.querySelector('.auth-capslock');
-
-        if (alerte) {
-          alerte.classList.remove('is-visible');
-        }
-      });
-    });
-
-  // ---------- Jauge de robustesse + règles ----------
-  const champMdp = document.getElementById(
-    'mot-de-passe'
-  );
-
-  if (champMdp) {
-    const zoneMotDePasse = champMdp.closest('.auth-field');
-
-    const jauge = zoneMotDePasse?.querySelector(
-      '.auth-strength'
     );
 
-    const label = jauge?.querySelector(
-      '.auth-strength__label'
+    const initialAccountType =
+        document.getElementById('account-type');
+
+    applyProfile(
+        initialAccountType &&
+        initialAccountType.value === 'pro'
+            ? 'pro'
+            : 'client'
     );
 
-    const libelles = [
-      '',
-      'Faible',
-      'Moyen',
-      'Bon',
-      'Excellent'
+    // ---------------------------------------------------------
+    // Recherche AJAX du SIRET
+    // ---------------------------------------------------------
+
+    const siretInput =
+        document.getElementById('siret');
+
+    const companyNameInput =
+        document.getElementById('entreprise');
+
+    const firstNameInput =
+        document.getElementById('prenom');
+
+    const lastNameInput =
+        document.getElementById('nom');
+
+    const siretStatus =
+        document.getElementById(
+            'siret-lookup-status'
+        );
+
+    let siretSearchTimer = null;
+    let siretAbortController = null;
+    let lastLoadedSiret = '';
+
+    const companyFieldNames = [
+        'legalName',
+        'commercialName',
+        'siren',
+        'vatNumber',
+        'apeCode',
+        'legalForm',
+        'houseNumber',
+        'road',
+        'addressComplement',
+        'neighbourhood',
+        'suburb',
+        'cityDistrict',
+        'hamlet',
+        'village',
+        'town',
+        'city',
+        'municipality',
+        'county',
+        'stateDistrict',
+        'state',
+        'region',
+        'postalCode',
+        'country',
+        'countryCode',
+        'osmDisplayName',
+        'latitude',
+        'longitude',
+        'osmId',
+        'osmType',
+        'osmCategory',
+        'osmPlaceType',
+        'nominatimPlaceId'
     ];
 
-    const regles = {
-      longueur: valeur => valeur.length >= 8,
-      majuscule: valeur => /[A-ZÀ-Ý]/.test(valeur),
-      chiffre: valeur => /\d/.test(valeur),
-      special: valeur =>
-        /[^A-Za-z0-9À-ÿ]/.test(valeur),
+    const normalizeSiret = value => {
+        return String(value || '')
+            .replace(/\D/g, '')
+            .slice(0, 14);
     };
 
-    const mettreAJourRobustesse = () => {
-      const valeur = champMdp.value;
-      let score = 0;
+    const formatSiret = value => {
+        const digits =
+            normalizeSiret(value);
 
-      Object.entries(regles).forEach(
-        ([nom, verifier]) => {
-          const valide = verifier(valeur);
+        const groups = [];
 
-          if (valide) {
-            score++;
-          }
-
-          const item = zoneMotDePasse?.querySelector(
-            `[data-regle="${nom}"]`
-          );
-
-          if (item) {
-            item.classList.toggle(
-              'is-valid',
-              valide
+        if (digits.length > 0) {
+            groups.push(
+                digits.slice(0, 3)
             );
-          }
         }
-      );
 
-      if (jauge) {
-        jauge.dataset.niveau = valeur
-          ? String(score)
-          : '0';
-      }
+        if (digits.length > 3) {
+            groups.push(
+                digits.slice(3, 6)
+            );
+        }
 
-      if (label) {
-        label.textContent = valeur
-          ? libelles[score]
-          : '';
-      }
+        if (digits.length > 6) {
+            groups.push(
+                digits.slice(6, 9)
+            );
+        }
+
+        if (digits.length > 9) {
+            groups.push(
+                digits.slice(9, 14)
+            );
+        }
+
+        return groups.join(' ');
     };
 
-    champMdp.addEventListener(
-      'input',
-      mettreAJourRobustesse
-    );
+    const setSiretStatus = (
+        message,
+        type = ''
+    ) => {
+        if (!siretStatus) {
+            return;
+        }
 
-    /*
-     * Initialise l’affichage si Symfony réaffiche
-     * le formulaire avec une valeur déjà présente.
-     */
-    mettreAJourRobustesse();
-  }
+        siretStatus.textContent =
+            message;
+
+        siretStatus.classList.remove(
+            'text-secondary',
+            'text-success',
+            'text-danger'
+        );
+
+        if (type) {
+            siretStatus.classList.add(
+                `text-${type}`
+            );
+        }
+    };
+
+    const updateInput = (
+        input,
+        value
+    ) => {
+        if (!input) {
+            return;
+        }
+
+        input.value =
+            value === null ||
+            value === undefined
+                ? ''
+                : String(value);
+
+        input.dispatchEvent(
+            new Event('input', {
+                bubbles: true
+            })
+        );
+
+        input.dispatchEvent(
+            new Event('change', {
+                bubbles: true
+            })
+        );
+    };
+
+    const getCompanyField = fieldName => {
+        return document.querySelector(
+            `[data-company-field="${fieldName}"]`
+        );
+    };
+
+    const setCompanyField = (
+        fieldName,
+        value
+    ) => {
+        const field =
+            getCompanyField(fieldName);
+
+        if (!field) {
+            console.warn(
+                `[Entreprise AJAX] Champ "${fieldName}" introuvable.`
+            );
+
+            return;
+        }
+
+        updateInput(
+            field,
+            value
+        );
+    };
+
+    const buildCompleteAddress = company => {
+        if (!company) {
+            return '';
+        }
+
+        if (company.fullAddress) {
+            return company.fullAddress;
+        }
+
+        if (company.osmDisplayName) {
+            return company.osmDisplayName;
+        }
+
+        const street = [
+            company.houseNumber,
+            company.road
+        ]
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+
+        const cityLine = [
+            company.postalCode,
+            company.city ||
+            company.town ||
+            company.village ||
+            company.municipality
+        ]
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+
+        return [
+            street,
+            company.addressComplement,
+            cityLine,
+            company.country
+        ]
+            .filter(Boolean)
+            .join(', ')
+            .trim();
+    };
+
+    const fillCompanyFields = company => {
+        if (
+            !company ||
+            typeof company !== 'object'
+        ) {
+            return;
+        }
+
+        companyFieldNames.forEach(fieldName => {
+            setCompanyField(
+                fieldName,
+                company[fieldName] ?? ''
+            );
+        });
+
+        /*
+         * Le prénom et le nom du dirigeant remplissent
+         * les champs du compte professionnel.
+         */
+        if (company.managerFirstName) {
+            updateInput(
+                firstNameInput,
+                company.managerFirstName
+            );
+        }
+
+        if (company.managerLastName) {
+            updateInput(
+                lastNameInput,
+                company.managerLastName
+            );
+        }
+
+        const completeAddress =
+            buildCompleteAddress(company);
+
+        /*
+         * Si le contrôleur ne fournit pas osmDisplayName,
+         * on conserve l’adresse officielle construite.
+         */
+        if (
+            !company.osmDisplayName &&
+            completeAddress
+        ) {
+            setCompanyField(
+                'osmDisplayName',
+                completeAddress
+            );
+        }
+
+        console.info(
+            '[Entreprise AJAX] Entreprise :',
+            company.legalName
+        );
+
+        console.info(
+            '[Entreprise AJAX] Dirigeant :',
+            {
+                firstName:
+                    company.managerFirstName || '',
+                lastName:
+                    company.managerLastName || '',
+                quality:
+                    company.managerQuality || '',
+                type:
+                    company.managerType || ''
+            }
+        );
+
+        console.info(
+            '[Entreprise AJAX] Adresse complète :',
+            completeAddress
+        );
+
+        console.info(
+            '[Entreprise AJAX] Données complètes :',
+            company
+        );
+    };
+
+    const clearCompanyFields = () => {
+        companyFieldNames
+            .filter(fieldName => {
+                return fieldName !== 'legalName';
+            })
+            .forEach(fieldName => {
+                setCompanyField(
+                    fieldName,
+                    ''
+                );
+            });
+    };
+
+    const loadCompanyBySiret =
+        async siret => {
+            if (
+                !siretInput ||
+                siret.length !== 14
+            ) {
+                return;
+            }
+
+            if (lastLoadedSiret === siret) {
+                return;
+            }
+
+            const urlTemplate =
+                siretInput.dataset.lookupUrl;
+
+            if (!urlTemplate) {
+                setSiretStatus(
+                    'La route de recherche SIRET est absente.',
+                    'danger'
+                );
+
+                return;
+            }
+
+            if (siretAbortController) {
+                siretAbortController.abort();
+            }
+
+            siretAbortController =
+                new AbortController();
+
+            setSiretStatus(
+                'Récupération de l’entreprise, du dirigeant et de l’adresse complète…',
+                'secondary'
+            );
+
+            siretInput.classList.remove(
+                'is-valid',
+                'is-invalid'
+            );
+
+            try {
+                const url =
+                    urlTemplate.replace(
+                        '__SIRET__',
+                        encodeURIComponent(siret)
+                    );
+
+                const response =
+                    await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            Accept: 'application/json',
+                            'X-Requested-With':
+                                'XMLHttpRequest'
+                        },
+                        signal:
+                            siretAbortController.signal
+                    });
+
+                let payload = null;
+
+                try {
+                    payload =
+                        await response.json();
+                } catch (jsonError) {
+                    throw new Error(
+                        'Le serveur n’a pas renvoyé une réponse JSON valide.'
+                    );
+                }
+
+                console.log(
+                    '[Entreprise AJAX] Réponse du serveur :',
+                    payload
+                );
+
+                if (
+                    !response.ok ||
+                    !payload ||
+                    payload.success !== true
+                ) {
+                    throw new Error(
+                        payload &&
+                        payload.message
+                            ? payload.message
+                            : 'Entreprise introuvable.'
+                    );
+                }
+
+                if (
+                    !payload.company ||
+                    typeof payload.company !== 'object'
+                ) {
+                    throw new Error(
+                        'Les informations de l’entreprise sont absentes.'
+                    );
+                }
+
+                fillCompanyFields(
+                    payload.company
+                );
+
+                lastLoadedSiret =
+                    siret;
+
+                siretInput.classList.remove(
+                    'is-invalid'
+                );
+
+                siretInput.classList.add(
+                    'is-valid'
+                );
+
+                const legalName =
+                    payload.company.legalName || '';
+
+                const completeAddress =
+                    buildCompleteAddress(
+                        payload.company
+                    );
+
+                let successMessage =
+                    legalName
+                        ? `Entreprise trouvée : ${legalName}`
+                        : 'Entreprise trouvée.';
+
+                if (completeAddress) {
+                    successMessage +=
+                        ` — ${completeAddress}`;
+                }
+
+                setSiretStatus(
+                    'Entreprise trouvée',
+                    'success'
+                );
+            } catch (error) {
+                if (
+                    error.name === 'AbortError'
+                ) {
+                    return;
+                }
+
+                lastLoadedSiret = '';
+
+                clearCompanyFields();
+
+                siretInput.classList.remove(
+                    'is-valid'
+                );
+
+                siretInput.classList.add(
+                    'is-invalid'
+                );
+
+                setSiretStatus(
+                    error.message ||
+                    'Impossible de vérifier ce numéro SIRET.',
+                    'danger'
+                );
+
+                console.error(
+                    '[Entreprise AJAX]',
+                    error
+                );
+            }
+        };
+
+    if (siretInput) {
+        siretInput.addEventListener(
+            'input',
+            () => {
+                const normalizedSiret =
+                    normalizeSiret(
+                        siretInput.value
+                    );
+
+                siretInput.value =
+                    formatSiret(
+                        normalizedSiret
+                    );
+
+                window.clearTimeout(
+                    siretSearchTimer
+                );
+
+                lastLoadedSiret = '';
+
+                siretInput.classList.remove(
+                    'is-valid',
+                    'is-invalid'
+                );
+
+                if (
+                    normalizedSiret.length === 0
+                ) {
+                    clearCompanyFields();
+                    setSiretStatus('');
+
+                    return;
+                }
+
+                if (
+                    normalizedSiret.length !== 14
+                ) {
+                    clearCompanyFields();
+
+                    setSiretStatus(
+                        `${normalizedSiret.length}/14 chiffres`,
+                        'secondary'
+                    );
+
+                    return;
+                }
+
+                siretSearchTimer =
+                    window.setTimeout(
+                        () => {
+                            loadCompanyBySiret(
+                                normalizedSiret
+                            );
+                        },
+                        400
+                    );
+            }
+        );
+
+        siretInput.addEventListener(
+            'blur',
+            () => {
+                const normalizedSiret =
+                    normalizeSiret(
+                        siretInput.value
+                    );
+
+                if (
+                    normalizedSiret.length === 14
+                ) {
+                    loadCompanyBySiret(
+                        normalizedSiret
+                    );
+                }
+            }
+        );
+
+        const initialSiret =
+            normalizeSiret(
+                siretInput.value
+            );
+
+        if (initialSiret.length > 0) {
+            siretInput.value =
+                formatSiret(
+                    initialSiret
+                );
+        }
+
+        if (
+            initialSiret.length === 14 &&
+            initialAccountType &&
+            initialAccountType.value === 'pro'
+        ) {
+            loadCompanyBySiret(
+                initialSiret
+            );
+        }
+    }
+
 });
-
 </script>
 
 </body>
