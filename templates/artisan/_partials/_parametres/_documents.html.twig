@@ -1,0 +1,87 @@
+<div class="param-panneau" id="panneau-documents">
+    <div class="dash-card">
+        <p class="param-section-titre">Description de l'entreprise</p>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                {{ form_label(form.email, 'Adresse e-mail professionnelle', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.email, { attr: { class: 'form-control', autocomplete: 'email', placeholder: 'contact@entreprise.fr' } }) }}
+                {{ form_errors(form.email) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.phoneNumber, 'Numéro de téléphone professionnel', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.phoneNumber, { attr: { class: 'form-control', autocomplete: 'tel', placeholder: '06 12 34 56 78' } }) }}
+                {{ form_errors(form.phoneNumber) }}
+            </div>
+            <div class="col-12">
+                {{ form_label(form.artisanProfile.description, 'Présentation de votre entreprise', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.description, { attr: { class: 'form-control', rows: 7, maxlength: 10000, placeholder: 'Présentez votre entreprise, votre expérience…' } }) }}
+                {{ form_errors(form.artisanProfile.description) }}
+            </div>
+        </div>
+
+        <p class="param-section-titre">Assurance responsabilité civile professionnelle</p>
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="form-check">
+                    {{ form_widget(form.artisanProfile.hasProfessionalLiabilityInsurance, { attr: { class: 'form-check-input' } }) }}
+                    {{ form_label(form.artisanProfile.hasProfessionalLiabilityInsurance, 'Je possède une assurance responsabilité civile professionnelle', { label_attr: { class: 'form-check-label' } }) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.professionalLiabilityInsurer, "Nom de l'assureur", { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.professionalLiabilityInsurer, { attr: { class: 'form-control', placeholder: "Nom de la compagnie d'assurance" } }) }}
+                {{ form_errors(form.artisanProfile.professionalLiabilityInsurer) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.professionalLiabilityPolicyNumber, 'Numéro du contrat', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.professionalLiabilityPolicyNumber, { attr: { class: 'form-control', placeholder: "Numéro de police d'assurance" } }) }}
+                {{ form_errors(form.artisanProfile.professionalLiabilityPolicyNumber) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.professionalLiabilityStartsAt, 'Date de début du contrat', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.professionalLiabilityStartsAt, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(form.artisanProfile.professionalLiabilityStartsAt) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.professionalLiabilityExpiresAt, "Date d'expiration du contrat", { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.professionalLiabilityExpiresAt, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(form.artisanProfile.professionalLiabilityExpiresAt) }}
+            </div>
+        </div>
+
+        <p class="param-section-titre">Assurance décennale</p>
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="form-check">
+                    {{ form_widget(form.artisanProfile.hasDecennialInsurance, { attr: { class: 'form-check-input' } }) }}
+                    {{ form_label(form.artisanProfile.hasDecennialInsurance, 'Je possède une assurance décennale', { label_attr: { class: 'form-check-label' } }) }}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.decennialInsurer, "Nom de l'assureur décennal", { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.decennialInsurer, { attr: { class: 'form-control', placeholder: "Nom de la compagnie d'assurance" } }) }}
+                {{ form_errors(form.artisanProfile.decennialInsurer) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.decennialPolicyNumber, 'Numéro du contrat décennal', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.decennialPolicyNumber, { attr: { class: 'form-control', placeholder: "Numéro de police d'assurance" } }) }}
+                {{ form_errors(form.artisanProfile.decennialPolicyNumber) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.decennialInsuranceStartsAt, 'Date de début de la garantie décennale', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.decennialInsuranceStartsAt, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(form.artisanProfile.decennialInsuranceStartsAt) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.artisanProfile.decennialInsuranceExpiresAt, "Date d'expiration de la garantie décennale", { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.decennialInsuranceExpiresAt, { attr: { class: 'form-control' } }) }}
+                {{ form_errors(form.artisanProfile.decennialInsuranceExpiresAt) }}
+            </div>
+            <div class="col-12">
+                {{ form_label(form.artisanProfile.decennialGeographicalCoverage, 'Zone géographique couverte par la garantie', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.decennialGeographicalCoverage, { attr: { class: 'form-control', placeholder: 'Exemple : France métropolitaine' } }) }}
+                {{ form_errors(form.artisanProfile.decennialGeographicalCoverage) }}
+            </div>
+        </div>
+    </div>
+</div>
