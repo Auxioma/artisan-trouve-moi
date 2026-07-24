@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -112,7 +113,7 @@ class ArtisanProfileType extends AbstractType
              *
              * Ce champ n’existe pas dans l’entité.
              */
-            ->add('addressSearch', TextType::class, [
+            ->add('addressSearch', HiddenType::class, [
                 'label' => 'Rechercher l’adresse professionnelle',
                 'mapped' => false,
                 'required' => false,
@@ -382,6 +383,14 @@ class ArtisanProfileType extends AbstractType
                 'widget' => 'single_text',
             ])
 
+            ->add('professionalLiabilityDocumentFile', VichFileType::class, [
+                'label' => 'Attestation d’assurance responsabilité civile professionnelle',
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'download_label' => 'Télécharger le document actuel',
+            ])
+
             /*
              * ============================================================
              * ASSURANCE DÉCENNALE
@@ -418,6 +427,14 @@ class ArtisanProfileType extends AbstractType
                 'label' => 'Date d’expiration de la garantie décennale',
                 'required' => false,
                 'widget' => 'single_text',
+            ])
+
+            ->add('decennialInsuranceDocumentFile', VichFileType::class, [
+                'label' => 'Attestation de garantie décennale',
+                'required' => false,
+                'allow_delete' => true,
+                'download_uri' => true,
+                'download_label' => 'Télécharger le document actuel',
             ])
 
             ->add('decennialGeographicalCoverage', TextType::class, [

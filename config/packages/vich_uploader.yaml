@@ -9,3 +9,33 @@ vich_uploader:
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
             delete_on_update: true
             delete_on_remove: true
+        artisan_photos:
+            uri_prefix: /uploads/artisan-photos
+            upload_destination: '%kernel.project_dir%/public/uploads/artisan-photos'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_update: true
+            delete_on_remove: true
+        request_photos:
+            uri_prefix: /uploads/request-photos
+            upload_destination: '%kernel.project_dir%/public/uploads/request-photos'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_update: true
+            delete_on_remove: true
+        message_attachments:
+            uri_prefix: /uploads/message-attachments
+            upload_destination: '%kernel.project_dir%/public/uploads/message-attachments'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_update: true
+            delete_on_remove: true
+        verification_documents:
+            uri_prefix: /uploads/verification-documents
+            upload_destination: '%kernel.project_dir%/public/uploads/verification-documents'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_update: true
+            delete_on_remove: true
+        artisan_insurance_documents:
+            uri_prefix: /uploads/artisan-insurance-documents
+            upload_destination: '%kernel.project_dir%/public/uploads/artisan-insurance-documents'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            delete_on_update: true
+            delete_on_remove: true

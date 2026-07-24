@@ -1,0 +1,23 @@
+<div class="param-panneau" id="panneau-description">
+    <div class="dash-card">
+        <p class="param-section-titre">Description de l'entreprise</p>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                {{ form_label(form.email, 'Adresse e-mail professionnelle', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.email, { attr: { class: 'form-control', autocomplete: 'email', placeholder: 'contact@entreprise.fr' } }) }}
+                {{ form_errors(form.email) }}
+            </div>
+            <div class="col-12 col-md-6">
+                {{ form_label(form.phoneNumber, 'Numéro de téléphone professionnel', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.phoneNumber, { attr: { class: 'form-control', autocomplete: 'tel', placeholder: '06 12 34 56 78' } }) }}
+                {{ form_errors(form.phoneNumber) }}
+            </div>
+            <div class="col-12">
+                {{ form_label(form.artisanProfile.description, 'Présentation de votre entreprise', { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.artisanProfile.description, { attr: { class: 'form-control', rows: 7, maxlength: 10000, placeholder: 'Présentez votre entreprise, votre expérience…' } }) }}
+                {{ form_errors(form.artisanProfile.description) }}
+            </div>
+        </div>
+
+    </div>
+</div>

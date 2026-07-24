@@ -4,272 +4,147 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Enum\UserStatus;
-use App\Entity\Enum\UserType;
 use App\Entity\Users\User;
+use App\Entity\Billing\SubscriptionPlan;
+use App\Entity\Enum\UserType;
+use App\Entity\Users\UserProfile;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\Mapping\AssociationMapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
-use Faker\Generator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserFixtures extends Fixture
 {
-    public const DEFAULT_PASSWORD = 'ChangeMe123!';
-
-    private const TERMS_VERSION = '2026.07';
-    private const PRIVACY_VERSION = '2026.07';
-
-    public function __construct(
-        private readonly UserPasswordHasherInterface $passwordHasher,
-    ) {
+    private const ENTITY_CLASS = User::class;
+    private const RECORDS_PER_ENTITY = 1000;
+    /** @var array<int, array{email: string, password: string, type: UserType}> */
+    private const TEST_ACCOUNTS = [
+        1 => ['email' => 'user@user.user', 'password' => 'user', 'type' => UserType::CUSTOMER],
+        2 => ['email' => 'artisan@artisan.artisan', 'password' => 'artisan', 'type' => UserType::ARTISAN],
+    ];
+    public function __construct(private readonly KernelInterface $kernel, private readonly UserPasswordHasherInterface $passwordHasher)
+    {
     }
 
     public function load(ObjectManager $manager): void
     {
-        FixtureReferences::assertLimits();
-
-        $faker = Factory::create('fr_FR');
-        $faker->seed(FixtureReferences::USER_FIXTURES_SEED);
-
-        $this->loadCustomers($manager, $faker);
-        $this->loadArtisans($manager, $faker);
-        $this->loadCommercialPartners($manager, $faker);
-        $this->loadTestAccounts($manager);
-
+        $metadata = $manager->getClassMetadata(self::ENTITY_CLASS);
+        for ($index = 1; $index <= $this->recordCount(); ++$index) {
+            $entity = new User();
+            $this->populateFields($metadata, $entity, $index);
+            $this->populateAssociations($metadata, $entity, $index);
+            $this->applyTestAccount($entity, $index);
+            $entity->setPassword($this->passwordHasher->hashPassword($entity, self::TEST_ACCOUNTS[$index]['password'] ?? 'fixture'));
+            $entity->setRoles(array_values(array_unique(['ROLE_USER', $entity->getType()->securityRole()])));
+            $source = $this->kernel->getProjectDir().DIRECTORY_SEPARATOR.'fixtures'.DIRECTORY_SEPARATOR.'media'.DIRECTORY_SEPARATOR.'avatar.jpg';
+            $directory = $this->kernel->getProjectDir().DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'fixture-uploads'.DIRECTORY_SEPARATOR.'User';
+            if (!is_dir($directory)) { mkdir($directory, 0775, true); }
+            $copy = $directory.DIRECTORY_SEPARATOR.sprintf('%06d-avatar.jpg', $index);
+            copy($source, $copy);
+            $entity->setAvatarFile(new UploadedFile($copy, basename($source), 'image/jpeg', null, true));
+            $manager->persist($entity);
+            $this->addReference($this->reference(self::ENTITY_CLASS, $index), $entity);
+            if (0 === $index % 100) { $manager->flush(); }
+        }
         $manager->flush();
     }
 
-    private function loadCustomers(
-        ObjectManager $manager,
-        Generator $faker,
-    ): void {
-        for ($index = 1; $index <= FixtureReferences::CUSTOMER_USER_COUNT; ++$index) {
-            $isActive = $index <= 20;
-            $createdAt = $this->randomDateBetween(
-                $faker,
-                '2025-10-01 08:00:00',
-                '2026-07-05 18:00:00'
-            );
-            $updatedAt = $createdAt->modify(sprintf('+%d days', ($index % 28) + 1));
-            $lastLoginAt = $isActive
-                ? $updatedAt->modify(sprintf('+%d hours', $index % 8))
-                : null;
-
-            $this->persistUser(
-                $manager,
-                FixtureReferences::customerUser($index),
-                $this->createUser(
-                    email: sprintf('customer%02d@example.test', $index),
-                    firstName: $faker->firstName(),
-                    lastName: $faker->lastName(),
-                    type: UserType::CUSTOMER,
-                    status: $isActive
-                        ? UserStatus::ACTIVE
-                        : UserStatus::PENDING,
-                    isVerified: $isActive,
-                    phoneNumber: $this->phoneNumberFromIndex($index),
-                    createdAt: $createdAt,
-                    updatedAt: $updatedAt,
-                    lastLoginAt: $lastLoginAt,
-                    marketingConsent: 0 !== $index % 3
-                )
-            );
-        }
-    }
-
-    private function loadArtisans(
-        ObjectManager $manager,
-        Generator $faker,
-    ): void {
-        for ($index = 1; $index <= FixtureReferences::ARTISAN_USER_COUNT; ++$index) {
-            $createdAt = $this->randomDateBetween(
-                $faker,
-                '2025-09-15 08:00:00',
-                '2026-06-15 18:00:00'
-            );
-            $updatedAt = $createdAt->modify(sprintf('+%d days', ($index % 35) + 5));
-
-            $this->persistUser(
-                $manager,
-                FixtureReferences::artisanUser($index),
-                $this->createUser(
-                    email: sprintf('artisan%02d@example.test', $index),
-                    firstName: $faker->firstName(),
-                    lastName: $faker->lastName(),
-                    type: UserType::ARTISAN,
-                    status: UserStatus::ACTIVE,
-                    isVerified: true,
-                    phoneNumber: $this->phoneNumberFromIndex($index + 100),
-                    createdAt: $createdAt,
-                    updatedAt: $updatedAt,
-                    lastLoginAt: $updatedAt->modify(sprintf('+%d hours', $index % 6)),
-                    marketingConsent: 0 === $index % 2
-                )
-            );
-        }
-    }
-
-    private function loadCommercialPartners(
-        ObjectManager $manager,
-        Generator $faker,
-    ): void {
-        for (
-            $index = 1;
-            $index <= FixtureReferences::COMMERCIAL_PARTNER_USER_COUNT;
-            ++$index
-        ) {
-            $isActive = $index <= FixtureReferences::VALIDATED_COMMERCIAL_PARTNER_PROFILE_COUNT;
-            $createdAt = $this->randomDateBetween(
-                $faker,
-                '2025-11-01 08:00:00',
-                '2026-07-01 18:00:00'
-            );
-            $updatedAt = $createdAt->modify(sprintf('+%d days', ($index % 24) + 3));
-            $lastLoginAt = $isActive
-                ? $updatedAt->modify('+2 hours')
-                : null;
-
-            $this->persistUser(
-                $manager,
-                FixtureReferences::commercialPartnerUser($index),
-                $this->createUser(
-                    email: sprintf('partner%02d@example.test', $index),
-                    firstName: $faker->firstName(),
-                    lastName: $faker->lastName(),
-                    type: UserType::COMMERCIAL_PARTNER,
-                    status: $isActive
-                        ? UserStatus::ACTIVE
-                        : UserStatus::PENDING,
-                    isVerified: $isActive,
-                    phoneNumber: $this->phoneNumberFromIndex($index + 200),
-                    createdAt: $createdAt,
-                    updatedAt: $updatedAt,
-                    lastLoginAt: $lastLoginAt,
-                    marketingConsent: false
-                )
-            );
-        }
-    }
-
-    private function loadTestAccounts(ObjectManager $manager): void
+    private function applyTestAccount(User $entity, int $index): void
     {
-        $createdAt = new \DateTimeImmutable('2026-07-18 09:00:00');
-
-        foreach ([
-            ['user', 'user@user.user', 'user', UserType::CUSTOMER, []],
-            ['artisan', 'artisan@artisan.artisan', 'artisan', UserType::ARTISAN, []],
-            ['admin', 'admin@admin.admin', 'admin', UserType::CUSTOMER, ['ROLE_ADMIN']],
-            ['commercial', 'commercial@commercial.commercial', 'commercial', UserType::COMMERCIAL_PARTNER, []],
-        ] as [$reference, $email, $password, $type, $roles]) {
-            $this->persistUser(
-                $manager,
-                FixtureReferences::testUser($reference),
-                $this->createUser(
-                    email: $email,
-                    firstName: ucfirst($reference),
-                    lastName: 'Test',
-                    type: $type,
-                    status: UserStatus::ACTIVE,
-                    isVerified: true,
-                    phoneNumber: null,
-                    createdAt: $createdAt,
-                    updatedAt: $createdAt,
-                    lastLoginAt: null,
-                    roles: $roles,
-                    password: $password
-                )
-            );
-        }
-    }
-
-    private function persistUser(
-        ObjectManager $manager,
-        string $reference,
-        User $user,
-    ): void {
-        $manager->persist($user);
-        $this->addReference($reference, $user);
-    }
-
-    private function createUser(
-        string $email,
-        string $firstName,
-        string $lastName,
-        UserType $type,
-        UserStatus $status,
-        bool $isVerified,
-        ?string $phoneNumber,
-        \DateTimeImmutable $createdAt,
-        \DateTimeImmutable $updatedAt,
-        ?\DateTimeImmutable $lastLoginAt = null,
-        bool $marketingConsent = false,
-        array $roles = [],
-        string $password = self::DEFAULT_PASSWORD,
-    ): User {
-        $user = new User();
-        $acceptedAt = $createdAt->modify('+1 day');
-
-        $user
-            ->setEmail($email)
-            ->setPassword(
-                $this->passwordHasher->hashPassword(
-                    $user,
-                    $password
-                )
-            )
-            ->setType($type)
-            ->setStatus($status)
-            ->setRoles(array_values(array_unique([
-                ...$roles,
-                $type->securityRole(),
-            ])))
-            ->setFirstName($firstName)
-            ->setLastName($lastName)
-            ->setPhoneNumber($phoneNumber)
-            ->setLocale('fr')
-            ->setCountryCode('FR')
-            ->setTimezone('Europe/Paris')
-            ->setIsVerified($isVerified)
-            ->setIsPhoneVerified($isVerified && null !== $phoneNumber)
-            ->setHasAcceptedTerms(true)
-            ->setTermsAcceptedAt($acceptedAt)
-            ->setTermsVersion(self::TERMS_VERSION)
-            ->setHasAcceptedPrivacyPolicy(true)
-            ->setPrivacyPolicyAcceptedAt($acceptedAt)
-            ->setPrivacyPolicyVersion(self::PRIVACY_VERSION)
-            ->setMarketingConsent($marketingConsent)
-            ->setLastLoginAt($lastLoginAt)
-            ->setCreatedAt($createdAt)
-            ->setUpdatedAt($updatedAt);
-
-        if ($marketingConsent) {
-            $user->setMarketingConsentAt($acceptedAt->modify('+30 minutes'));
+        $account = self::TEST_ACCOUNTS[$index] ?? null;
+        if (null === $account) {
+            return;
         }
 
-        return $user;
+        $entity->setEmail($account['email']);
+        $entity->setType($account['type']);
     }
 
-    private function randomDateBetween(
-        Generator $faker,
-        string $start,
-        string $end,
-    ): \DateTimeImmutable {
-        return \DateTimeImmutable::createFromMutable(
-            $faker->dateTimeBetween($start, $end)
-        );
-    }
-
-    private function phoneNumberFromIndex(int $index): string
+    private function recordCount(): int
     {
-        $digits = str_pad((string) (($index * 7919) % 100000000), 8, '0', STR_PAD_LEFT);
+        if (SubscriptionPlan::class === self::ENTITY_CLASS) {
+            return count(\App\Entity\Enum\SubscriptionPlanCode::cases());
+        }
 
-        return sprintf(
-            '+33 6 %s %s %s %s',
-            substr($digits, 0, 2),
-            substr($digits, 2, 2),
-            substr($digits, 4, 2),
-            substr($digits, 6, 2)
-        );
+        return self::RECORDS_PER_ENTITY;
+    }
+
+    private function populateFields(ClassMetadata $metadata, object $entity, int $index): void
+    {
+        foreach ($metadata->getFieldNames() as $field) {
+            $mapping = $metadata->getFieldMapping($field);
+            if ($mapping->id || in_array($field, ['password', 'roles'], true)) {
+                continue;
+            }
+            $metadata->setFieldValue($entity, $field, $this->fieldValue($mapping, $index));
+        }
+    }
+
+    private function fieldValue(FieldMapping $mapping, int $index): mixed
+    {
+        if (null !== $mapping->enumType) {
+            $cases = $mapping->enumType::cases();
+
+            return $cases[($index - 1) % count($cases)];
+        }
+
+        return match ($mapping->type) {
+            'boolean' => 0 === $index % 2,
+            'integer', 'smallint', 'bigint' => $index,
+            'decimal', 'float' => number_format(10 + ($index / 10), $mapping->scale ?? 2, '.', ''),
+            'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable' => new \DateTimeImmutable(sprintf('2026-01-01 +%d minutes', $index)),
+            'date', 'date_immutable' => new \DateTimeImmutable(sprintf('2026-01-01 +%d days', $index)),
+            'time', 'time_immutable' => new \DateTime(sprintf('08:%02d:00', $index % 60)),
+            'json', 'array', 'simple_array' => ['fixture', (string) $index],
+            default => $this->stringValue($mapping, $index),
+        };
+    }
+
+    private function stringValue(FieldMapping $mapping, int $index): string
+    {
+        $value = sprintf('%s-%06d', $mapping->fieldName, $index);
+        if (str_contains(strtolower($mapping->fieldName), 'email')) {
+            $value = sprintf('fixture-%06d@example.test', $index);
+        }
+
+        return null === $mapping->length ? $value : substr($value, 0, $mapping->length);
+    }
+
+    private function populateAssociations(ClassMetadata $metadata, object $entity, int $index): void
+    {
+        foreach ($metadata->getAssociationMappings() as $association) {
+            if (!$association->isToOneOwningSide() || !$this->shouldPopulateAssociation($association, $metadata->name)) {
+                continue;
+            }
+
+            $target = $association->targetEntity;
+            $targetCount = SubscriptionPlan::class === $target
+                ? count(\App\Entity\Enum\SubscriptionPlanCode::cases())
+                : self::RECORDS_PER_ENTITY;
+            $targetIndex = (($index - 1) % $targetCount) + 1;
+            $metadata->setFieldValue($entity, $association->fieldName, $this->getReference($this->reference($target, $targetIndex), $target));
+        }
+    }
+
+    private function shouldPopulateAssociation(AssociationMapping $association, string $source): bool
+    {
+        if ($association->targetEntity === $source) {
+            return false;
+        }
+
+        if (UserProfile::class === self::ENTITY_CLASS && 'user' === $association->fieldName) {
+            return true;
+        }
+
+        return isset($association->joinColumns[0]) && false === $association->joinColumns[0]->nullable;
+    }
+
+    private function reference(string $class, int $index): string
+    {
+        return sprintf('%s.%06d', (new \ReflectionClass($class))->getShortName(), $index);
     }
 }

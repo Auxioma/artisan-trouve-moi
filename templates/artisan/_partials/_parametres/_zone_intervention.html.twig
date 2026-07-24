@@ -1,0 +1,13 @@
+<div class="param-panneau" id="panneau-zone">
+    <div class="dash-card">
+        <p class="param-section-titre">Rayon d'intervention</p>
+        <label class="form-label" for="rayon">
+            Autour de <b id="intervention-location">votre adresse professionnelle</b> —
+            <span id="rayon-valeur">25 km</span>
+        </label>
+        {{ form_widget(form.artisanProfile.travelRadiusKm, { attr: { oninput: "document.getElementById('rayon-valeur').textContent = this.value + ' km'" } }) }}
+        <p class="small text-secondary mb-3">Vous recevez uniquement les demandes situées dans ce périmètre.</p>
+        <div id="intervention-map" style="height:390px;border-radius:14px;overflow:hidden;" aria-label="Carte de la zone d'intervention"></div>
+        <p class="small text-secondary mt-2 mb-0">Carte et données © contributeurs OpenStreetMap.</p>
+    </div>
+</div>

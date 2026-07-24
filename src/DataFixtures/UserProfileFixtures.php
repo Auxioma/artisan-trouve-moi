@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Users\CommercialPartnerProfile;
-use App\Entity\Billing\SubscriptionPlan;
 use App\Entity\Users\UserProfile;
+use App\Entity\Billing\SubscriptionPlan;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\ObjectManager;
 
-final class CommercialPartnerProfileFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
+final class UserProfileFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
 {
-    private const ENTITY_CLASS = CommercialPartnerProfile::class;
+    private const ENTITY_CLASS = UserProfile::class;
     private const RECORDS_PER_ENTITY = 1000;
     public function getDependencies(): array
     {
@@ -26,7 +25,7 @@ final class CommercialPartnerProfileFixtures extends Fixture implements \Doctrin
     {
         $metadata = $manager->getClassMetadata(self::ENTITY_CLASS);
         for ($index = 1; $index <= $this->recordCount(); ++$index) {
-            $entity = new CommercialPartnerProfile();
+            $entity = new UserProfile();
             $this->populateFields($metadata, $entity, $index);
             $this->populateAssociations($metadata, $entity, $index);
             $manager->persist($entity);

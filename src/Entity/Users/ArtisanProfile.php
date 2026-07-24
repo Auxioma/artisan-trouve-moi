@@ -13,11 +13,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Attribute as Vich;
 
 #[ORM\Entity(repositoryClass: ArtisanProfileRepository::class)]
 #[ORM\Table(name: 'artisan_profile')]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 #[UniqueEntity(
     fields: ['siret'],
     message: 'Ce numéro SIRET est déjà utilisé par un autre artisan.'
@@ -188,6 +191,23 @@ class ArtisanProfile
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $professionalLiabilityExpiresAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $professionalLiabilityDocumentName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $professionalLiabilityDocumentSize = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $professionalLiabilityDocumentMimeType = null;
+
+    #[Vich\UploadableField(
+        mapping: 'artisan_insurance_documents',
+        fileNameProperty: 'professionalLiabilityDocumentName',
+        size: 'professionalLiabilityDocumentSize',
+        mimeType: 'professionalLiabilityDocumentMimeType'
+    )]
+    private ?File $professionalLiabilityDocumentFile = null;
+
     #[ORM\Column(enumType: VerificationStatus::class)]
     private VerificationStatus $professionalLiabilityVerificationStatus =
         VerificationStatus::NOT_SUBMITTED;
@@ -211,6 +231,23 @@ class ArtisanProfile
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $decennialInsuranceExpiresAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $decennialInsuranceDocumentName = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $decennialInsuranceDocumentSize = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $decennialInsuranceDocumentMimeType = null;
+
+    #[Vich\UploadableField(
+        mapping: 'artisan_insurance_documents',
+        fileNameProperty: 'decennialInsuranceDocumentName',
+        size: 'decennialInsuranceDocumentSize',
+        mimeType: 'decennialInsuranceDocumentMimeType'
+    )]
+    private ?File $decennialInsuranceDocumentFile = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $decennialGeographicalCoverage = null;
@@ -387,6 +424,22 @@ class ArtisanProfile
     public function updateTimestamp(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    /**
+     * Les fichiers temporaires Vich ne doivent jamais être stockés dans la
+     * session Symfony ou dans le token de sécurité.
+     */
+    public function __serialize(): array
+    {
+        $data = (array) $this;
+
+        unset(
+            $data["\0".self::class."\0professionalLiabilityDocumentFile"],
+            $data["\0".self::class."\0decennialInsuranceDocumentFile"],
+        );
+
+        return $data;
     }
 
     public function getId(): ?int
@@ -1442,6 +1495,110 @@ class ArtisanProfile
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getProfessionalLiabilityDocumentName(): ?string
+    {
+        return $this->professionalLiabilityDocumentName;
+    }
+
+    public function setProfessionalLiabilityDocumentName(?string $documentName): static
+    {
+        $this->professionalLiabilityDocumentName = $documentName;
+
+        return $this;
+    }
+
+    public function getProfessionalLiabilityDocumentSize(): ?int
+    {
+        return $this->professionalLiabilityDocumentSize;
+    }
+
+    public function setProfessionalLiabilityDocumentSize(?int $documentSize): static
+    {
+        $this->professionalLiabilityDocumentSize = $documentSize;
+
+        return $this;
+    }
+
+    public function getProfessionalLiabilityDocumentMimeType(): ?string
+    {
+        return $this->professionalLiabilityDocumentMimeType;
+    }
+
+    public function setProfessionalLiabilityDocumentMimeType(?string $mimeType): static
+    {
+        $this->professionalLiabilityDocumentMimeType = $mimeType;
+
+        return $this;
+    }
+
+    public function getProfessionalLiabilityDocumentFile(): ?File
+    {
+        return $this->professionalLiabilityDocumentFile;
+    }
+
+    public function setProfessionalLiabilityDocumentFile(?File $documentFile): static
+    {
+        $this->professionalLiabilityDocumentFile = $documentFile;
+
+        if (null !== $documentFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    public function getDecennialInsuranceDocumentName(): ?string
+    {
+        return $this->decennialInsuranceDocumentName;
+    }
+
+    public function setDecennialInsuranceDocumentName(?string $documentName): static
+    {
+        $this->decennialInsuranceDocumentName = $documentName;
+
+        return $this;
+    }
+
+    public function getDecennialInsuranceDocumentSize(): ?int
+    {
+        return $this->decennialInsuranceDocumentSize;
+    }
+
+    public function setDecennialInsuranceDocumentSize(?int $documentSize): static
+    {
+        $this->decennialInsuranceDocumentSize = $documentSize;
+
+        return $this;
+    }
+
+    public function getDecennialInsuranceDocumentMimeType(): ?string
+    {
+        return $this->decennialInsuranceDocumentMimeType;
+    }
+
+    public function setDecennialInsuranceDocumentMimeType(?string $mimeType): static
+    {
+        $this->decennialInsuranceDocumentMimeType = $mimeType;
+
+        return $this;
+    }
+
+    public function getDecennialInsuranceDocumentFile(): ?File
+    {
+        return $this->decennialInsuranceDocumentFile;
+    }
+
+    public function setDecennialInsuranceDocumentFile(?File $documentFile): static
+    {
+        $this->decennialInsuranceDocumentFile = $documentFile;
+
+        if (null !== $documentFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
 
         return $this;
     }

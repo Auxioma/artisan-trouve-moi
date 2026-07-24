@@ -64,6 +64,25 @@ final class ParametresController extends AbstractController
             );
         }
 
+        if ($form->isSubmitted()) {
+            $formErrors = [];
+
+            foreach ($form->getErrors(true) as $formError) {
+                $origin = $formError->getOrigin();
+                $fieldName = $origin?->getName() ?? 'formulaire';
+                $message = $formError->getMessage();
+
+                $formErrors[] = sprintf('%s : %s', $fieldName, $message);
+            }
+
+            $this->addFlash(
+                'error',
+                $formErrors !== []
+                    ? 'Impossible d’enregistrer : '.implode(' | ', array_unique($formErrors))
+                    : 'Impossible d’enregistrer vos paramètres. Vérifiez les champs signalés, notamment les documents d’assurance.'
+            );
+        }
+
         $sessions = $userSessionRepository->findBy(['user' => $artisan->getId()], ['id' => 'DESC']);
         $currentToken = $request->getSession()->get('_user_session_token');
 

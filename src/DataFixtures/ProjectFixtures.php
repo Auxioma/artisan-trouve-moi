@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Users\CommercialPartnerProfile;
+use App\Entity\Projects\Project;
 use App\Entity\Billing\SubscriptionPlan;
 use App\Entity\Users\UserProfile;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -13,20 +13,20 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\ObjectManager;
 
-final class CommercialPartnerProfileFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
+final class ProjectFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
 {
-    private const ENTITY_CLASS = CommercialPartnerProfile::class;
+    private const ENTITY_CLASS = Project::class;
     private const RECORDS_PER_ENTITY = 1000;
     public function getDependencies(): array
     {
-        return [UserFixtures::class];
+        return [QuoteFixtures::class, UserFixtures::class, ArtisanProfileFixtures::class];
     }
 
     public function load(ObjectManager $manager): void
     {
         $metadata = $manager->getClassMetadata(self::ENTITY_CLASS);
         for ($index = 1; $index <= $this->recordCount(); ++$index) {
-            $entity = new CommercialPartnerProfile();
+            $entity = new Project();
             $this->populateFields($metadata, $entity, $index);
             $this->populateAssociations($metadata, $entity, $index);
             $manager->persist($entity);
@@ -120,3 +120,4 @@ final class CommercialPartnerProfileFixtures extends Fixture implements \Doctrin
         return sprintf('%s.%06d', (new \ReflectionClass($class))->getShortName(), $index);
     }
 }
+

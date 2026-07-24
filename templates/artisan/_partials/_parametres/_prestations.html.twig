@@ -1,0 +1,141 @@
+{% macro carte_prestation(sf, numero) %}
+    <div class="service-card{% if sf.isActive.vars.data %} est-actif{% endif %}" data-service-item>
+
+        {# En-tête de la carte #}
+        <div class="service-card__entete">
+            <span class="service-card__numero" aria-hidden="true">{{ numero }}</span>
+            <div class="service-card__titre-wrap">
+                <span class="service-card__nom">{{ sf.title.vars.value ?: 'Nouvelle prestation' }}</span>
+                <span class="service-card__meta">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+                {% if sf.category.vars.value %}{{ sf.category.vars.value }}{% else %}Catégorie non définie{% endif %}
+                    {% if sf.priceFrom.vars.value %} · à partir de {{ sf.priceFrom.vars.value }} €{% endif %}
+            </span>
+            </div>
+            <div class="service-card__controles">
+                <div class="form-check form-switch mb-0">
+                    {{ form_widget(sf.isActive, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Afficher cette prestation sur le profil' } }) }}
+                </div>
+                <button class="service-card__supprimer" type="button" data-remove-service aria-label="Supprimer cette prestation" title="Supprimer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/></svg>
+                </button>
+            </div>
+        </div>
+
+        {# Corps — grille 2 colonnes #}
+        <div class="service-card__corps">
+            <div class="service-card__grille">
+
+                {# Ligne 1 : Catégorie | Nom de la prestation #}
+                <div>
+                    {{ form_label(sf.category, 'Catégorie de métier', { label_attr: { class: 'form-label' } }) }}
+                    {{ form_widget(sf.category, { attr: { class: 'form-select' } }) }}
+                    {{ form_errors(sf.category) }}
+                </div>
+                <div>
+                    {{ form_label(sf.title, 'Nom de la prestation', { label_attr: { class: 'form-label' } }) }}
+                    {{ form_widget(sf.title, { attr: { class: 'form-control', placeholder: 'Ex : Remplacement de chauffe-eau' } }) }}
+                    {{ form_errors(sf.title) }}
+                </div>
+
+                {# Ligne 2 : Description — pleine largeur #}
+                <div class="service-card__grille--full">
+                    {{ form_label(sf.description, 'Description', { label_attr: { class: 'form-label' } }) }}
+                    {{ form_widget(sf.description, { attr: { class: 'form-control', rows: 3, maxlength: 2000, placeholder: 'Décrivez les travaux inclus, les matériaux utilisés, les garanties…' } }) }}
+                    {{ form_errors(sf.description) }}
+                </div>
+
+                {# Ligne 3 : Prix à partir de | Prix unitaire #}
+                <div>
+                    {{ form_label(sf.priceFrom, 'Prix à partir de', { label_attr: { class: 'form-label' } }) }}
+                    <div class="input-unite">
+                        {{ form_widget(sf.priceFrom, { attr: { class: 'form-control', placeholder: '0,00', min: 0, step: '0.01', inputmode: 'decimal' } }) }}
+                        <span class="input-unite__label">€</span>
+                    </div>
+                    {{ form_errors(sf.priceFrom) }}
+                </div>
+                <div>
+                    {{ form_label(sf.priceUnit, 'Prix unitaire', { label_attr: { class: 'form-label' } }) }}
+                    {{ form_widget(sf.priceUnit, { attr: { class: 'form-select' } }) }}
+                    {{ form_errors(sf.priceUnit) }}
+                </div>
+
+                {# Ligne 4 : Durée en heures | Ordre d'affichage #}
+                <div>
+                    {{ form_label(sf.estimatedDurationHours, 'Durée en heures', { label_attr: { class: 'form-label' } }) }}
+                    <div class="input-unite">
+                        {{ form_widget(sf.estimatedDurationHours, { attr: { class: 'form-control', placeholder: '2', min: 1, inputmode: 'numeric' } }) }}
+                        <span class="input-unite__label">h</span>
+                    </div>
+                    {{ form_errors(sf.estimatedDurationHours) }}
+                </div>
+                <div>
+                    {{ form_label(sf.position, "Ordre d'affichage", { label_attr: { class: 'form-label' } }) }}
+                    {{ form_widget(sf.position, { attr: { class: 'form-control', min: 0, inputmode: 'numeric', placeholder: '1' } }) }}
+                    {{ form_errors(sf.position) }}
+                </div>
+
+            </div>{# /service-card__grille #}
+
+            {{ form_errors(sf) }}
+        </div>
+    </div>
+{% endmacro %}
+
+
+<div
+    class="param-panneau"
+    id="panneau-prestations"
+    data-services-collection
+    data-index="{{ form.artisanProfile.services|length }}"
+    data-prototype="{{ _self.carte_prestation(form.artisanProfile.services.vars.prototype, '__num__')|e('html_attr') }}"
+>
+    <div class="dash-card">
+
+        <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-4">
+            <div>
+                <p class="param-section-titre mb-1">Prestations proposées</p>
+                <p class="small text-secondary mb-0">Ces services apparaissent sur votre fiche publique avec leurs tarifs.</p>
+            </div>
+            <button class="btn btn-dash-primary btn-sm" type="button" data-add-service>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Ajouter une prestation
+            </button>
+        </div>
+
+        <div class="services-liste" data-services-list>
+
+            {% for serviceForm in form.artisanProfile.services %}
+                {{ _self.carte_prestation(serviceForm, loop.index) }}
+            {% else %}
+                <div class="services-vide" data-services-empty>
+                        <span class="services-vide__icone">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.4-2.4z"/></svg>
+                        </span>
+                    <b>Aucune prestation enregistrée</b>
+                    <p>Ajoutez vos services pour qu'ils apparaissent sur votre fiche publique avec leurs tarifs indicatifs.</p>
+                    <button class="btn btn-dash-ghost btn-sm" type="button" data-add-service>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                        Ajouter ma première prestation
+                    </button>
+                </div>
+            {% endfor %}
+
+        </div>
+
+        {% if form.artisanProfile.services|length > 0 %}
+            <div class="services-actions">
+                <p class="services-compteur mb-0">
+                    <b>{{ form.artisanProfile.services|length }}</b>
+                    prestation{{ form.artisanProfile.services|length > 1 ? 's' : '' }} enregistrée{{ form.artisanProfile.services|length > 1 ? 's' : '' }}
+                </p>
+                <button class="btn btn-dash-ghost btn-sm" type="button" data-add-service>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                    Ajouter
+                </button>
+            </div>
+        {% endif %}
+
+        {{ form_errors(form.artisanProfile.services) }}
+    </div>
+</div>

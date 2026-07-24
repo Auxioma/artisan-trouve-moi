@@ -1,0 +1,94 @@
+<div class="param-panneau actif" id="panneau-profil">
+    <div class="dash-card">
+        <p class="param-section-titre">Identité de l'entreprise</p>
+        <div class="param-logo mb-3">
+                    <span class="avatar avatar--lg avatar--safran" id="avatar-apercu-initiales" {% if app.user.avatarFilename %} style="display:none;" {% endif %}>
+                        {{ (app.user.firstName|first ~ app.user.lastName|first)|upper }}
+                    </span>
+            <img id="avatar-apercu-image" class="avatar avatar--lg" alt="Photo de profil"
+                {% if app.user.avatarFilename %} src="{{ vich_uploader_asset(app.user, 'avatarFile') }}" {% else %} src="" style="display:none;" {% endif %}>
+            <div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-dash-ghost btn-sm" type="button" id="btn-changer-photo">Changer la photo</button>
+                    <button class="btn btn-dash-ghost btn-sm" type="button" id="btn-supprimer-photo">Supprimer</button>
+                </div>
+                <p>PNG ou JPG, 2 Mo max. Seules vos initiales sont visibles par défaut.</p>
+                <div class="d-none">
+                    {{ form_widget(form.avatarFile.file, { id: 'avatar-input-file', attr: { accept: 'image/png,image/jpeg' } }) }}
+                    {% if form.avatarFile.delete is defined %}
+                        {{ form_widget(form.avatarFile.delete, { attr: { id: 'avatar-input-delete' } }) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row g-3">
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="nom-entreprise">Nom de l'entreprise</label>
+                {{ form_widget(form.artisanProfile.legalName, { attr: { class: 'form-control', id: 'nom-entreprise', autocomplete: 'organization', placeholder: 'Plomberie Express' } }) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="nom-commercial">Nom commercial</label>
+                {{ form_widget(form.artisanProfile.commercialName, { attr: { class: 'form-control', id: 'nom-commercial', autocomplete: 'organization', placeholder: 'Plomberie Express' } }) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="prenom">Prénom</label>
+                {{ form_widget(form.firstName, { attr: { class: 'form-control', id: 'prenom', autocomplete: 'given-name', placeholder: 'Prénom' } }) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="nom">Nom</label>
+                {{ form_widget(form.lastName, { attr: { class: 'form-control', id: 'nom', autocomplete: 'family-name', placeholder: 'Nom' } }) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="siret">SIRET</label>
+                {{ form_widget(form.artisanProfile.siret, {
+                    id: 'siret',
+                    attr: {
+                        class: 'form-control',
+                        autocomplete: 'off',
+                        inputmode: 'numeric',
+                        maxlength: 14,
+                        placeholder: '12345678901234'
+                    }
+                }) }}
+                {{ form_errors(form.artisanProfile.siret) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="ape-code">APE</label>
+                {{ form_widget(form.artisanProfile.apeCode, { attr: { class: 'form-control', id: 'ape-code', autocomplete: 'off', placeholder: '43.22A' } }) }}
+                {{ form_errors(form.artisanProfile.apeCode) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="forme-juridique">Statut juridique</label>
+                {{ form_widget(form.artisanProfile.legalForm, { attr: { class: 'form-control', id: 'forme-juridique', placeholder: 'SARL, SAS, EI...' } }) }}
+                {{ form_errors(form.artisanProfile.legalForm) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="numero-tva">Numéro de TVA</label>
+                {{ form_widget(form.artisanProfile.vatNumber, { attr: { class: 'form-control', id: 'numero-tva', placeholder: 'FR00123456789' } }) }}
+                {{ form_errors(form.artisanProfile.vatNumber) }}
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="adresse-professionnelle">Adresse complète</label>
+                {{ form_widget(form.artisanProfile.addressSearch, {
+                    attr: {
+                        class: 'form-control',
+                        id: 'adresse-professionnelle',
+                        autocomplete: 'street-address',
+                        placeholder: 'Exemple : 10 rue Victor-Hugo'
+                    }
+                }) }}
+                {{ form_errors(form.artisanProfile.addressSearch) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="ville">Ville</label>
+                {{ form_widget(form.artisanProfile.city, { attr: { class: 'form-control', id: 'ville', autocomplete: 'address-level2', placeholder: 'Le Havre' } }) }}
+                {{ form_errors(form.artisanProfile.city) }}
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="code-postal">Code postal</label>
+                {{ form_widget(form.artisanProfile.postalCode, { attr: { id: 'code-postal', class: 'form-control', autocomplete: 'postal-code', placeholder: '76600' } }) }}
+                {{ form_errors(form.artisanProfile.postalCode) }}
+            </div>
+        </div>
+    </div>
+</div>

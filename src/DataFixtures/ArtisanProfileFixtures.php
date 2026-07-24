@@ -4,354 +4,119 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Enum\QualificationType;
-use App\Entity\Enum\VerificationStatus;
 use App\Entity\Users\ArtisanProfile;
-use App\Entity\Users\User;
+use App\Entity\Billing\SubscriptionPlan;
+use App\Entity\Users\UserProfile;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\ORM\Mapping\AssociationMapping;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
-use Faker\Generator;
 
-final class ArtisanProfileFixtures extends Fixture implements DependentFixtureInterface
+final class ArtisanProfileFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
 {
-    public function load(ObjectManager $manager): void
-    {
-        $faker = Factory::create('fr_FR');
-        $faker->seed(FixtureReferences::ARTISAN_PROFILE_FIXTURES_SEED);
-
-        $trades = $this->tradeCatalog();
-        $legalForms = ['EI', 'EURL', 'SASU', 'SARL'];
-
-        for ($index = 1; $index <= FixtureReferences::ARTISAN_PROFILE_COUNT; ++$index) {
-            $user = $this->getReference(
-                FixtureReferences::artisanUser($index),
-                User::class
-            );
-            $trade = $trades[($index - 1) % count($trades)];
-            $createdAt = $this->randomDateBetween(
-                $faker,
-                '2025-10-01 08:00:00',
-                '2026-06-20 18:00:00'
-            );
-
-            if ($index <= FixtureReferences::PUBLISHED_ARTISAN_PROFILE_COUNT) {
-                $underQualifiedControl = 0 === $index % 4;
-
-                $profile = $this->createPublishedArtisanProfile(
-                    user: $user,
-                    legalName: sprintf(
-                        'Atelier %s %s',
-                        $user->getLastName(),
-                        $trade['company_suffix']
-                    ),
-                    commercialName: sprintf(
-                        '%s %s',
-                        $trade['commercial_prefix'],
-                        $user->getLastName()
-                    ),
-                    slug: sprintf('artisan-%02d-%s', $index, $trade['slug']),
-                    siret: $this->generateSiret($index),
-                    apeCode: $trade['ape_code'],
-                    legalForm: $legalForms[($index - 1) % count($legalForms)],
-                    qualificationType: $underQualifiedControl
-                        ? null
-                        : $trade['qualification_type'],
-                    qualificationTitle: $underQualifiedControl
-                        ? null
-                        : $trade['qualification_title'],
-                    qualificationNumber: $underQualifiedControl
-                        ? null
-                        : sprintf('QUAL-%04d', 3000 + $index),
-                    experienceYears: 3 + ($index % 15),
-                    description: $faker->paragraphs(2, true),
-                    createdAt: $createdAt,
-                    qualificationVerified: !$underQualifiedControl,
-                    underQualifiedPersonControl: $underQualifiedControl,
-                    qualifiedPersonFirstName: $underQualifiedControl
-                        ? $faker->firstName()
-                        : null,
-                    qualifiedPersonLastName: $underQualifiedControl
-                        ? $faker->lastName()
-                        : null,
-                    qualifiedPersonPosition: $underQualifiedControl
-                        ? 'Responsable technique'
-                        : null
-                );
-            } else {
-                $profile = $this->createDraftArtisanProfile(
-                    user: $user,
-                    legalName: sprintf(
-                        'Entreprise %s %s',
-                        $user->getLastName(),
-                        $trade['company_suffix']
-                    ),
-                    commercialName: sprintf(
-                        '%s %s',
-                        $trade['commercial_prefix'],
-                        $user->getLastName()
-                    ),
-                    slug: sprintf('artisan-%02d-%s', $index, $trade['slug']),
-                    siret: $this->generateSiret($index),
-                    apeCode: $trade['ape_code'],
-                    legalForm: $legalForms[($index - 1) % count($legalForms)],
-                    experienceYears: 2 + ($index % 8),
-                    description: $faker->paragraphs(2, true),
-                    createdAt: $createdAt
-                );
-            }
-
-            $this->persistProfile(
-                $manager,
-                FixtureReferences::artisanProfile($index),
-                $profile
-            );
-        }
-
-        $manager->flush();
-    }
-
+    private const ENTITY_CLASS = ArtisanProfile::class;
+    private const RECORDS_PER_ENTITY = 1000;
     public function getDependencies(): array
     {
         return [UserFixtures::class];
     }
 
-    /**
-     * @return list<array{
-     *     slug: string,
-     *     company_suffix: string,
-     *     commercial_prefix: string,
-     *     ape_code: string,
-     *     qualification_type: QualificationType,
-     *     qualification_title: string
-     * }>
-     */
-    private function tradeCatalog(): array
+    public function load(ObjectManager $manager): void
     {
-        return [
-            [
-                'slug' => 'plomberie',
-                'company_suffix' => 'Plomberie',
-                'commercial_prefix' => 'Plomberie Habitat',
-                'ape_code' => '43.22A',
-                'qualification_type' => QualificationType::CAP,
-                'qualification_title' => 'CAP Installateur sanitaire',
-            ],
-            [
-                'slug' => 'electricite',
-                'company_suffix' => 'Electricite',
-                'commercial_prefix' => 'Electricite Service',
-                'ape_code' => '43.21A',
-                'qualification_type' => QualificationType::BP,
-                'qualification_title' => 'BP Electricien',
-            ],
-            [
-                'slug' => 'menuiserie',
-                'company_suffix' => 'Menuiserie',
-                'commercial_prefix' => 'Menuiserie Interieur',
-                'ape_code' => '43.32A',
-                'qualification_type' => QualificationType::BEP,
-                'qualification_title' => 'BEP Menuiserie agencement',
-            ],
-            [
-                'slug' => 'maconnerie',
-                'company_suffix' => 'Maconnerie',
-                'commercial_prefix' => 'Maconnerie Renov',
-                'ape_code' => '43.99C',
-                'qualification_type' => QualificationType::BAC_PRO,
-                'qualification_title' => 'Bac pro Technicien du batiment',
-            ],
-            [
-                'slug' => 'peinture',
-                'company_suffix' => 'Peinture',
-                'commercial_prefix' => 'Peinture Deco',
-                'ape_code' => '43.34Z',
-                'qualification_type' => QualificationType::CAP,
-                'qualification_title' => 'CAP Peintre applicateur',
-            ],
-            [
-                'slug' => 'carrelage',
-                'company_suffix' => 'Carrelage',
-                'commercial_prefix' => 'Carrelage Design',
-                'ape_code' => '43.33Z',
-                'qualification_type' => QualificationType::BTS,
-                'qualification_title' => 'BTS Amenagement finition',
-            ],
-            [
-                'slug' => 'couverture',
-                'company_suffix' => 'Couverture',
-                'commercial_prefix' => 'Couverture Toiture',
-                'ape_code' => '43.91A',
-                'qualification_type' => QualificationType::PROFESSIONAL_TITLE,
-                'qualification_title' => 'Titre professionnel Couvreur zingueur',
-            ],
-            [
-                'slug' => 'renovation',
-                'company_suffix' => 'Renovation',
-                'commercial_prefix' => 'Renovation Habitat',
-                'ape_code' => '43.39Z',
-                'qualification_type' => QualificationType::RNCP_CERTIFICATION,
-                'qualification_title' => 'Certification RNCP conduite de chantier',
-            ],
-        ];
+        $metadata = $manager->getClassMetadata(self::ENTITY_CLASS);
+        for ($index = 1; $index <= $this->recordCount(); ++$index) {
+            $entity = new ArtisanProfile();
+            $this->populateFields($metadata, $entity, $index);
+            $this->populateAssociations($metadata, $entity, $index);
+            $manager->persist($entity);
+            $this->addReference($this->reference(self::ENTITY_CLASS, $index), $entity);
+            if (0 === $index % 100) { $manager->flush(); }
+        }
+        $manager->flush();
     }
 
-    private function persistProfile(
-        ObjectManager $manager,
-        string $reference,
-        ArtisanProfile $profile,
-    ): void {
-        $manager->persist($profile);
-        $this->addReference($reference, $profile);
-    }
-
-    private function createPublishedArtisanProfile(
-        User $user,
-        string $legalName,
-        ?string $commercialName,
-        string $slug,
-        string $siret,
-        string $apeCode,
-        string $legalForm,
-        ?QualificationType $qualificationType,
-        ?string $qualificationTitle,
-        ?string $qualificationNumber,
-        int $experienceYears,
-        string $description,
-        \DateTimeImmutable $createdAt,
-        bool $qualificationVerified = true,
-        bool $underQualifiedPersonControl = false,
-        ?string $qualifiedPersonFirstName = null,
-        ?string $qualifiedPersonLastName = null,
-        ?string $qualifiedPersonPosition = null,
-    ): ArtisanProfile {
-        $profile = (new ArtisanProfile())
-            ->setUser($user)
-            ->setLegalName($legalName)
-            ->setCommercialName($commercialName)
-            ->setSlug($slug)
-            ->setSiret($siret)
-            ->setVatNumber($this->buildFrenchVatNumber($siret))
-            ->setApeCode($apeCode)
-            ->setLegalForm($legalForm)
-            ->setIdentityVerificationStatus(VerificationStatus::VERIFIED)
-            ->setCompanyVerificationStatus(VerificationStatus::VERIFIED)
-            ->setRneVerificationStatus(VerificationStatus::VERIFIED)
-            ->setQualificationType($qualificationType)
-            ->setQualificationTitle($qualificationTitle)
-            ->setQualificationNumber($qualificationNumber)
-            ->setQualificationObtainedAt(
-                null !== $qualificationType
-                    ? $createdAt->modify('-10 years')
-                    : null
-            )
-            ->setQualificationVerificationStatus(
-                $qualificationVerified
-                    ? VerificationStatus::VERIFIED
-                    : VerificationStatus::NOT_SUBMITTED
-            )
-            ->setUnderQualifiedPersonControl($underQualifiedPersonControl)
-            ->setQualifiedPersonFirstName($qualifiedPersonFirstName)
-            ->setQualifiedPersonLastName($qualifiedPersonLastName)
-            ->setQualifiedPersonPosition($qualifiedPersonPosition)
-            ->setExperienceYears($experienceYears)
-            ->setDescription($description)
-            ->setProfessionalLiabilityInsuranceRequired(true)
-            ->setHasProfessionalLiabilityInsurance(true)
-            ->setProfessionalLiabilityInsurer('MAAF Pro')
-            ->setProfessionalLiabilityPolicyNumber(
-                sprintf('RCP-%s', substr($siret, -6))
-            )
-            ->setProfessionalLiabilityStartsAt($createdAt->modify('-1 month'))
-            ->setProfessionalLiabilityExpiresAt($createdAt->modify('+2 years'))
-            ->setProfessionalLiabilityVerificationStatus(
-                VerificationStatus::VERIFIED
-            )
-            ->setDecennialInsuranceRequired(true)
-            ->setHasDecennialInsurance(true)
-            ->setDecennialInsurer('AXA Construction')
-            ->setDecennialPolicyNumber(
-                sprintf('DEC-%s', substr($siret, -6))
-            )
-            ->setDecennialInsuranceStartsAt($createdAt->modify('-1 month'))
-            ->setDecennialInsuranceExpiresAt($createdAt->modify('+2 years'))
-            ->setDecennialGeographicalCoverage('France metropolitaine')
-            ->setDecennialInsuranceVerificationStatus(
-                VerificationStatus::VERIFIED
-            )
-            ->setCreatedAt($createdAt)
-            ->setUpdatedAt($createdAt->modify('+15 days'));
-
-        $profile->setRneVerifiedAt($createdAt->modify('+10 days'));
-
-        $profile
-            ->validateProfile()
-            ->publish();
-
-        $profile->setUpdatedAt($createdAt->modify('+20 days'));
-
-        return $profile;
-    }
-
-    private function createDraftArtisanProfile(
-        User $user,
-        string $legalName,
-        ?string $commercialName,
-        string $slug,
-        string $siret,
-        string $apeCode,
-        string $legalForm,
-        int $experienceYears,
-        string $description,
-        \DateTimeImmutable $createdAt,
-    ): ArtisanProfile {
-        return (new ArtisanProfile())
-            ->setUser($user)
-            ->setLegalName($legalName)
-            ->setCommercialName($commercialName)
-            ->setSlug($slug)
-            ->setSiret($siret)
-            ->setVatNumber($this->buildFrenchVatNumber($siret))
-            ->setApeCode($apeCode)
-            ->setLegalForm($legalForm)
-            ->setIdentityVerificationStatus(VerificationStatus::VERIFIED)
-            ->setCompanyVerificationStatus(VerificationStatus::NOT_SUBMITTED)
-            ->setRneVerificationStatus(VerificationStatus::NOT_SUBMITTED)
-            ->setQualificationVerificationStatus(
-                VerificationStatus::NOT_SUBMITTED
-            )
-            ->setExperienceYears($experienceYears)
-            ->setDescription($description)
-            ->setProfessionalLiabilityInsuranceRequired(true)
-            ->setHasProfessionalLiabilityInsurance(false)
-            ->setDecennialInsuranceRequired(true)
-            ->setHasDecennialInsurance(false)
-            ->setCreatedAt($createdAt)
-            ->setUpdatedAt($createdAt->modify('+7 days'));
-    }
-
-    private function generateSiret(int $index): string
+    private function recordCount(): int
     {
-        return sprintf('80%07d%05d', $index, $index);
+        if (SubscriptionPlan::class === self::ENTITY_CLASS) {
+            return count(\App\Entity\Enum\SubscriptionPlanCode::cases());
+        }
+
+        return self::RECORDS_PER_ENTITY;
     }
 
-    private function buildFrenchVatNumber(string $siret): string
+    private function populateFields(ClassMetadata $metadata, object $entity, int $index): void
     {
-        $digits = preg_replace('/\D/', '', $siret);
-        $siren = substr($digits, 0, 9);
-        $key = (12 + 3 * ((int) $siren % 97)) % 97;
-
-        return sprintf('FR%02d%s', $key, $siren);
+        foreach ($metadata->getFieldNames() as $field) {
+            $mapping = $metadata->getFieldMapping($field);
+            if ($mapping->id || in_array($field, ['password', 'roles'], true)) {
+                continue;
+            }
+            $metadata->setFieldValue($entity, $field, $this->fieldValue($mapping, $index));
+        }
     }
 
-    private function randomDateBetween(
-        Generator $faker,
-        string $start,
-        string $end,
-    ): \DateTimeImmutable {
-        return \DateTimeImmutable::createFromMutable(
-            $faker->dateTimeBetween($start, $end)
-        );
+    private function fieldValue(FieldMapping $mapping, int $index): mixed
+    {
+        if (null !== $mapping->enumType) {
+            $cases = $mapping->enumType::cases();
+
+            return $cases[($index - 1) % count($cases)];
+        }
+
+        return match ($mapping->type) {
+            'boolean' => 0 === $index % 2,
+            'integer', 'smallint', 'bigint' => $index,
+            'decimal', 'float' => number_format(10 + ($index / 10), $mapping->scale ?? 2, '.', ''),
+            'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable' => new \DateTimeImmutable(sprintf('2026-01-01 +%d minutes', $index)),
+            'date', 'date_immutable' => new \DateTimeImmutable(sprintf('2026-01-01 +%d days', $index)),
+            'time', 'time_immutable' => new \DateTime(sprintf('08:%02d:00', $index % 60)),
+            'json', 'array', 'simple_array' => ['fixture', (string) $index],
+            default => $this->stringValue($mapping, $index),
+        };
+    }
+
+    private function stringValue(FieldMapping $mapping, int $index): string
+    {
+        $value = sprintf('%s-%06d', $mapping->fieldName, $index);
+        if (str_contains(strtolower($mapping->fieldName), 'email')) {
+            $value = sprintf('fixture-%06d@example.test', $index);
+        }
+
+        return null === $mapping->length ? $value : substr($value, 0, $mapping->length);
+    }
+
+    private function populateAssociations(ClassMetadata $metadata, object $entity, int $index): void
+    {
+        foreach ($metadata->getAssociationMappings() as $association) {
+            if (!$association->isToOneOwningSide() || !$this->shouldPopulateAssociation($association, $metadata->name)) {
+                continue;
+            }
+
+            $target = $association->targetEntity;
+            $targetCount = SubscriptionPlan::class === $target
+                ? count(\App\Entity\Enum\SubscriptionPlanCode::cases())
+                : self::RECORDS_PER_ENTITY;
+            $targetIndex = (($index - 1) % $targetCount) + 1;
+            $metadata->setFieldValue($entity, $association->fieldName, $this->getReference($this->reference($target, $targetIndex), $target));
+        }
+    }
+
+    private function shouldPopulateAssociation(AssociationMapping $association, string $source): bool
+    {
+        if ($association->targetEntity === $source) {
+            return false;
+        }
+
+        if (UserProfile::class === self::ENTITY_CLASS && 'user' === $association->fieldName) {
+            return true;
+        }
+
+        return isset($association->joinColumns[0]) && false === $association->joinColumns[0]->nullable;
+    }
+
+    private function reference(string $class, int $index): string
+    {
+        return sprintf('%s.%06d', (new \ReflectionClass($class))->getShortName(), $index);
     }
 }

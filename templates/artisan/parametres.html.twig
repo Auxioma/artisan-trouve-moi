@@ -101,6 +101,14 @@
             <h1>Paramètres</h1>
             <p>Gérez votre profil public, votre zone d'intervention, vos notifications et la sécurité du compte.</p>
         </div>
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show m-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
         <div class="dash-header__actions">
             <button class="btn btn-dash-primary" type="submit">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>
@@ -121,6 +129,10 @@
                 <button class="param-nav__lien" type="button" data-panneau="description">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
                     Description
+                </button>
+                <button class="param-nav__lien" type="button" data-panneau="documents">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+                    Document légal
                 </button>
                 <button class="param-nav__lien" type="button" data-panneau="zone">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c4.5-4 7-7.6 7-11a7 7 0 1 0-14 0c0 3.4 2.5 7 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
@@ -144,368 +156,25 @@
         <div class="col-12 col-lg-9">
 
             {# ===== PANNEAU PROFIL ===== #}
-            <div class="param-panneau actif" id="panneau-profil">
-                <div class="dash-card">
-                    <p class="param-section-titre">Identité de l'entreprise</p>
-                    <div class="param-logo mb-3">
-                    <span class="avatar avatar--lg avatar--safran" id="avatar-apercu-initiales" {% if app.user.avatarFilename %} style="display:none;" {% endif %}>
-                        {{ (app.user.firstName|first ~ app.user.lastName|first)|upper }}
-                    </span>
-                        <img id="avatar-apercu-image" class="avatar avatar--lg" alt="Photo de profil"
-                            {% if app.user.avatarFilename %} src="{{ vich_uploader_asset(app.user, 'avatarFile') }}" {% else %} src="" style="display:none;" {% endif %}>
-                        <div>
-                            <div class="d-flex gap-2 flex-wrap">
-                                <button class="btn btn-dash-ghost btn-sm" type="button" id="btn-changer-photo">Changer la photo</button>
-                                <button class="btn btn-dash-ghost btn-sm" type="button" id="btn-supprimer-photo">Supprimer</button>
-                            </div>
-                            <p>PNG ou JPG, 2 Mo max. Seules vos initiales sont visibles par défaut.</p>
-                            <div class="d-none">
-                                {{ form_widget(form.avatarFile.file, { id: 'avatar-input-file', attr: { accept: 'image/png,image/jpeg' } }) }}
-                                {% if form.avatarFile.delete is defined %}
-                                    {{ form_widget(form.avatarFile.delete, { attr: { id: 'avatar-input-delete' } }) }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="nom-entreprise">Nom de l'entreprise</label>
-                            {{ form_widget(form.artisanProfile.legalName, { attr: { class: 'form-control', id: 'nom-entreprise', autocomplete: 'organization', placeholder: 'Plomberie Express' } }) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="nom-commercial">Nom commercial</label>
-                            {{ form_widget(form.artisanProfile.commercialName, { attr: { class: 'form-control', id: 'nom-commercial', autocomplete: 'organization', placeholder: 'Plomberie Express' } }) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="prenom">Prénom</label>
-                            {{ form_widget(form.firstName, { attr: { class: 'form-control', id: 'prenom', autocomplete: 'given-name', placeholder: 'Prénom' } }) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="nom">Nom</label>
-                            {{ form_widget(form.lastName, { attr: { class: 'form-control', id: 'nom', autocomplete: 'family-name', placeholder: 'Nom' } }) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="siret">SIRET</label>
-                            {{ form_widget(form.artisanProfile.siret, {
-                                id: 'siret',
-                                attr: {
-                                    class: 'form-control',
-                                    autocomplete: 'off',
-                                    inputmode: 'numeric',
-                                    maxlength: 14,
-                                    placeholder: '12345678901234'
-                                }
-                            }) }}
-                            {{ form_errors(form.artisanProfile.siret) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="ape-code">APE</label>
-                            {{ form_widget(form.artisanProfile.apeCode, { attr: { class: 'form-control', id: 'ape-code', autocomplete: 'off', placeholder: '43.22A' } }) }}
-                            {{ form_errors(form.artisanProfile.apeCode) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="forme-juridique">Statut juridique</label>
-                            {{ form_widget(form.artisanProfile.legalForm, { attr: { class: 'form-control', id: 'forme-juridique', placeholder: 'SARL, SAS, EI...' } }) }}
-                            {{ form_errors(form.artisanProfile.legalForm) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="numero-tva">Numéro de TVA</label>
-                            {{ form_widget(form.artisanProfile.vatNumber, { attr: { class: 'form-control', id: 'numero-tva', placeholder: 'FR00123456789' } }) }}
-                            {{ form_errors(form.artisanProfile.vatNumber) }}
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label" for="adresse-professionnelle">Adresse complète</label>
-                            {{ form_widget(form.artisanProfile.addressSearch, {
-                                attr: {
-                                    class: 'form-control',
-                                    id: 'adresse-professionnelle',
-                                    autocomplete: 'street-address',
-                                    placeholder: 'Exemple : 10 rue Victor-Hugo'
-                                }
-                            }) }}
-                            {{ form_errors(form.artisanProfile.addressSearch) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="ville">Ville</label>
-                            {{ form_widget(form.artisanProfile.city, { attr: { class: 'form-control', id: 'ville', autocomplete: 'address-level2', placeholder: 'Le Havre' } }) }}
-                            {{ form_errors(form.artisanProfile.city) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="code-postal">Code postal</label>
-                            {{ form_widget(form.artisanProfile.postalCode, { attr: { id: 'code-postal', class: 'form-control', autocomplete: 'postal-code', placeholder: '76600' } }) }}
-                            {{ form_errors(form.artisanProfile.postalCode) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include 'artisan/_partials/_parametres/_profile_de_l_entreprise.html.twig' %}
 
             {# ===== PANNEAU DESCRIPTION ===== #}
-            <div class="param-panneau" id="panneau-description">
-                <div class="dash-card">
-                    <p class="param-section-titre">Description de l'entreprise</p>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.email, 'Adresse e-mail professionnelle', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.email, { attr: { class: 'form-control', autocomplete: 'email', placeholder: 'contact@entreprise.fr' } }) }}
-                            {{ form_errors(form.email) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.phoneNumber, 'Numéro de téléphone professionnel', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.phoneNumber, { attr: { class: 'form-control', autocomplete: 'tel', placeholder: '06 12 34 56 78' } }) }}
-                            {{ form_errors(form.phoneNumber) }}
-                        </div>
-                        <div class="col-12">
-                            {{ form_label(form.artisanProfile.description, 'Présentation de votre entreprise', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.description, { attr: { class: 'form-control', rows: 7, maxlength: 10000, placeholder: 'Présentez votre entreprise, votre expérience…' } }) }}
-                            {{ form_errors(form.artisanProfile.description) }}
-                        </div>
-                    </div>
+            {% include 'artisan/_partials/_parametres/_description.html.twig' %}
 
-                    <p class="param-section-titre">Assurance responsabilité civile professionnelle</p>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <div class="form-check">
-                                {{ form_widget(form.artisanProfile.hasProfessionalLiabilityInsurance, { attr: { class: 'form-check-input' } }) }}
-                                {{ form_label(form.artisanProfile.hasProfessionalLiabilityInsurance, 'Je possède une assurance responsabilité civile professionnelle', { label_attr: { class: 'form-check-label' } }) }}
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.professionalLiabilityInsurer, "Nom de l'assureur", { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.professionalLiabilityInsurer, { attr: { class: 'form-control', placeholder: "Nom de la compagnie d'assurance" } }) }}
-                            {{ form_errors(form.artisanProfile.professionalLiabilityInsurer) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.professionalLiabilityPolicyNumber, 'Numéro du contrat', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.professionalLiabilityPolicyNumber, { attr: { class: 'form-control', placeholder: "Numéro de police d'assurance" } }) }}
-                            {{ form_errors(form.artisanProfile.professionalLiabilityPolicyNumber) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.professionalLiabilityStartsAt, 'Date de début du contrat', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.professionalLiabilityStartsAt, { attr: { class: 'form-control' } }) }}
-                            {{ form_errors(form.artisanProfile.professionalLiabilityStartsAt) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.professionalLiabilityExpiresAt, "Date d'expiration du contrat", { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.professionalLiabilityExpiresAt, { attr: { class: 'form-control' } }) }}
-                            {{ form_errors(form.artisanProfile.professionalLiabilityExpiresAt) }}
-                        </div>
-                    </div>
-
-                    <p class="param-section-titre">Assurance décennale</p>
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <div class="form-check">
-                                {{ form_widget(form.artisanProfile.hasDecennialInsurance, { attr: { class: 'form-check-input' } }) }}
-                                {{ form_label(form.artisanProfile.hasDecennialInsurance, 'Je possède une assurance décennale', { label_attr: { class: 'form-check-label' } }) }}
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.decennialInsurer, "Nom de l'assureur décennal", { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.decennialInsurer, { attr: { class: 'form-control', placeholder: "Nom de la compagnie d'assurance" } }) }}
-                            {{ form_errors(form.artisanProfile.decennialInsurer) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.decennialPolicyNumber, 'Numéro du contrat décennal', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.decennialPolicyNumber, { attr: { class: 'form-control', placeholder: "Numéro de police d'assurance" } }) }}
-                            {{ form_errors(form.artisanProfile.decennialPolicyNumber) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.decennialInsuranceStartsAt, 'Date de début de la garantie décennale', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.decennialInsuranceStartsAt, { attr: { class: 'form-control' } }) }}
-                            {{ form_errors(form.artisanProfile.decennialInsuranceStartsAt) }}
-                        </div>
-                        <div class="col-12 col-md-6">
-                            {{ form_label(form.artisanProfile.decennialInsuranceExpiresAt, "Date d'expiration de la garantie décennale", { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.decennialInsuranceExpiresAt, { attr: { class: 'form-control' } }) }}
-                            {{ form_errors(form.artisanProfile.decennialInsuranceExpiresAt) }}
-                        </div>
-                        <div class="col-12">
-                            {{ form_label(form.artisanProfile.decennialGeographicalCoverage, 'Zone géographique couverte par la garantie', { label_attr: { class: 'form-label' } }) }}
-                            {{ form_widget(form.artisanProfile.decennialGeographicalCoverage, { attr: { class: 'form-control', placeholder: 'Exemple : France métropolitaine' } }) }}
-                            {{ form_errors(form.artisanProfile.decennialGeographicalCoverage) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {# ===== PANNEAU DOCUMENTS LEGAL ===== #}
+            {% include 'artisan/_partials/_parametres/_documents.html.twig' %}
 
             {# ===== PANNEAU ZONE ===== #}
-            <div class="param-panneau" id="panneau-zone">
-                <div class="dash-card">
-                    <p class="param-section-titre">Rayon d'intervention</p>
-                    <label class="form-label" for="rayon">
-                        Autour de <b id="intervention-location">votre adresse professionnelle</b> —
-                        <span id="rayon-valeur">25 km</span>
-                    </label>
-                    {{ form_widget(form.artisanProfile.travelRadiusKm, { attr: { oninput: "document.getElementById('rayon-valeur').textContent = this.value + ' km'" } }) }}
-                    <p class="small text-secondary mb-3">Vous recevez uniquement les demandes situées dans ce périmètre.</p>
-                    <div id="intervention-map" style="height:390px;border-radius:14px;overflow:hidden;" aria-label="Carte de la zone d'intervention"></div>
-                    <p class="small text-secondary mt-2 mb-0">Carte et données © contributeurs OpenStreetMap.</p>
-                </div>
-            </div>
+            {% include 'artisan/_partials/_parametres/_zone_intervention.html.twig' %}
 
             {# ===== PANNEAU PRESTATIONS ===== #}
-            <div
-                class="param-panneau"
-                id="panneau-prestations"
-                data-services-collection
-                data-index="{{ form.artisanProfile.services|length }}"
-                data-prototype="{{ _self.carte_prestation(form.artisanProfile.services.vars.prototype, '__num__')|e('html_attr') }}"
-            >
-                <div class="dash-card">
-
-                    <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-4">
-                        <div>
-                            <p class="param-section-titre mb-1">Prestations proposées</p>
-                            <p class="small text-secondary mb-0">Ces services apparaissent sur votre fiche publique avec leurs tarifs.</p>
-                        </div>
-                        <button class="btn btn-dash-primary btn-sm" type="button" data-add-service>
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                            Ajouter une prestation
-                        </button>
-                    </div>
-
-                    <div class="services-liste" data-services-list>
-
-                        {% for serviceForm in form.artisanProfile.services %}
-                            {{ _self.carte_prestation(serviceForm, loop.index) }}
-                        {% else %}
-                            <div class="services-vide" data-services-empty>
-                        <span class="services-vide__icone">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2.4-2.4z"/></svg>
-                        </span>
-                                <b>Aucune prestation enregistrée</b>
-                                <p>Ajoutez vos services pour qu'ils apparaissent sur votre fiche publique avec leurs tarifs indicatifs.</p>
-                                <button class="btn btn-dash-ghost btn-sm" type="button" data-add-service>
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                                    Ajouter ma première prestation
-                                </button>
-                            </div>
-                        {% endfor %}
-
-                    </div>
-
-                    {% if form.artisanProfile.services|length > 0 %}
-                        <div class="services-actions">
-                            <p class="services-compteur mb-0">
-                                <b>{{ form.artisanProfile.services|length }}</b>
-                                prestation{{ form.artisanProfile.services|length > 1 ? 's' : '' }} enregistrée{{ form.artisanProfile.services|length > 1 ? 's' : '' }}
-                            </p>
-                            <button class="btn btn-dash-ghost btn-sm" type="button" data-add-service>
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-                                Ajouter
-                            </button>
-                        </div>
-                    {% endif %}
-
-                    {{ form_errors(form.artisanProfile.services) }}
-                </div>
-            </div>
-
+            {% include 'artisan/_partials/_parametres/_prestations.html.twig' %}
+*
             {# ===== PANNEAU NOTIFICATIONS ===== #}
-            <div class="param-panneau" id="panneau-notifications">
-                <div class="dash-card">
-                    <p class="param-section-titre">Activité commerciale</p>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M7 11h10M7 15h6"/></svg></span>
-                        <div><b>Nouvelles demandes</b><p>E-mail + notification push dès qu'une demande correspond à votre zone.</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.newRequestsEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Nouvelles demandes' } }) }}</div>
-                    </div>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></span>
-                        <div><b>Demandes urgentes par SMS</b><p>SMS immédiat pour les demandes marquées « urgent ».</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.urgentRequestsSmsEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Demandes urgentes par SMS' } }) }}</div>
-                    </div>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 1 0-3.6 6.7L21 20z"/></svg></span>
-                        <div><b>Messages clients</b><p>Notification à chaque nouveau message reçu.</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.clientMessagesEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Messages clients' } }) }}</div>
-                    </div>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z"/></svg></span>
-                        <div><b>Nouveaux avis</b><p>Alerte quand un client publie un avis sur votre profil.</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.newReviewsEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Nouveaux avis' } }) }}</div>
-                    </div>
-                    <p class="param-section-titre">Rappels automatiques</p>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
-                        <div><b>Relances de devis</b><p>Rappel 48 h avant l'expiration d'un devis sans réponse.</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.quoteRemindersEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Relances de devis' } }) }}</div>
-                    </div>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></span>
-                        <div><b>Récapitulatif hebdomadaire</b><p>Chaque lundi : vues, demandes et performances de la semaine.</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.weeklySummaryEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Récapitulatif hebdomadaire' } }) }}</div>
-                    </div>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 1 0-3.6 6.7L21 20z"/></svg></span>
-                        <div><b>Conseils et nouveautés TrouveMoi</b><p>Bonnes pratiques et nouvelles fonctionnalités (1 à 2 par mois).</p></div>
-                        <div class="form-check form-switch">{{ form_widget(form.artisanProfile.notificationPreferences.tipsAndNewsEnabled, { attr: { class: 'form-check-input', role: 'switch', 'aria-label': 'Conseils et nouveautés TrouveMoi' } }) }}</div>
-                    </div>
-                </div>
-            </div>
+            {% include 'artisan/_partials/_parametres/_notifications.html.twig' %}
 
             {# ===== PANNEAU SÉCURITÉ ===== #}
-            <div class="param-panneau" id="panneau-securite">
-                <div class="dash-card mb-3">
-                    <p class="param-section-titre">Mot de passe</p>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" for="mdp-actuel">Mot de passe actuel</label>
-                            <input type="password" class="form-control" id="mdp-actuel" autocomplete="current-password" placeholder="••••••••" data-navigation-optional>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" for="mdp-nouveau">Nouveau mot de passe</label>
-                            <input type="password" class="form-control" id="mdp-nouveau" autocomplete="new-password" placeholder="8 caractères minimum" data-navigation-optional>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label" for="mdp-confirme">Confirmation</label>
-                            <input type="password" class="form-control" id="mdp-confirme" autocomplete="new-password" placeholder="Retapez le mot de passe" data-navigation-optional>
-                        </div>
-                    </div>
-                    <button class="btn btn-dash-ghost mt-3" type="button">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10" width="18" height="11" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>
-                        Mettre à jour le mot de passe
-                    </button>
-                    <p class="param-section-titre">Double authentification</p>
-                    <div class="ligne-switch">
-                        <span class="ligne-switch__icone"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
-                        <div><b>Validation en deux étapes (2FA)</b><p>Code de confirmation par SMS à chaque nouvelle connexion.</p></div>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" role="switch" id="securite-2fa" checked aria-label="Validation en deux étapes (2FA)"></div>
-                    </div>
-                    <p class="param-section-titre">Sessions actives</p>
-                    {% for session in sessions %}
-                        {% set est_courante = session.sessionToken == currentSessionToken %}
-                        <div class="session">
-                            <span class="session__icone">
-                            {% if 'iPhone' in session.deviceLabel or 'iPad' in session.deviceLabel or 'Android' in session.deviceLabel %}
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
-                            {% else %}
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-                            {% endif %}
-                            </span>
-                            <div>
-                                <b>{{ session.deviceLabel }}{% if est_courante %} <span class="chip chip--accepte">CET APPAREIL</span>{% endif %}</b>
-                                <p>
-                                    {{ session.city ?? 'Localisation inconnue' }}{% if session.countryCode %}, {{ session.countryCode }}{% endif %}
-                                    · Dernière activité : {{ session.lastActivityAt|ago }}
-                                </p>
-                            </div>
-                            {% if not est_courante %}
-                                <button class="btn btn-dash-ghost btn-sm" type="button">Déconnecter</button>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="session"><div><p>Aucune session active.</p></div></div>
-                    {% endfor %}
-
-
-                </div>
-                <div class="zone-danger">
-                    <b><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg> Zone sensible</b>
-                    <p>La suppression de votre compte est définitive : profil public, avis, devis et historique seront effacés après un délai légal de 30 jours. Votre abonnement en cours ne sera pas remboursé.</p>
-                    <button class="btn-danger-ghost" type="button">Supprimer mon compte professionnel</button>
-                </div>
-            </div>
+            {% include 'artisan/_partials/_parametres/_securite.html.twig' %}
 
         </div>
     </div>
@@ -531,6 +200,19 @@
             const interventionLocation = byId('intervention-location');
             const radiusInput = pick('rayon', '[artisanProfile][travelRadiusKm]');
             const radiusValue = byId('rayon-valeur');
+
+            const refreshInsuranceDetails = toggle => {
+                const details = document.querySelector(`[data-insurance-details="${toggle.dataset.insuranceToggle}"]`);
+
+                if (details) {
+                    details.hidden = !toggle.checked;
+                }
+            };
+
+            document.querySelectorAll('[data-insurance-toggle]').forEach(toggle => {
+                refreshInsuranceDetails(toggle);
+                toggle.addEventListener('change', () => refreshInsuranceDetails(toggle));
+            });
 
             let map = null;
             let marker = null;

@@ -11,6 +11,8 @@
 /.agents
 /.codex
 /.idea
+/public/uploads/
+/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Users\CommercialPartnerProfile;
+use App\Entity\Requests\RequestPhoto;
 use App\Entity\Billing\SubscriptionPlan;
 use App\Entity\Users\UserProfile;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -12,23 +12,35 @@ use Doctrine\ORM\Mapping\AssociationMapping;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\FieldMapping;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpKernel\KernelInterface;
 
-final class CommercialPartnerProfileFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
+final class RequestPhotoFixtures extends Fixture implements \Doctrine\Common\DataFixtures\DependentFixtureInterface
 {
-    private const ENTITY_CLASS = CommercialPartnerProfile::class;
+    private const ENTITY_CLASS = RequestPhoto::class;
     private const RECORDS_PER_ENTITY = 1000;
+    public function __construct(private readonly KernelInterface $kernel)
+    {
+    }
+
     public function getDependencies(): array
     {
-        return [UserFixtures::class];
+        return [ServiceRequestFixtures::class];
     }
 
     public function load(ObjectManager $manager): void
     {
         $metadata = $manager->getClassMetadata(self::ENTITY_CLASS);
         for ($index = 1; $index <= $this->recordCount(); ++$index) {
-            $entity = new CommercialPartnerProfile();
+            $entity = new RequestPhoto();
             $this->populateFields($metadata, $entity, $index);
             $this->populateAssociations($metadata, $entity, $index);
+            $source = $this->kernel->getProjectDir().DIRECTORY_SEPARATOR.'fixtures'.DIRECTORY_SEPARATOR.'media'.DIRECTORY_SEPARATOR.'worksite.jpg';
+            $directory = $this->kernel->getProjectDir().DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'fixture-uploads'.DIRECTORY_SEPARATOR.'RequestPhoto';
+            if (!is_dir($directory)) { mkdir($directory, 0775, true); }
+            $copy = $directory.DIRECTORY_SEPARATOR.sprintf('%06d-worksite.jpg', $index);
+            copy($source, $copy);
+            $entity->setImageFile(new UploadedFile($copy, basename($source), 'image/jpeg', null, true));
             $manager->persist($entity);
             $this->addReference($this->reference(self::ENTITY_CLASS, $index), $entity);
             if (0 === $index % 100) { $manager->flush(); }
@@ -120,3 +132,4 @@ final class CommercialPartnerProfileFixtures extends Fixture implements \Doctrin
         return sprintf('%s.%06d', (new \ReflectionClass($class))->getShortName(), $index);
     }
 }
+
