@@ -1,0 +1,414 @@
+/* ════════════════════════════════════════════════════════════════
+   TROUVEMOI — Thème EasyAdmin 5 « Atelier de confiance »
+   Fichier : public/css/admin/trouvemoi-admin.css
+   Chargé via DashboardController::configureAssets()
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Variables EasyAdmin surchargées ────────────────────────── */
+:root {
+    /* Couleur primaire = bleu TrouveMoi */
+    --color-primary:        #1B2F5B;
+    --color-primary-dark:   #12224A;
+
+    /* Palette projet */
+    --tm-encre:   #0A1633;
+    --tm-bleu:    #1B2F5B;
+    --tm-bleu-2:  #12224A;
+    --tm-bleu-cl: #4A6BB5;
+    --tm-safran:  #FF8A1E;
+    --tm-creme:   #FAF7F2;
+    --tm-bordure: #D5D9E2;
+    --tm-muted:   #6B7690;
+    --tm-vert:    #1E9E6A;
+    --tm-rouge:   #C6402F;
+
+    /* Typographie */
+    --font-family-base: 'Inter', system-ui, sans-serif;
+
+    /* Layout EasyAdmin */
+    --body-bg:                #F6F4EF;
+    --content-bg:             #F6F4EF;
+    --sidebar-bg:             var(--tm-encre);
+    --sidebar-menu-color:     rgba(255, 255, 255, .68);
+    --sidebar-menu-icon-color:rgba(255, 255, 255, .45);
+    --sidebar-menu-active-item-bg:    rgba(255, 138, 30, .14);
+    --sidebar-menu-active-item-color: #FFFFFF;
+    --sidebar-menu-hover-item-bg:     rgba(255, 255, 255, .06);
+    --sidebar-menu-header-color:      rgba(255, 255, 255, .38);
+
+    --button-bg:              #FFFFFF;
+    --button-color:           var(--tm-encre);
+    --button-border-color:    var(--tm-bordure);
+
+    --form-input-border-color:#D5D9E2;
+    --form-label-color:       #1B2F5B;
+
+    --table-thead-color:      #1B2F5B;
+    --table-hover-cell-bg:    #FBF6EE;
+
+    --link-color:             var(--tm-bleu);
+    --link-hover-color:       var(--tm-bleu-2);
+
+    --border-radius:          10px;
+}
+
+/* ── 2. Typographie globale ────────────────────────────────────── */
+body.ea {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--tm-encre);
+}
+
+body.ea h1, body.ea h2, body.ea h3,
+.content-header-title .title,
+.sidebar-wrapper .logo-custom {
+    font-family: 'Bricolage Grotesque', 'Inter', sans-serif;
+    font-weight: 800;
+    letter-spacing: -.01em;
+}
+
+/* ── 3. Sidebar (fond encre) ───────────────────────────────────── */
+#sidebar-resizer-handler { background: transparent; }
+
+.sidebar {
+    background: var(--tm-encre);
+    border-right: none;
+}
+
+/* Logo / titre du back-office */
+#header-logo a,
+.sidebar .navbar-brand {
+    color: #fff !important;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 1.125rem;
+}
+#header-logo a span.logo-accent { color: var(--tm-safran); }
+
+/* Sections du menu */
+.sidebar .submenu-header,
+.sidebar .menu-header {
+    color: rgba(255, 255, 255, .38);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    margin-top: .875rem;
+}
+
+/* Liens du menu */
+.sidebar .menu-item a {
+    color: rgba(255, 255, 255, .68);
+    border-radius: 9px;
+    font-size: .875rem;
+    font-weight: 500;
+    transition: background .15s, color .15s;
+}
+.sidebar .menu-item a:hover {
+    background: rgba(255, 255, 255, .06);
+    color: #fff;
+}
+.sidebar .menu-item a i { color: rgba(255, 255, 255, .42); }
+.sidebar .menu-item a:hover i { color: rgba(255, 255, 255, .75); }
+
+/* Élément actif : liseré safran, comme la sidebar artisan */
+.sidebar .menu-item.active > a {
+    background: rgba(255, 138, 30, .13);
+    color: #fff;
+    box-shadow: inset 3px 0 0 var(--tm-safran);
+}
+.sidebar .menu-item.active > a i { color: var(--tm-safran); }
+
+/* Badges de compteurs dans le menu */
+.sidebar .menu-item .badge {
+    background: var(--tm-safran);
+    color: #fff;
+    font-weight: 700;
+    border-radius: 999px;
+}
+
+/* ── 4. Topbar / header du contenu ─────────────────────────────── */
+.content-top {
+    background: #fff;
+    border-bottom: 1px solid #ECE8E0;
+}
+
+.content-header-title .title {
+    color: var(--tm-encre);
+    font-size: 1.375rem;
+}
+
+/* Barre de recherche du datagrid */
+.form-action-search .form-control {
+    border: 1px solid var(--tm-bordure);
+    border-radius: 10px;
+    background: #fff;
+}
+.form-action-search .form-control:focus {
+    border-color: var(--tm-bleu);
+    box-shadow: 0 0 0 3px rgba(27, 47, 91, .12);
+}
+
+/* ── 5. Boutons ────────────────────────────────────────────────── */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: .8438rem;
+}
+
+.btn-primary,
+.ea-new-button .btn,
+.action-new {
+    background: var(--tm-bleu) !important;
+    border-color: var(--tm-bleu) !important;
+    color: #fff !important;
+}
+.btn-primary:hover,
+.action-new:hover {
+    background: var(--tm-bleu-2) !important;
+    border-color: var(--tm-bleu-2) !important;
+}
+
+.btn-secondary,
+.btn-default {
+    background: #fff;
+    border: 1.5px solid var(--tm-bordure);
+    color: var(--tm-encre);
+}
+.btn-secondary:hover,
+.btn-default:hover {
+    border-color: var(--tm-encre);
+    background: #fff;
+    color: var(--tm-encre);
+}
+
+.btn-danger {
+    background: #fff;
+    border: 1.5px solid #EFD4D4;
+    color: var(--tm-rouge);
+}
+.btn-danger:hover {
+    background: #FFF5F5;
+    border-color: var(--tm-rouge);
+    color: #9F2929;
+}
+
+/* Boutons d'action inline du datagrid */
+.datagrid td.actions .btn {
+    padding: .3125rem .625rem;
+    font-size: .75rem;
+}
+
+/* ── 6. Datagrid (tableaux de liste) ───────────────────────────── */
+.content-panel,
+.datagrid-wrapper {
+    background: #fff;
+    border: 1px solid #ECE8E0;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(10, 22, 51, .04);
+    overflow: hidden;
+}
+
+.datagrid thead th {
+    background: var(--tm-creme);
+    color: var(--tm-bleu);
+    font-size: .6875rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    border-bottom: 1px solid #ECE8E0;
+    padding-top: .8125rem;
+    padding-bottom: .8125rem;
+}
+.datagrid thead th a { color: var(--tm-bleu); }
+
+.datagrid tbody td {
+    font-size: .8438rem;
+    color: var(--tm-encre);
+    border-bottom: 1px solid #F3F0EA;
+    vertical-align: middle;
+}
+.datagrid tbody tr:hover td { background: #FBF6EE; }
+
+/* ── 7. Badges de statut ───────────────────────────────────────── */
+.badge {
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: .6875rem;
+    padding: .3125rem .6875rem;
+    letter-spacing: .01em;
+}
+.badge-success { background: rgba(30, 158, 106, .13); color: var(--tm-vert); }
+.badge-warning { background: rgba(255, 138, 30, .15); color: #B4650A; }
+.badge-danger  { background: rgba(198, 64, 47, .12);  color: var(--tm-rouge); }
+.badge-info    { background: rgba(74, 107, 181, .14); color: var(--tm-bleu-cl); }
+.badge-primary { background: rgba(27, 47, 91, .12);   color: var(--tm-bleu); }
+.badge-secondary { background: #EEF0F4; color: var(--tm-muted); }
+.badge-dark    { background: var(--tm-encre); color: #fff; }
+
+/* ── 8. Formulaires (identique aux paramètres artisan) ─────────── */
+.form-group label,
+.form-label,
+label.form-control-label {
+    color: #1B2F5B;
+    font-size: .8125rem;
+    font-weight: 600;
+    margin-bottom: .375rem;
+}
+
+.form-control,
+.form-select,
+form select,
+form textarea,
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form input[type="password"],
+form input[type="date"],
+form input[type="datetime-local"],
+form input[type="url"],
+form input[type="tel"] {
+    border: 1px solid #D5D9E2;
+    border-radius: 10px;
+    font-size: .875rem;
+    color: var(--tm-encre);
+    background: #fff;
+    padding: .5625rem .875rem;
+    box-shadow: none;
+    transition: border-color .15s, box-shadow .15s;
+}
+.form-control:focus,
+.form-select:focus,
+form select:focus,
+form textarea:focus,
+form input:focus {
+    outline: none;
+    border-color: var(--tm-bleu);
+    box-shadow: 0 0 0 3px rgba(27, 47, 91, .12);
+}
+.form-control::placeholder { color: #A8B0C0; }
+
+/* En-têtes de sections de formulaire (FormField::addPanel) */
+.form-fieldset-title,
+.form-panel-header {
+    color: var(--tm-bleu);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    border-bottom: 2px solid var(--tm-creme);
+}
+
+/* Switches */
+.form-check-input:checked {
+    background-color: var(--tm-bleu);
+    border-color: var(--tm-bleu);
+}
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(27, 47, 91, .14);
+    border-color: var(--tm-bleu);
+}
+
+/* Erreurs de validation */
+.invalid-feedback { color: var(--tm-rouge); font-size: .75rem; }
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--tm-rouge);
+    box-shadow: 0 0 0 3px rgba(198, 64, 47, .1);
+}
+
+/* ── 9. Pagination ─────────────────────────────────────────────── */
+.pagination .page-link {
+    color: var(--tm-encre);
+    border: 1px solid var(--tm-bordure);
+    border-radius: 8px;
+    margin: 0 2px;
+    font-size: .8125rem;
+    font-weight: 600;
+}
+.pagination .page-item.active .page-link {
+    background: var(--tm-bleu);
+    border-color: var(--tm-bleu);
+    color: #fff;
+}
+.pagination .page-link:hover { background: var(--tm-creme); }
+
+/* ── 10. Filtres & modales ─────────────────────────────────────── */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(10, 22, 51, .2);
+}
+.modal-header {
+    background: var(--tm-creme);
+    border-bottom: 1px solid #ECE8E0;
+    border-radius: 16px 16px 0 0;
+}
+.modal-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    color: var(--tm-encre);
+}
+
+/* ── 11. Flash messages ────────────────────────────────────────── */
+.alert { border-radius: 12px; border: none; font-size: .875rem; }
+.alert-success { background: rgba(30, 158, 106, .12); color: #14724C; }
+.alert-warning { background: rgba(255, 138, 30, .14); color: #9A5608; }
+.alert-danger  { background: rgba(198, 64, 47, .11);  color: var(--tm-rouge); }
+.alert-info    { background: rgba(74, 107, 181, .12); color: var(--tm-bleu); }
+
+/* ── 12. Page de détail ────────────────────────────────────────── */
+.field-group .field-label,
+.detail .field-label {
+    color: var(--tm-bleu);
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+.field-group .field-value { color: var(--tm-encre); font-size: .9063rem; }
+
+/* ── 13. Page de connexion admin ───────────────────────────────── */
+body.ea-login {
+    background: var(--tm-encre);
+}
+body.ea-login .login-wrapper {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+    padding: 2.25rem;
+}
+body.ea-login .login-wrapper .btn-primary {
+    background: var(--tm-bleu);
+    border-color: var(--tm-bleu);
+    border-radius: 10px;
+    font-weight: 700;
+    padding: .75rem;
+}
+
+/* ── 14. Dashboard KPI (template custom admin/dashboard) ───────── */
+.tm-kpi {
+    background: #fff;
+    border: 1px solid #ECE8E0;
+    border-radius: 14px;
+    padding: 1.25rem 1.375rem;
+    box-shadow: 0 2px 10px rgba(10, 22, 51, .04);
+}
+.tm-kpi b {
+    display: block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--tm-encre);
+}
+.tm-kpi span { font-size: .7813rem; color: var(--tm-muted); }
+.tm-kpi--accent { border-top: 3px solid var(--tm-safran); }
+.tm-kpi--bleu   { border-top: 3px solid var(--tm-bleu); }
+
+/* ── 15. Dropdown OSM (address-autocomplete.js) ────────────────── */
+[data-osm-dropdown] {
+    font-family: 'Inter', sans-serif;
+    border: 1px solid #D5D9E2 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 24px rgba(10, 22, 51, .12) !important;
+}
+[data-osm-dropdown] [role="option"]:hover {
+    background: var(--tm-creme) !important;
+}
