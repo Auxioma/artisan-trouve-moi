@@ -38,13 +38,6 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return Assets::new()
-            // Typographies du design system « Atelier de confiance »
-            ->addHtmlContentToHead('<link rel="preconnect" href="https://fonts.googleapis.com">')
-            ->addHtmlContentToHead('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
-            ->addHtmlContentToHead('<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">')
-
-            // Thème TrouveMoi
-            ->addCssFile('css/admin/trouvemoi-admin.css')
             ->addHtmlContentToHead(sprintf(
                 '<meta name="admin-geocode-url" content="%s">',
                 htmlspecialchars(
@@ -52,13 +45,6 @@ class DashboardController extends AbstractDashboardController
                     ENT_QUOTES,
                 ),
             ))
-
-            /*
-             * Autocomplete OSM : chargé UNE SEULE FOIS ici, pour tout
-             * le back-office. Ne PAS le re-déclarer dans un
-             * CrudController, sinon EasyAdmin lève l'erreur
-             * « each asset can only be added once ».
-             */
             ->addJsFile('js/admin/address-autocomplete.js');
     }
 
