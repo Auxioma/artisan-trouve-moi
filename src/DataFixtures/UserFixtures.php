@@ -4,147 +4,44 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Entity\Users\User;
-use App\Entity\Billing\SubscriptionPlan;
 use App\Entity\Enum\UserType;
-use App\Entity\Users\UserProfile;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\ORM\Mapping\AssociationMapping;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\FieldMapping;
-use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpKernel\KernelInterface;
+use App\Entity\Users\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class UserFixtures extends Fixture
+final class UserFixtures extends AbstractFrenchFixture
 {
-    private const ENTITY_CLASS = User::class;
-    private const RECORDS_PER_ENTITY = 1000;
+    protected const ENTITY_CLASS = User::class;
+    protected const RECORDS_PER_ENTITY = 24;
+
     /** @var array<int, array{email: string, password: string, type: UserType}> */
     private const TEST_ACCOUNTS = [
         1 => ['email' => 'user@user.user', 'password' => 'user', 'type' => UserType::CUSTOMER],
         2 => ['email' => 'artisan@artisan.artisan', 'password' => 'artisan', 'type' => UserType::ARTISAN],
+        3 => ['email' => 'admin@admin.admin', 'password' => 'admin', 'type' => UserType::CUSTOMER],
+        4 => ['email' => 'commercial@commercial.commercial', 'password' => 'commercial', 'type' => UserType::COMMERCIAL_PARTNER],
     ];
-    public function __construct(private readonly KernelInterface $kernel, private readonly UserPasswordHasherInterface $passwordHasher)
+
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
     {
+        parent::__construct();
     }
 
-    public function load(ObjectManager $manager): void
+    protected function afterPopulate(object $entity, int $index): void
     {
-        $metadata = $manager->getClassMetadata(self::ENTITY_CLASS);
-        for ($index = 1; $index <= $this->recordCount(); ++$index) {
-            $entity = new User();
-            $this->populateFields($metadata, $entity, $index);
-            $this->populateAssociations($metadata, $entity, $index);
-            $this->applyTestAccount($entity, $index);
-            $entity->setPassword($this->passwordHasher->hashPassword($entity, self::TEST_ACCOUNTS[$index]['password'] ?? 'fixture'));
-            $entity->setRoles(array_values(array_unique(['ROLE_USER', $entity->getType()->securityRole()])));
-            $source = $this->kernel->getProjectDir().DIRECTORY_SEPARATOR.'fixtures'.DIRECTORY_SEPARATOR.'media'.DIRECTORY_SEPARATOR.'avatar.jpg';
-            $directory = $this->kernel->getProjectDir().DIRECTORY_SEPARATOR.'var'.DIRECTORY_SEPARATOR.'fixture-uploads'.DIRECTORY_SEPARATOR.'User';
-            if (!is_dir($directory)) { mkdir($directory, 0775, true); }
-            $copy = $directory.DIRECTORY_SEPARATOR.sprintf('%06d-avatar.jpg', $index);
-            copy($source, $copy);
-            $entity->setAvatarFile(new UploadedFile($copy, basename($source), 'image/jpeg', null, true));
-            $manager->persist($entity);
-            $this->addReference($this->reference(self::ENTITY_CLASS, $index), $entity);
-            if (0 === $index % 100) { $manager->flush(); }
-        }
-        $manager->flush();
-    }
-
-    private function applyTestAccount(User $entity, int $index): void
-    {
+        \assert($entity instanceof User);
         $account = self::TEST_ACCOUNTS[$index] ?? null;
-        if (null === $account) {
-            return;
+        if (null !== $account) {
+            $entity->setEmail($account['email']);
+            $entity->setType($account['type']);
+        } else {
+            $entity->setType([UserType::CUSTOMER, UserType::ARTISAN, UserType::COMMERCIAL_PARTNER][($index - 1) % 3]);
         }
 
-        $entity->setEmail($account['email']);
-        $entity->setType($account['type']);
-    }
-
-    private function recordCount(): int
-    {
-        if (SubscriptionPlan::class === self::ENTITY_CLASS) {
-            return count(\App\Entity\Enum\SubscriptionPlanCode::cases());
+        $entity->setPassword($this->passwordHasher->hashPassword($entity, $account['password'] ?? 'fixture'));
+        $roles = ['ROLE_USER', $entity->getType()->securityRole()];
+        if (3 === $index) {
+            $roles[] = 'ROLE_ADMIN';
         }
-
-        return self::RECORDS_PER_ENTITY;
-    }
-
-    private function populateFields(ClassMetadata $metadata, object $entity, int $index): void
-    {
-        foreach ($metadata->getFieldNames() as $field) {
-            $mapping = $metadata->getFieldMapping($field);
-            if ($mapping->id || in_array($field, ['password', 'roles'], true)) {
-                continue;
-            }
-            $metadata->setFieldValue($entity, $field, $this->fieldValue($mapping, $index));
-        }
-    }
-
-    private function fieldValue(FieldMapping $mapping, int $index): mixed
-    {
-        if (null !== $mapping->enumType) {
-            $cases = $mapping->enumType::cases();
-
-            return $cases[($index - 1) % count($cases)];
-        }
-
-        return match ($mapping->type) {
-            'boolean' => 0 === $index % 2,
-            'integer', 'smallint', 'bigint' => $index,
-            'decimal', 'float' => number_format(10 + ($index / 10), $mapping->scale ?? 2, '.', ''),
-            'datetime', 'datetime_immutable', 'datetimetz', 'datetimetz_immutable' => new \DateTimeImmutable(sprintf('2026-01-01 +%d minutes', $index)),
-            'date', 'date_immutable' => new \DateTimeImmutable(sprintf('2026-01-01 +%d days', $index)),
-            'time', 'time_immutable' => new \DateTime(sprintf('08:%02d:00', $index % 60)),
-            'json', 'array', 'simple_array' => ['fixture', (string) $index],
-            default => $this->stringValue($mapping, $index),
-        };
-    }
-
-    private function stringValue(FieldMapping $mapping, int $index): string
-    {
-        $value = sprintf('%s-%06d', $mapping->fieldName, $index);
-        if (str_contains(strtolower($mapping->fieldName), 'email')) {
-            $value = sprintf('fixture-%06d@example.test', $index);
-        }
-
-        return null === $mapping->length ? $value : substr($value, 0, $mapping->length);
-    }
-
-    private function populateAssociations(ClassMetadata $metadata, object $entity, int $index): void
-    {
-        foreach ($metadata->getAssociationMappings() as $association) {
-            if (!$association->isToOneOwningSide() || !$this->shouldPopulateAssociation($association, $metadata->name)) {
-                continue;
-            }
-
-            $target = $association->targetEntity;
-            $targetCount = SubscriptionPlan::class === $target
-                ? count(\App\Entity\Enum\SubscriptionPlanCode::cases())
-                : self::RECORDS_PER_ENTITY;
-            $targetIndex = (($index - 1) % $targetCount) + 1;
-            $metadata->setFieldValue($entity, $association->fieldName, $this->getReference($this->reference($target, $targetIndex), $target));
-        }
-    }
-
-    private function shouldPopulateAssociation(AssociationMapping $association, string $source): bool
-    {
-        if ($association->targetEntity === $source) {
-            return false;
-        }
-
-        if (UserProfile::class === self::ENTITY_CLASS && 'user' === $association->fieldName) {
-            return true;
-        }
-
-        return isset($association->joinColumns[0]) && false === $association->joinColumns[0]->nullable;
-    }
-
-    private function reference(string $class, int $index): string
-    {
-        return sprintf('%s.%06d', (new \ReflectionClass($class))->getShortName(), $index);
+        $entity->setRoles(array_values(array_unique($roles)));
     }
 }
