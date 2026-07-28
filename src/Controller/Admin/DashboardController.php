@@ -38,6 +38,7 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return Assets::new()
+            ->addCssFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
             ->addHtmlContentToHead(sprintf(
                 '<meta name="admin-geocode-url" content="%s">',
                 htmlspecialchars(
@@ -45,7 +46,18 @@ class DashboardController extends AbstractDashboardController
                     ENT_QUOTES,
                 ),
             ))
-            ->addJsFile('js/admin/address-autocomplete.js');
+            ->addHtmlContentToHead(sprintf(
+                '<meta name="admin-company-lookup-url" content="%s">',
+                htmlspecialchars(
+                    $this->urlGenerator->generate('admin_company_lookup'),
+                    ENT_QUOTES,
+                ),
+            ))
+            ->addJsFile('js/admin/address-autocomplete.js')
+            ->addJsFile('js/admin/company-lookup.js?v=20260728-5')
+            ->addJsFile('js/admin/artisan-slug-preview.js?v=20260728-1')
+            ->addJsFile('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js')
+            ->addJsFile('js/admin/intervention-map.js');
     }
 
     public function configureMenuItems(): iterable
@@ -73,7 +85,7 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::linkTo(
             CommercialPartnerProfileCrudController::class,
-            'Partenaires',
+            'Partenaires Commerciaux',
             'fas fa-handshake'
         );
     }

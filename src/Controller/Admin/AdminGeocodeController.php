@@ -10,7 +10,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -26,7 +25,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  * En environnement dev, le détail d'une éventuelle erreur Nominatim
  * est renvoyé dans la réponse JSON (clé "error") pour le diagnostic.
  */
-#[IsGranted('ROLE_ADMIN')]
 final class AdminGeocodeController extends AbstractController
 {
     private const NOMINATIM_ENDPOINT =

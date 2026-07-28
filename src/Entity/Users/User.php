@@ -412,6 +412,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         );
     }
 
+    public function __toString(): string
+    {
+        $fullName = $this->getFullName();
+
+        if ('' !== $fullName) {
+            return $fullName;
+        }
+
+        return $this->email ?? 'Utilisateur non renseigné';
+    }
+
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;

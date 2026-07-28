@@ -211,6 +211,161 @@ final class UserCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        if ('commercial_account' === $pageName) {
+            yield FormField::addFieldset('Compte utilisateur commercial')
+                ->setIcon('fa fa-user');
+
+            yield TextField::new('firstName', 'Prénom')
+                ->setColumns('col-12 col-md-6');
+            yield TextField::new('lastName', 'Nom')
+                ->setColumns('col-12 col-md-6');
+            yield EmailField::new('email', 'Adresse e-mail')
+                ->setColumns('col-12 col-lg-8');
+            yield TelephoneField::new('phoneNumber', 'Téléphone')
+                ->setColumns('col-12 col-lg-4');
+            yield ChoiceField::new('status', 'Statut du compte')
+                ->setChoices(self::getUserStatusChoices())
+                ->setColumns('col-12 col-md-4');
+            yield BooleanField::new('isVerified', 'Adresse e-mail vérifiée')
+                ->setColumns('col-12 col-md-4');
+            yield BooleanField::new('isPhoneVerified', 'Téléphone vérifié')
+                ->setColumns('col-12 col-md-4');
+
+            yield FormField::addFieldset('Consentements et paramètres')
+                ->setIcon('fa fa-shield-halved');
+
+            yield BooleanField::new('hasAcceptedTerms', 'Conditions générales acceptées')
+                ->setColumns('col-12 col-md-4');
+            yield BooleanField::new('hasAcceptedPrivacyPolicy', 'Politique de confidentialité acceptée')
+                ->setColumns('col-12 col-md-4');
+            yield BooleanField::new('marketingConsent', 'Consentement marketing')
+                ->setColumns('col-12 col-md-4');
+            yield TextField::new('locale', 'Langue')
+                ->setColumns('col-12 col-md-4');
+            yield TextField::new('countryCode', 'Pays du compte')
+                ->setColumns('col-12 col-md-4');
+            yield TextField::new('timezone', 'Fuseau horaire')
+                ->setColumns('col-12 col-md-4');
+
+            yield FormField::addFieldset('Adresse et géolocalisation')
+                ->setIcon('fa fa-location-dot');
+
+            yield ChoiceField::new('profileType', 'Type d’adresse')
+                ->setChoices([
+                    'Domicile' => 'HOME',
+                    'Facturation' => 'BILLING',
+                    'Travail' => 'WORK',
+                    'Siège social' => 'HEADQUARTERS',
+                ])
+                ->setFormTypeOption('property_path', 'userProfile.type')
+                ->setColumns('col-12 col-lg-4');
+            yield TextField::new('profileLabel', 'Libellé de l’adresse')
+                ->setFormTypeOption('property_path', 'userProfile.label')
+                ->setColumns('col-12 col-lg-4');
+            yield TextField::new('profileAddressLine1', 'Rechercher une adresse')
+                ->setFormTypeOption('property_path', 'userProfile.addressLine1')
+                ->setFormTypeOption('attr', [
+                    'data-osm-search' => 'true',
+                    'data-osm-endpoint' => '/admin/geocode',
+                    'autocomplete' => 'off',
+                ])
+                ->setColumns('col-12 col-lg-8')
+                ->setRequired(true);
+            yield TextField::new('profileAddressLine2', 'Complément d’adresse')
+                ->setFormTypeOption('property_path', 'userProfile.addressLine2')
+                ->setColumns('col-12 col-lg-4');
+            yield TextField::new('profilePostalCode', 'Code postal')
+                ->setFormTypeOption('property_path', 'userProfile.postalCode')
+                ->setColumns('col-12 col-md-3')
+                ->setRequired(true);
+            yield TextField::new('profileCity', 'Ville')
+                ->setFormTypeOption('property_path', 'userProfile.city')
+                ->setColumns('col-12 col-md-5')
+                ->setRequired(true);
+            yield TextField::new('profileDistrict', 'Quartier')
+                ->setFormTypeOption('property_path', 'userProfile.district')
+                ->setColumns('col-12 col-md-4');
+            yield TextField::new('profileRegion', 'Région')
+                ->setFormTypeOption('property_path', 'userProfile.region')
+                ->setColumns('col-12 col-md-6');
+            yield TextField::new('profileDepartment', 'Département')
+                ->setFormTypeOption('property_path', 'userProfile.department')
+                ->setColumns('col-12 col-md-6');
+            yield TextField::new('profileCountryCode', 'Code pays de l’adresse')
+                ->setFormTypeOption('property_path', 'userProfile.countryCode')
+                ->setColumns('col-12 col-md-4');
+            yield TextField::new('profileFormattedAddress', 'Adresse formatée')
+                ->setFormTypeOption('property_path', 'userProfile.formattedAddress')
+                ->setColumns('col-12 col-md-8');
+            yield TextField::new('profileProviderPlaceId', 'Identifiant du lieu')
+                ->setFormTypeOption('property_path', 'userProfile.providerPlaceId')
+                ->setColumns('col-12 col-md-6');
+            yield TextField::new('profileProviderName', 'Fournisseur de géocodage')
+                ->setFormTypeOption('property_path', 'userProfile.providerName')
+                ->setColumns('col-12 col-md-6');
+            yield TextField::new('profileLatitude', 'Latitude')
+                ->setFormTypeOption('property_path', 'userProfile.latitude')
+                ->setColumns('col-12 col-md-6');
+            yield TextField::new('profileLongitude', 'Longitude')
+                ->setFormTypeOption('property_path', 'userProfile.longitude')
+                ->setColumns('col-12 col-md-6');
+            yield BooleanField::new('profileIsDefaultForm', 'Adresse par défaut')
+                ->setFormTypeOption('property_path', 'userProfile.isDefault')
+                ->setColumns('col-12 col-sm-6 col-xl-3');
+            yield BooleanField::new('profileIsBillingAddressForm', 'Adresse de facturation')
+                ->setFormTypeOption('property_path', 'userProfile.isBillingAddress')
+                ->setColumns('col-12 col-sm-6 col-xl-3');
+            yield BooleanField::new('profileIsPublicForm', 'Adresse publique')
+                ->setFormTypeOption('property_path', 'userProfile.isPublic')
+                ->setColumns('col-12 col-sm-6 col-xl-3');
+            yield BooleanField::new('profileIsGeocodedForm', 'Adresse géocodée')
+                ->setFormTypeOption('property_path', 'userProfile.isGeocoded')
+                ->setColumns('col-12 col-sm-6 col-xl-3');
+
+            yield FormField::addFieldset('Préférences de notification')
+                ->setIcon('fa fa-bell');
+
+            yield BooleanField::new('preferencesNewQuotesForm', 'Nouveaux devis')
+                ->setFormTypeOption('property_path', 'preferences.newQuotesEnabled')
+                ->setColumns('col-12 col-md-6');
+            yield BooleanField::new('preferencesArtisanMessagesForm', 'Messages artisans')
+                ->setFormTypeOption('property_path', 'preferences.artisanMessagesEnabled')
+                ->setColumns('col-12 col-md-6');
+            yield BooleanField::new('preferencesAppointmentRemindersForm', 'Rappels de rendez-vous')
+                ->setFormTypeOption('property_path', 'preferences.appointmentRemindersEnabled')
+                ->setColumns('col-12 col-md-6');
+            yield BooleanField::new('preferencesReviewInvitationsForm', 'Invitations aux avis')
+                ->setFormTypeOption('property_path', 'preferences.reviewInvitationsEnabled')
+                ->setColumns('col-12 col-md-6');
+            yield BooleanField::new('preferencesProfileVisibleToArtisansForm', 'Profil visible aux artisans')
+                ->setFormTypeOption('property_path', 'preferences.profileVisibleToArtisans')
+                ->setColumns('col-12 col-md-6');
+            yield BooleanField::new('preferencesPhoneSharedAfterAcceptanceForm', 'Téléphone partagé après acceptation')
+                ->setFormTypeOption('property_path', 'preferences.phoneSharedAfterAcceptance')
+                ->setColumns('col-12 col-md-6');
+
+            return;
+        }
+
+        if ('artisan_account' === $pageName) {
+            yield FormField::addFieldset('Titulaire du compte artisan')
+                ->setIcon('fa fa-user');
+
+            yield TextField::new('firstName', 'Prénom')
+                ->setColumns('col-12 col-md-6');
+
+            yield TextField::new('lastName', 'Nom')
+                ->setColumns('col-12 col-md-6');
+
+            yield EmailField::new('email', 'Adresse e-mail')
+                ->setColumns('col-12 col-lg-8');
+
+            yield TelephoneField::new('phoneNumber', 'Téléphone')
+                ->setColumns('col-12 col-lg-4');
+
+            return;
+        }
+
         /*
          * ============================================================
          * INFORMATIONS PERSONNELLES
