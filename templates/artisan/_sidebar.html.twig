@@ -1,9 +1,12 @@
 {# Sidebar prestataire — requiert : menu_actif, artisan_name, artisan_initials, demandes_count, messages_count #}
 <aside class="sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="sidebar" aria-label="Navigation principale">
     <div class="sidebar__profil">
-      <span class="avatar avatar--lg avatar--safran">{{ artisan_initials|default('PE') }}</span>
+      <span class="avatar avatar--lg avatar--safran">
+        <img id="avatar-apercu-image" class="avatar avatar--lg" alt="Photo de profil"
+                {% if app.user.avatarFilename %} src="{{ vich_uploader_asset(app.user, 'avatarFile') }}" {% else %} src="" style="display:none;" {% endif %}>
+        </span>
       <div>
-        <b>{{ artisan_name|default('Mon entreprise') }}</b>
+        <b>{{ app.user.artisanProfile.commercialName }}</b>
         <span class="chip chip--verifie"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Vérifié</span>
       </div>
     </div>

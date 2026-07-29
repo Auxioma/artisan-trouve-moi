@@ -49,6 +49,9 @@ class ArtisanProfile
     )]
     private ?User $user = null;
 
+    #[ORM\Column(length: 100, nullable: true, unique: true)]
+    private ?string $stripeCustomerId = null;
+
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank(message: 'La dénomination de l’entreprise est obligatoire.')]
     #[Assert\Length(max: 180)]
@@ -450,6 +453,18 @@ class ArtisanProfile
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): static
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+
+        return $this;
     }
 
     public function setUser(User $user): static

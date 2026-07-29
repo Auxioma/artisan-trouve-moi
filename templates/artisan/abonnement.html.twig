@@ -36,9 +36,14 @@
         <div class="dash-card h-100">
           <div class="dash-card__header"><h2>Moyen de paiement</h2></div>
           <div class="moyen-paiement">
-            <span class="moyen-paiement__carte">VISA</span>
-            <div><b>Visa se terminant par 4218</b><span>Expire 08/2026 · Plomberie Express SARL</span></div>
-            <button class="btn btn-dash-ghost btn-sm" type="button">Modifier</button>
+            {% if payment_method %}
+              <span class="moyen-paiement__carte">{{ payment_method.brand|upper }}</span>
+              <div><b>{{ payment_method.brand|capitalize }} se terminant par {{ payment_method.last4 }}</b><span>Expire {{ '%02d'|format(payment_method.expiresMonth) }}/{{ payment_method.expiresYear }} · {{ artisan ? artisan.commercialName : '' }}</span></div>
+            {% else %}
+              <span class="moyen-paiement__carte">CB</span>
+              <div><b>Veuillez saisir votre CB</b><span>Aucune carte bancaire enregistrée.</span></div>
+            {% endif %}
+            <button class="btn btn-dash-ghost btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#payment-method-modal">Modifier</button>
           </div>
           <p class="small text-secondary mt-3 mb-0">Prochain prélèvement de <b class="text-dark">46,80 € TTC</b> le 12/06/2024. Annulable à tout moment, effectif en fin de période.</p>
         </div>
@@ -46,13 +51,20 @@
     </div>
 
     <h2 class="h5 mb-3 mt-2">Changer d'offre</h2>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+      <div class="btn-group" role="group" aria-label="Période de facturation">
+        <button class="btn btn-dash-primary" type="button" data-billing-period="monthly" aria-pressed="true">Mensuel</button>
+        <button class="btn btn-dash-ghost" type="button" data-billing-period="yearly" aria-pressed="false">Annuel</button>
+      </div>
+    </div>
+    <p class="small text-secondary mb-3" data-billing-note>Facturation mensuelle, sans engagement.</p>
     <div class="row g-3 mb-4 pt-2">
       <div class="col-12 col-md-4">
         <div class="plan">
           
           <span class="plan__nom">Essentiel</span>
           <p class="plan__desc">Pour démarrer et recevoir vos premières demandes.</p>
-          <div class="plan__prix"><b>19 €</b><span>/ mois HT · sans engagement</span></div>
+          <div class="plan__prix"><b data-monthly-price="19" data-yearly-price="228">19 €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit 19 € / mois">/ mois HT · sans engagement</span></div>
           <div class="plan__liste">
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Profil professionnel vérifié</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Réception des demandes de votre zone</span>
@@ -68,7 +80,7 @@
           <span class="plan__badge plan__badge--actuel">VOTRE OFFRE ACTUELLE</span>
           <span class="plan__nom">Premium</span>
           <p class="plan__desc">Pour développer votre activité et gagner en visibilité.</p>
-          <div class="plan__prix"><b>39 €</b><span>/ mois HT · sans engagement</span></div>
+          <div class="plan__prix"><b data-monthly-price="39" data-yearly-price="468">39 €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit 39 € / mois">/ mois HT · sans engagement</span></div>
           <div class="plan__liste">
             <span class="inclus-titre">Tout Essentiel, plus :</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Demandes en avant-première (24 h)</span>
@@ -85,7 +97,7 @@
           <span class="plan__badge plan__badge--populaire">LE PLUS CHOISI</span>
           <span class="plan__nom">Excellence</span>
           <p class="plan__desc">Pour dominer votre secteur et maximiser vos conversions.</p>
-          <div class="plan__prix"><b>69 €</b><span>/ mois HT · sans engagement</span></div>
+          <div class="plan__prix"><b data-monthly-price="69" data-yearly-price="828">69 €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit 69 € / mois">/ mois HT · sans engagement</span></div>
           <div class="plan__liste">
             <span class="inclus-titre">Tout Premium, plus :</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Position en tête de catégorie</span>
@@ -154,4 +166,137 @@
       <p>Les prestataires en offre Excellence reçoivent en moyenne 2,4× plus de demandes que l'offre Essentiel. Le passage est immédiat et le prorata calculé automatiquement.</p>
     </div>
 
+    <div class="modal fade" id="payment-method-modal" tabindex="-1" aria-labelledby="payment-method-modal-title" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="payment-method-modal-title">Cartes Stripe enregistrées</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-secondary small">Saisissez la carte à utiliser pour votre abonnement mensuel ou annuel.</p>
+            <form id="stripe-card-form" novalidate>
+              <div class="mb-3">
+                <label class="form-label" for="stripe-card-number-element">Numéro de carte</label>
+                <div id="stripe-card-number-element" class="form-control py-3"></div>
+              </div>
+              <div class="row g-3">
+                <div class="col-6">
+                  <label class="form-label" for="stripe-card-expiry-element">Date d’expiration</label>
+                  <div id="stripe-card-expiry-element" class="form-control py-3"></div>
+                </div>
+                <div class="col-6">
+                  <label class="form-label" for="stripe-card-cvc-element">CVC</label>
+                  <div id="stripe-card-cvc-element" class="form-control py-3"></div>
+                </div>
+              </div>
+              <p class="form-text mb-0 mt-2">Les trois champs sont sécurisés et hébergés par Stripe.</p>
+              <div class="d-flex align-items-center gap-2 text-secondary small mt-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Paiement sécurisé par Stripe
+              </div>
+              <p class="small mt-3 mb-0 d-none" id="stripe-card-message" role="status"></p>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-dash-ghost" data-bs-dismiss="modal">Fermer</button>
+            <button type="button" class="btn btn-dash-primary" id="stripe-test-card-submit">Enregistrer la carte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    (() => {
+      const buttons = document.querySelectorAll('[data-billing-period]');
+      const note = document.querySelector('[data-billing-note]');
+
+      const updatePeriod = (period) => {
+        document.querySelectorAll('[data-monthly-price]').forEach((price) => {
+          const label = price.nextElementSibling;
+          price.textContent = `${price.dataset[`${period}Price`]} €`;
+          label.textContent = label.dataset[`${period}Label`];
+        });
+        buttons.forEach((button) => {
+          const selected = button.dataset.billingPeriod === period;
+          button.classList.toggle('btn-dash-primary', selected);
+          button.classList.toggle('btn-dash-ghost', !selected);
+          button.setAttribute('aria-pressed', String(selected));
+        });
+        note.textContent = period === 'yearly' ? 'Facturation annuelle.' : 'Facturation mensuelle, sans engagement.';
+      };
+
+      buttons.forEach((button) => button.addEventListener('click', () => updatePeriod(button.dataset.billingPeriod)));
+
+      const paymentModal = document.querySelector('#payment-method-modal');
+      const cardSubmit = document.querySelector('#stripe-test-card-submit');
+      const cardMessage = document.querySelector('#stripe-card-message');
+      let stripeCardNumber;
+      let stripeClient;
+      let setupIntentClientSecret;
+
+      const showCardMessage = (message, isError = false) => {
+        cardMessage.textContent = message;
+        cardMessage.classList.remove('d-none', 'text-success', 'text-danger');
+        cardMessage.classList.add(isError ? 'text-danger' : 'text-success');
+      };
+
+      paymentModal?.addEventListener('shown.bs.modal', async () => {
+        if (stripeCardNumber) return;
+
+        try {
+          const response = await fetch('{{ path('app_artisan_abonnement_stripe_setup_intent') }}', { method: 'POST' });
+          const payload = await response.json();
+          if (!response.ok || !payload.client_secret) throw new Error(payload.error || 'Impossible d’initialiser Stripe.');
+
+          stripeClient = Stripe('{{ stripe_public_key|e('js') }}');
+          setupIntentClientSecret = payload.client_secret;
+          const elements = stripeClient.elements();
+          const stripeElementOptions = { style: { base: { color: '#17254a', fontFamily: 'Inter, sans-serif', fontSize: '16px' }, invalid: { color: '#dc3545' } } };
+          stripeCardNumber = elements.create('cardNumber', stripeElementOptions);
+          const stripeCardExpiry = elements.create('cardExpiry', stripeElementOptions);
+          const stripeCardCvc = elements.create('cardCvc', stripeElementOptions);
+          stripeCardNumber.mount('#stripe-card-number-element');
+          stripeCardExpiry.mount('#stripe-card-expiry-element');
+          stripeCardCvc.mount('#stripe-card-cvc-element');
+          [stripeCardNumber, stripeCardExpiry, stripeCardCvc].forEach((element) => element.on('change', (event) => { if (event.error) showCardMessage(event.error.message, true); }));
+        } catch (error) {
+          showCardMessage(error.message, true);
+        }
+      });
+
+      cardSubmit?.addEventListener('click', async () => {
+        if (!stripeClient || !stripeCardNumber || !setupIntentClientSecret) return showCardMessage('Le formulaire Stripe n’est pas prêt.', true);
+
+        cardSubmit.disabled = true;
+        cardSubmit.textContent = 'Enregistrement…';
+        const { setupIntent, error } = await stripeClient.confirmCardSetup(setupIntentClientSecret, { payment_method: { card: stripeCardNumber } });
+
+        if (error || !setupIntent?.payment_method) {
+          cardSubmit.disabled = false;
+          cardSubmit.textContent = 'Enregistrer la carte';
+          return showCardMessage(error?.message || 'Carte refusée.', true);
+        }
+
+        const response = await fetch('{{ path('app_artisan_abonnement_stripe_payment_method') }}', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token('artisan_stripe_payment_method') }}' },
+          body: JSON.stringify({ payment_method_id: setupIntent.payment_method }),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+          cardSubmit.disabled = false;
+          cardSubmit.textContent = 'Enregistrer la carte';
+          return showCardMessage(payload.error || 'Impossible d’enregistrer la carte.', true);
+        }
+
+        showCardMessage('Carte enregistrée pour votre abonnement.');
+        window.setTimeout(() => window.location.reload(), 700);
+      });
+    })();
+  </script>
 {% endblock %}
