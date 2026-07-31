@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\Billing;
 
 use App\Entity\Enum\SubscriptionStatus;
+use App\Entity\Enum\SubscriptionBillingPeriod;
 use App\Entity\Users\ArtisanProfile;
 use App\Repository\Billing\SubscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -39,6 +40,9 @@ class Subscription
 
     #[ORM\Column(enumType: SubscriptionStatus::class)]
     private SubscriptionStatus $status = SubscriptionStatus::TRIALING;
+
+    #[ORM\Column(enumType: SubscriptionBillingPeriod::class)]
+    private SubscriptionBillingPeriod $billingPeriod = SubscriptionBillingPeriod::MONTHLY;
 
     #[ORM\Column]
     private \DateTimeImmutable $startsAt;
@@ -145,6 +149,18 @@ class Subscription
     public function setStatus(SubscriptionStatus $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getBillingPeriod(): SubscriptionBillingPeriod
+    {
+        return $this->billingPeriod;
+    }
+
+    public function setBillingPeriod(SubscriptionBillingPeriod $billingPeriod): static
+    {
+        $this->billingPeriod = $billingPeriod;
 
         return $this;
     }

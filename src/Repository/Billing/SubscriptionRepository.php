@@ -24,7 +24,11 @@ class SubscriptionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('subscription')
             ->andWhere('subscription.artisanProfile = :artisan')
             ->setParameter('artisan', $artisan)
-            ->orderBy('subscription.createdAt', 'DESC')
+            // La dernière offre correspond à la souscription la plus récemment
+            // commencée, et non à une date de création technique éventuellement
+            // antérieure ou incohérente avec l’activation Stripe.
+            ->orderBy('subscription.startsAt', 'DESC')
+            ->addOrderBy('subscription.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

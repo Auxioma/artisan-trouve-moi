@@ -6,6 +6,11 @@
 
 {% block body %}
 
+    {% set essentiel = subscription_plans.essentiel|default(null) %}
+    {% set premium = subscription_plans.premium|default(null) %}
+    {% set excellence = subscription_plans.excellence|default(null) %}
+    {% set current_plan_code = current_subscription and current_subscription.plan ? current_subscription.plan.code.value : null %}
+
     <div class="dash-header">
       <div>
         <h1>Mon abonnement</h1>
@@ -19,10 +24,23 @@
           <div class="abo-actuel">
             <span class="abo-actuel__icone"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 4 5 5-7 5 7 4-5v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
             <div class="abo-actuel__infos">
-              <b>Offre Premium</b><span class="chip chip--premium ms-2">ACTIVE</span>
-              <p>Souscrite le 12/11/2023 · Renouvellement automatique le <b>12/06/2024</b></p>
+              {% if current_subscription and current_subscription.plan %}
+                <b>{{ current_subscription.plan.name }}</b><span class="chip chip--premium ms-2">{{ current_subscription.status.value|upper }}</span>
+                <p>Souscrite le {{ current_subscription.startsAt|date('d/m/Y') }} · Renouvellement automatique le <b>{{ current_subscription.currentPeriodEndsAt ? current_subscription.currentPeriodEndsAt|date('d/m/Y') : 'non programmé' }}</b></p>
+              {% else %}
+                <b>Aucune offre</b>
+                <p>Aucune offre souscrite.</p>
+              {% endif %}
             </div>
-            <div class="abo-actuel__prix"><b>39 €</b><span>/ mois HT</span></div>
+            <div class="abo-actuel__prix">
+              {% if current_subscription and current_subscription.plan %}
+                {% set is_yearly = current_subscription.billingPeriod.value == 'yearly' %}
+                {% set current_price_ht = is_yearly ? current_subscription.plan.yearlyPriceHt : current_subscription.plan.monthlyPriceHt %}
+                <b>{{ current_price_ht|number_format(2, ',', ' ') }} €</b><span>/ {{ is_yearly ? 'an' : 'mois' }} HT</span>
+              {% else %}
+                <b>—</b><span>/ HT</span>
+              {% endif %}
+            </div>
           </div>
           <hr class="my-3">
           <div class="row g-2 text-center">
@@ -45,7 +63,11 @@
             {% endif %}
             <button class="btn btn-dash-ghost btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#payment-method-modal">Modifier</button>
           </div>
-          <p class="small text-secondary mt-3 mb-0">Prochain prélèvement de <b class="text-dark">46,80 € TTC</b> le 12/06/2024. Annulable à tout moment, effectif en fin de période.</p>
+          {% if last_payment %}
+            <p class="small text-secondary mt-3 mb-0">Dernier prélèvement {{ last_payment.period == 'yearly' ? 'annuel' : 'mensuel' }} de <b class="text-dark">{{ last_payment.amount_ttc }} € TTC</b> le {{ last_payment.date|date('d/m/Y') }}.</p>
+          {% else %}
+            <p class="small text-secondary mt-3 mb-0">Aucun prélèvement programmé.</p>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -60,11 +82,11 @@
     <p class="small text-secondary mb-3" data-billing-note>Facturation mensuelle, sans engagement.</p>
     <div class="row g-3 mb-4 pt-2">
       <div class="col-12 col-md-4">
-        <div class="plan">
+        <div class="plan{% if current_plan_code == 'essentiel' %} plan--actif{% endif %}">
           
-          <span class="plan__nom">Essentiel</span>
+          <span class="plan__nom">{{ essentiel ? essentiel.name : 'Essentiel' }}</span>
           <p class="plan__desc">Pour démarrer et recevoir vos premières demandes.</p>
-          <div class="plan__prix"><b data-monthly-price="19" data-yearly-price="228">19 €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit 19 € / mois">/ mois HT · sans engagement</span></div>
+          <div class="plan__prix"><b data-monthly-price="{{ essentiel ? essentiel.monthlyPriceHt : 19 }}" data-yearly-price="{{ essentiel and essentiel.yearlyPriceHt ? essentiel.yearlyPriceHt : 228 }}">{{ essentiel ? essentiel.monthlyPriceHt|number_format(2, ',', ' ') : '19,00' }} €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit {{ essentiel and essentiel.yearlyPriceHt ? (essentiel.yearlyPriceHt / 12)|number_format(2, ',', ' ') : '19,00' }} € / mois">/ mois HT · sans engagement</span></div>
           <div class="plan__liste">
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Profil professionnel vérifié</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Réception des demandes de votre zone</span>
@@ -72,15 +94,15 @@
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>5 photos de réalisations</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Devis illimités</span>
           </div>
-          <button class="btn btn-dash-ghost" type="button">Passer à Essentiel</button>
+          <button class="btn btn-dash-ghost" type="button"{% if current_plan_code == 'essentiel' %} disabled{% endif %}>{{ current_plan_code == 'essentiel' ? 'Votre offre actuelle' : 'Passer à ' ~ (essentiel ? essentiel.name : 'Essentiel') }}</button>
         </div>
       </div>
       <div class="col-12 col-md-4">
-        <div class="plan plan--actif">
-          <span class="plan__badge plan__badge--actuel">VOTRE OFFRE ACTUELLE</span>
-          <span class="plan__nom">Premium</span>
+        <div class="plan{% if current_plan_code == 'premium' %} plan--actif{% endif %}">
+          <span class="plan__badge plan__badge--actuel">{{ current_plan_code == 'premium' ? 'VOTRE OFFRE ACTUELLE' : '' }}</span>
+          <span class="plan__nom">{{ premium ? premium.name : 'Premium' }}</span>
           <p class="plan__desc">Pour développer votre activité et gagner en visibilité.</p>
-          <div class="plan__prix"><b data-monthly-price="39" data-yearly-price="468">39 €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit 39 € / mois">/ mois HT · sans engagement</span></div>
+          <div class="plan__prix"><b data-monthly-price="{{ premium ? premium.monthlyPriceHt : 39 }}" data-yearly-price="{{ premium and premium.yearlyPriceHt ? premium.yearlyPriceHt : 468 }}">{{ premium ? premium.monthlyPriceHt|number_format(2, ',', ' ') : '39,00' }} €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit {{ premium and premium.yearlyPriceHt ? (premium.yearlyPriceHt / 12)|number_format(2, ',', ' ') : '39,00' }} € / mois">/ mois HT · sans engagement</span></div>
           <div class="plan__liste">
             <span class="inclus-titre">Tout Essentiel, plus :</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Demandes en avant-première (24 h)</span>
@@ -89,15 +111,15 @@
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Statistiques avancées</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>30 photos de réalisations</span>
           </div>
-          <button class="btn btn-dash-ghost" type="button" disabled>Votre offre actuelle</button>
+          <button class="btn btn-dash-ghost" type="button"{% if current_plan_code == 'premium' %} disabled{% endif %}>{{ current_plan_code == 'premium' ? 'Votre offre actuelle' : 'Passer à ' ~ (premium ? premium.name : 'Premium') }}</button>
         </div>
       </div>
       <div class="col-12 col-md-4">
-        <div class="plan">
+        <div class="plan{% if current_plan_code == 'excellence' %} plan--actif{% endif %}">
           <span class="plan__badge plan__badge--populaire">LE PLUS CHOISI</span>
-          <span class="plan__nom">Excellence</span>
+          <span class="plan__nom">{{ excellence ? excellence.name : 'Excellence' }}</span>
           <p class="plan__desc">Pour dominer votre secteur et maximiser vos conversions.</p>
-          <div class="plan__prix"><b data-monthly-price="69" data-yearly-price="828">69 €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit 69 € / mois">/ mois HT · sans engagement</span></div>
+          <div class="plan__prix"><b data-monthly-price="{{ excellence ? excellence.monthlyPriceHt : 69 }}" data-yearly-price="{{ excellence and excellence.yearlyPriceHt ? excellence.yearlyPriceHt : 828 }}">{{ excellence ? excellence.monthlyPriceHt|number_format(2, ',', ' ') : '69,00' }} €</b><span data-monthly-label="/ mois HT · sans engagement" data-yearly-label="/ an HT · soit {{ excellence and excellence.yearlyPriceHt ? (excellence.yearlyPriceHt / 12)|number_format(2, ',', ' ') : '69,00' }} € / mois">/ mois HT · sans engagement</span></div>
           <div class="plan__liste">
             <span class="inclus-titre">Tout Premium, plus :</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Position en tête de catégorie</span>
@@ -106,7 +128,7 @@
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Prise de rendez-vous en ligne</span>
             <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>Photos et vidéos illimitées</span>
           </div>
-          <button class="btn btn-dash-primary" type="button">Passer à Excellence</button>
+          <button class="btn btn-dash-primary" type="button"{% if current_plan_code == 'excellence' %} disabled{% endif %}>{{ current_plan_code == 'excellence' ? 'Votre offre actuelle' : 'Passer à ' ~ (excellence ? excellence.name : 'Excellence') }}</button>
         </div>
       </div>
     </div>
@@ -125,38 +147,18 @@
           </tr>
         </thead>
         <tbody>
+          {% for invoice in invoices %}
             <tr>
-              <td><span class="devis-ref">F-2024-0512</span></td>
-              <td><span class="devis-date"><b>12/05/2024</b></span></td>
-              <td><span class="devis-prestation">Abonnement Premium — mai 2024</span></td>
-              <td><span class="devis-montant">39,00 €</span></td>
-              <td><span class="chip chip--accepte">PAYÉE</span></td>
-              <td><div class="actions-ligne"><button class="btn-icone" type="button" aria-label="Télécharger la facture F-2024-0512" title="PDF"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 14h6M9 17h4"/></svg></button></div></td>
+              <td><span class="devis-ref">{{ invoice.reference }}</span></td>
+              <td><span class="devis-date"><b>{{ (invoice.issuedAt ?? invoice.createdAt)|date('d/m/Y') }}</b></span></td>
+              <td><span class="devis-prestation">Abonnement {{ invoice.subscription.plan.name }} — {{ invoice.subscription.billingPeriod.value == 'yearly' ? 'annuel' : 'mensuel' }}</span></td>
+              <td><span class="devis-montant">{{ invoice.amountHt|number_format(2, ',', ' ') }} €</span></td>
+              <td><span class="chip chip--accepte">{{ invoice.status.label()|upper }}</span></td>
+              <td><div class="actions-ligne"><button class="btn-icone" type="button" data-pdf-filename="{{ invoice.pdfFilename }}" data-pdf-url="{{ path('app_artisan_abonnement_invoice_pdf', {id: invoice.id}) }}" aria-label="Télécharger la facture {{ invoice.reference }}" title="PDF"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 14h6M9 17h4"/></svg></button></div></td>
             </tr>
-            <tr>
-              <td><span class="devis-ref">F-2024-0412</span></td>
-              <td><span class="devis-date"><b>12/04/2024</b></span></td>
-              <td><span class="devis-prestation">Abonnement Premium — avril 2024</span></td>
-              <td><span class="devis-montant">39,00 €</span></td>
-              <td><span class="chip chip--accepte">PAYÉE</span></td>
-              <td><div class="actions-ligne"><button class="btn-icone" type="button" aria-label="Télécharger la facture F-2024-0412" title="PDF"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 14h6M9 17h4"/></svg></button></div></td>
-            </tr>
-            <tr>
-              <td><span class="devis-ref">F-2024-0312</span></td>
-              <td><span class="devis-date"><b>12/03/2024</b></span></td>
-              <td><span class="devis-prestation">Abonnement Premium — mars 2024</span></td>
-              <td><span class="devis-montant">39,00 €</span></td>
-              <td><span class="chip chip--accepte">PAYÉE</span></td>
-              <td><div class="actions-ligne"><button class="btn-icone" type="button" aria-label="Télécharger la facture F-2024-0312" title="PDF"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 14h6M9 17h4"/></svg></button></div></td>
-            </tr>
-            <tr>
-              <td><span class="devis-ref">F-2024-0212</span></td>
-              <td><span class="devis-date"><b>12/02/2024</b></span></td>
-              <td><span class="devis-prestation">Abonnement Premium — février 2024</span></td>
-              <td><span class="devis-montant">39,00 €</span></td>
-              <td><span class="chip chip--accepte">PAYÉE</span></td>
-              <td><div class="actions-ligne"><button class="btn-icone" type="button" aria-label="Télécharger la facture F-2024-0212" title="PDF"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H6v18h12V8z"/><path d="M13 3v5h5M9 14h6M9 17h4"/></svg></button></div></td>
-            </tr>
+          {% else %}
+            <tr><td colspan="6">Aucune facture enregistrée.</td></tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -214,8 +216,10 @@
     (() => {
       const buttons = document.querySelectorAll('[data-billing-period]');
       const note = document.querySelector('[data-billing-note]');
+      let selectedBillingPeriod = 'monthly';
 
       const updatePeriod = (period) => {
+        selectedBillingPeriod = period;
         document.querySelectorAll('[data-monthly-price]').forEach((price) => {
           const label = price.nextElementSibling;
           price.textContent = `${price.dataset[`${period}Price`]} €`;
@@ -231,6 +235,55 @@
       };
 
       buttons.forEach((button) => button.addEventListener('click', () => updatePeriod(button.dataset.billingPeriod)));
+
+      document.querySelectorAll('[data-pdf-url]').forEach((button) => {
+        button.addEventListener('click', () => window.open(button.dataset.pdfUrl, '_blank', 'noopener'));
+      });
+
+      const planCodes = ['essentiel', 'premium', 'excellence'];
+      const planCards = Array.from(document.querySelectorAll('.plan'));
+      document.querySelectorAll('.plan button:not([disabled])').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const plan = planCodes[planCards.indexOf(button.closest('.plan'))];
+          if (!plan) return;
+
+          const initialLabel = button.textContent;
+          button.disabled = true;
+          button.textContent = 'Paiement en cours…';
+
+          try {
+            const response = await fetch('{{ path('app_artisan_abonnement_stripe_subscription') }}', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token('artisan_subscription_payment') }}',
+              },
+              body: JSON.stringify({ plan, period: selectedBillingPeriod }),
+            });
+            const payload = await response.json();
+            if (!response.ok || !payload.subscription_id) throw new Error(payload.error || 'Impossible de démarrer le paiement Stripe.');
+
+            if (payload.client_secret) {
+              const stripe = stripeClient || Stripe('{{ stripe_public_key|e('js') }}');
+              const { error } = await stripe.confirmCardPayment(payload.client_secret);
+              if (error) throw new Error(error.message);
+            }
+
+            const confirmation = await fetch(`{{ path('app_artisan_abonnement_stripe_subscription_confirm', {id: 'SUBSCRIPTION_ID'}) }}`.replace('SUBSCRIPTION_ID', payload.subscription_id), {
+              method: 'POST',
+              headers: { 'X-CSRF-TOKEN': '{{ csrf_token('artisan_subscription_payment') }}' },
+            });
+            const confirmationPayload = await confirmation.json();
+            if (!confirmation.ok) throw new Error(confirmationPayload.error || 'Paiement Stripe non confirmé.');
+
+            window.location.reload();
+          } catch (error) {
+            window.alert(error.message);
+            button.disabled = false;
+            button.textContent = initialLabel;
+          }
+        });
+      });
 
       const paymentModal = document.querySelector('#payment-method-modal');
       const cardSubmit = document.querySelector('#stripe-test-card-submit');
