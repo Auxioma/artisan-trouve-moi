@@ -11,7 +11,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 final class AppointmentFixtures extends AbstractFrenchFixture implements DependentFixtureInterface
 {
     protected const ENTITY_CLASS = Appointment::class;
-    protected const DEPENDENCIES = [ArtisanProfileFixtures::class, UserFixtures::class];
+    protected const DEPENDENCIES = [ArtisanProfileFixtures::class, UserFixtures::class, ProjectFixtures::class, ServiceRequestFixtures::class];
 
     public function getDependencies(): array
     {

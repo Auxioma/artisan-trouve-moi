@@ -11,7 +11,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 final class VerificationDocumentFixtures extends AbstractFrenchFixture implements DependentFixtureInterface
 {
     protected const ENTITY_CLASS = VerificationDocument::class;
-    protected const DEPENDENCIES = [ArtisanProfileFixtures::class];
+    protected const DEPENDENCIES = [ArtisanProfileFixtures::class, UserFixtures::class];
 
     public function getDependencies(): array
     {

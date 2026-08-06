@@ -7,6 +7,7 @@ namespace App\Entity\Requests;
 use App\Entity\Catalog\Category;
 use App\Entity\Enum\RequestStatus;
 use App\Entity\Quotes\Quote;
+use App\Entity\Users\ArtisanProfile;
 use App\Entity\Users\User;
 use App\Repository\Requests\ServiceRequestRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,6 +32,10 @@ class ServiceRequest
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $client = null;
+
+    #[ORM\ManyToOne(targetEntity: ArtisanProfile::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?ArtisanProfile $artisanProfile = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
@@ -176,6 +181,18 @@ class ServiceRequest
     public function setClient(?User $client): static
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getArtisanProfile(): ?ArtisanProfile
+    {
+        return $this->artisanProfile;
+    }
+
+    public function setArtisanProfile(?ArtisanProfile $artisanProfile): static
+    {
+        $this->artisanProfile = $artisanProfile;
 
         return $this;
     }

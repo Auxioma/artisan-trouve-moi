@@ -15,10 +15,10 @@ final class UserFixtures extends AbstractFrenchFixture
 
     /** @var array<int, array{email: string, password: string, type: UserType}> */
     private const TEST_ACCOUNTS = [
-        1 => ['email' => 'user@user.user', 'password' => 'user', 'type' => UserType::CUSTOMER],
-        2 => ['email' => 'artisan@artisan.artisan', 'password' => 'artisan', 'type' => UserType::ARTISAN],
-        3 => ['email' => 'admin@admin.admin', 'password' => 'admin', 'type' => UserType::CUSTOMER],
-        4 => ['email' => 'commercial@commercial.commercial', 'password' => 'commercial', 'type' => UserType::COMMERCIAL_PARTNER],
+        1 => ['email' => 'claire.martin@artisan-trouve-moi.fr', 'password' => 'c', 'type' => UserType::CUSTOMER],
+        2 => ['email' => 'julien.bernard@atelier-duval.fr', 'password' => 'artisan', 'type' => UserType::ARTISAN],
+        3 => ['email' => 'admin@artisan-trouve-moi.fr', 'password' => 'admin', 'type' => UserType::CUSTOMER],
+        4 => ['email' => 'partenaires@renovation-robert.fr', 'password' => 'commercial', 'type' => UserType::COMMERCIAL_PARTNER],
     ];
 
     public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)

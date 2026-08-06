@@ -11,7 +11,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 final class SubscriptionFixtures extends AbstractFrenchFixture implements DependentFixtureInterface
 {
     protected const ENTITY_CLASS = Subscription::class;
-    protected const DEPENDENCIES = [ArtisanProfileFixtures::class, SubscriptionPlanFixtures::class];
+    protected const DEPENDENCIES = [ArtisanProfileFixtures::class, SubscriptionPlanFixtures::class, PaymentMethodFixtures::class];
 
     public function getDependencies(): array
     {

@@ -11,7 +11,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 final class ConversationFixtures extends AbstractFrenchFixture implements DependentFixtureInterface
 {
     protected const ENTITY_CLASS = Conversation::class;
-    protected const DEPENDENCIES = [UserFixtures::class, ArtisanProfileFixtures::class];
+    protected const DEPENDENCIES = [UserFixtures::class, ArtisanProfileFixtures::class, ServiceRequestFixtures::class];
 
     public function getDependencies(): array
     {

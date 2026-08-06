@@ -1,0 +1,998 @@
+{% extends 'client/base_client.html.twig' %}
+
+{% block title %}Devis reçus{% endblock %}
+
+{% set menu_actif = 'devis' %}
+
+{% block body %}
+
+{{ form_start(form, {attr: {class: 'tm-request-wizard'}}) }}
+{{ form_widget(form._token) }}
+
+    <div class="dash-header tm-request-wizard__header">
+        <div>
+            <span class="chip chip--en-cours mb-2">NOUVELLE DEMANDE</span>
+            <h1>Expliquez votre besoin à l’artisan</h1>
+            <p>
+                Donnez suffisamment de détails pour que l’artisan puisse comprendre le problème,
+                estimer les travaux et préparer un devis précis.
+            </p>
+        </div>
+
+        <div class="dash-header__actions">
+            <button class="btn btn-dash-ghost" type="button">
+                Enregistrer le brouillon
+            </button>
+        </div>
+    </div>
+
+    <div class="tm-request-wizard__notice">
+        <div class="tm-request-wizard__notice-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M12 8v4"></path>
+                <path d="M12 16h.01"></path>
+            </svg>
+        </div>
+
+        <div>
+            <b>Vous contactez directement un artisan précis</b>
+            <p>
+                L’artisan recevra votre demande complète et pourra vous poser des questions,
+                proposer une visite ou vous transmettre un devis.
+            </p>
+        </div>
+    </div>
+
+    <div class="tm-request-wizard__layout">
+
+        <div class="tm-request-wizard__content">
+
+            <section class="dash-card tm-request-wizard__artisan">
+                <div class="tm-request-wizard__artisan-avatar">
+                    {{ artisan.displayName|split(' ')|map(name => name|first|upper)|join|slice(0, 2) }}
+                </div>
+
+                <div class="tm-request-wizard__artisan-main">
+                    <div class="tm-request-wizard__artisan-title">
+                        <div>
+                            <h2>{{ artisan.displayName }}</h2>
+                            {% if service_categories is not empty %}
+                                <p>{{ service_categories|join(' · ') }}</p>
+                            {% endif %}
+                        </div>
+
+                        {% if artisan.user.verified %}
+                            <span class="chip chip--verifie">PROFIL VÉRIFIÉ</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="tm-request-wizard__artisan-meta">
+                        {% if review_summary.reviewCount > 0 %}
+                            <span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 2l3 6.6 7 .8-5.2 4.8L18.3 21 12 17.4 5.7 21l1.5-6.8L2 9.4l7-.8z"></path>
+                                </svg>
+                                {{ review_summary.averageRating|number_format(1, ',', ' ') }} · {{ review_summary.reviewCount }} avis
+                            </span>
+                        {% endif %}
+
+                        {% if artisan.city %}
+                            <span>
+                                {{ artisan.city }}{% if artisan.travelRadiusKm %} et {{ artisan.travelRadiusKm }} km autour{% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">1</span>
+
+                    <div>
+                        <h2>Quel est votre besoin principal ?</h2>
+                        <p>Commencez par expliquer simplement la raison de votre demande.</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="{{ form.title.vars.id }}">
+                            Titre de votre demande
+                        </label>
+
+                        {{ form_widget(form.title, {
+                            attr: {
+                                class: 'form-control form-control-lg',
+                                placeholder: 'Exemple : fuite sous la douche et rénovation de la salle de bain'
+                            }
+                        }) }}
+                        {{ form_errors(form.title) }}
+
+                        <div class="tm-request-wizard__field-note">
+                            Le titre doit permettre à l’artisan de comprendre immédiatement le sujet.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <span class="form-label d-block">Type de besoin</span>
+
+                        <div class="tm-request-wizard__choice-grid tm-request-wizard__choice-grid--three">
+                            <label class="tm-request-wizard__choice">
+                                <input type="radio" name="requestType" value="breakdown">
+                                <span class="tm-request-wizard__choice-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M14.7 6.3a4 4 0 0 0-5.6 5.6L3 18v3h3l6.1-6.1a4 4 0 0 0 5.6-5.6l-2.4 2.4-3-3z"></path>
+                                    </svg>
+                                </span>
+                                <span>
+                                    <b>Dépannage ou réparation</b>
+                                    <small>Une panne, une fuite ou un équipement défectueux.</small>
+                                </span>
+                            </label>
+
+                            <label class="tm-request-wizard__choice">
+                                <input type="radio" name="requestType" value="installation">
+                                <span class="tm-request-wizard__choice-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M12 3v18"></path>
+                                        <path d="M3 12h18"></path>
+                                    </svg>
+                                </span>
+                                <span>
+                                    <b>Installation</b>
+                                    <small>Installer un nouvel équipement ou créer une installation.</small>
+                                </span>
+                            </label>
+
+                            <label class="tm-request-wizard__choice">
+                                <input type="radio" name="requestType" value="renovation">
+                                <span class="tm-request-wizard__choice-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M3 21h18"></path>
+                                        <path d="M5 21V9l7-6 7 6v12"></path>
+                                        <path d="M9 21v-6h6v6"></path>
+                                    </svg>
+                                </span>
+                                <span>
+                                    <b>Rénovation ou remplacement</b>
+                                    <small>Moderniser, remplacer ou refaire une partie du logement.</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="{{ form.category.vars.id }}">
+                            Catégorie concernée
+                        </label>
+
+                        {{ form_widget(form.category, {attr: {class: 'form-select'}}) }}
+                        {{ form_errors(form.category) }}
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">2</span>
+
+                    <div>
+                        <h2>Expliquez la situation actuelle</h2>
+                        <p>Décrivez ce qui se passe aujourd’hui avant de parler de la solution souhaitée.</p>
+                    </div>
+                </div>
+
+                <div class="tm-request-wizard__prompt-box">
+                    <b>Pour obtenir un devis précis, indiquez notamment :</b>
+
+                    <div class="tm-request-wizard__prompt-grid">
+                        <span>Ce qui ne fonctionne pas</span>
+                        <span>Depuis quand</span>
+                        <span>À quel moment le problème apparaît</span>
+                        <span>Les dégâts visibles</span>
+                        <span>Les réparations déjà tentées</span>
+                        <span>Les références de l’équipement</span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-1">
+                    <div class="col-12">
+                        <label class="form-label" for="{{ form.description.vars.id }}">
+                            Que se passe-t-il exactement ?
+                        </label>
+
+                        {{ form_widget(form.description, {
+                            attr: {
+                                class: 'form-control tm-request-wizard__textarea-lg',
+                                rows: 8,
+                                maxlength: 5000,
+                                placeholder: 'Exemple : depuis environ trois semaines, de l’eau apparaît sous le receveur après chaque douche. Les joints ont été refaits mais la fuite continue. Le meuble commence à gonfler et une trace d’humidité est visible sur le mur voisin.'
+                            }
+                        }) }}
+                        {{ form_errors(form.description) }}
+
+                        <div class="tm-request-wizard__counter">
+                            <span>Soyez précis, même si certains détails vous semblent secondaires.</span>
+                            <span>0 / 2 500</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <span class="form-label d-block">Problèmes constatés</span>
+
+                        <div class="tm-request-wizard__tags">
+                            <label><input type="checkbox" name="problems[]" value="leak"><span>Fuite d’eau</span></label>
+                            <label><input type="checkbox" name="problems[]" value="humidity"><span>Humidité</span></label>
+                            <label><input type="checkbox" name="problems[]" value="blocked"><span>Évacuation bouchée</span></label>
+                            <label><input type="checkbox" name="problems[]" value="pressure"><span>Manque de pression</span></label>
+                            <label><input type="checkbox" name="problems[]" value="hot-water"><span>Pas d’eau chaude</span></label>
+                            <label><input type="checkbox" name="problems[]" value="noise"><span>Bruit anormal</span></label>
+                            <label><input type="checkbox" name="problems[]" value="smell"><span>Mauvaise odeur</span></label>
+                            <label><input type="checkbox" name="problems[]" value="damaged"><span>Équipement endommagé</span></label>
+                            <label><input type="checkbox" name="problems[]" value="old"><span>Installation ancienne</span></label>
+                            <label><input type="checkbox" name="problems[]" value="other"><span>Autre problème</span></label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="tm-request-problem-duration">
+                            Depuis quand ?
+                        </label>
+
+                        <select class="form-select" id="tm-request-problem-duration" name="problemDuration">
+                            <option value="" selected disabled>Sélectionnez une durée</option>
+                            <option value="today">Depuis aujourd’hui</option>
+                            <option value="days">Depuis quelques jours</option>
+                            <option value="weeks">Depuis quelques semaines</option>
+                            <option value="months">Depuis plusieurs mois</option>
+                            <option value="year">Depuis plus d’un an</option>
+                            <option value="unknown">Je ne sais pas</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="tm-request-frequency">
+                            À quelle fréquence ?
+                        </label>
+
+                        <select class="form-select" id="tm-request-frequency" name="problemFrequency">
+                            <option value="" selected disabled>Sélectionnez une fréquence</option>
+                            <option value="constant">En permanence</option>
+                            <option value="daily">Tous les jours</option>
+                            <option value="usage">À chaque utilisation</option>
+                            <option value="sometimes">De temps en temps</option>
+                            <option value="once">Le problème ne s’est produit qu’une fois</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="tm-request-attempts">
+                            Qu’avez-vous déjà essayé ?
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            id="tm-request-attempts"
+                            name="previousAttempts"
+                            rows="4"
+                            placeholder="Exemple : remplacement des joints, nettoyage du siphon, coupure de l’arrivée d’eau, intervention précédente..."
+                        ></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">3</span>
+
+                    <div>
+                        <h2>Quel résultat souhaitez-vous ?</h2>
+                        <p>L’artisan doit comprendre ce que vous attendez, pas uniquement le problème actuel.</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="tm-request-result">
+                            Travaux ou résultat attendus
+                        </label>
+
+                        <textarea
+                            class="form-control tm-request-wizard__textarea-lg"
+                            id="tm-request-result"
+                            name="expectedResult"
+                            rows="7"
+                            maxlength="2500"
+                            placeholder="Exemple : je souhaite remplacer le receveur actuel par un modèle extra-plat, refaire l’étanchéité, déplacer légèrement la robinetterie et remplacer le meuble vasque. Je souhaite que l’artisan fournisse la main-d’œuvre et les matériaux."
+                        ></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <span class="form-label d-block">Niveau de prestation souhaité</span>
+
+                        <div class="tm-request-wizard__choice-grid tm-request-wizard__choice-grid--three">
+                            <label class="tm-request-wizard__choice tm-request-wizard__choice--compact">
+                                <input type="radio" name="finishLevel" value="essential">
+                                <span>
+                                    <b>Solution essentielle</b>
+                                    <small>Résoudre le problème au meilleur coût.</small>
+                                </span>
+                            </label>
+
+                            <label class="tm-request-wizard__choice tm-request-wizard__choice--compact">
+                                <input type="radio" name="finishLevel" value="standard">
+                                <span>
+                                    <b>Bon rapport qualité-prix</b>
+                                    <small>Matériaux fiables et finition soignée.</small>
+                                </span>
+                            </label>
+
+                            <label class="tm-request-wizard__choice tm-request-wizard__choice--compact">
+                                <input type="radio" name="finishLevel" value="premium">
+                                <span>
+                                    <b>Finition haut de gamme</b>
+                                    <small>Matériaux premium et rendu esthétique.</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="tm-request-preferences">
+                            Préférences, marques, couleurs ou contraintes
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            id="tm-request-preferences"
+                            name="preferences"
+                            rows="5"
+                            placeholder="Exemple : robinetterie noire mate, receveur blanc, meuble suspendu de 80 cm, conserver le carrelage actuel..."
+                        ></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">4</span>
+
+                    <div>
+                        <h2>Équipements, dimensions et fournitures</h2>
+                        <p>Ces détails évitent les estimations trop vagues et les devis incomplets.</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="tm-request-equipment">
+                            Équipement concerné
+                        </label>
+
+                        <input
+                            class="form-control"
+                            id="tm-request-equipment"
+                            name="equipment"
+                            type="text"
+                            placeholder="Exemple : douche, chauffe-eau, évier, chaudière..."
+                        >
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="tm-request-equipment-ref">
+                            Marque ou référence connue
+                        </label>
+
+                        <input
+                            class="form-control"
+                            id="tm-request-equipment-ref"
+                            name="equipmentReference"
+                            type="text"
+                            placeholder="Exemple : Atlantic 200 L, Grohe, référence produit..."
+                        >
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="tm-request-dimensions">
+                            Dimensions ou mesures connues
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            id="tm-request-dimensions"
+                            name="dimensions"
+                            rows="4"
+                            placeholder="Exemple : salle de bain 2,60 m × 2,10 m, receveur actuel 80 × 80 cm, meuble 60 cm..."
+                        ></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <span class="form-label d-block">Qui doit fournir les matériaux ?</span>
+
+                        <div class="tm-request-wizard__choice-grid tm-request-wizard__choice-grid--three">
+                            <label class="tm-request-wizard__choice tm-request-wizard__choice--compact">
+                                <input type="radio" name="materials" value="artisan">
+                                <span>
+                                    <b>L’artisan fournit tout</b>
+                                    <small>Matériaux et équipements inclus dans le devis.</small>
+                                </span>
+                            </label>
+
+                            <label class="tm-request-wizard__choice tm-request-wizard__choice--compact">
+                                <input type="radio" name="materials" value="client">
+                                <span>
+                                    <b>J’ai déjà tout acheté</b>
+                                    <small>Le devis concerne surtout la pose.</small>
+                                </span>
+                            </label>
+
+                            <label class="tm-request-wizard__choice tm-request-wizard__choice--compact">
+                                <input type="radio" name="materials" value="mixed">
+                                <span>
+                                    <b>À définir avec l’artisan</b>
+                                    <small>Je possède déjà certains éléments.</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="tm-request-owned-items">
+                            Éléments déjà achetés ou disponibles
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            id="tm-request-owned-items"
+                            name="ownedItems"
+                            rows="4"
+                            placeholder="Listez les équipements, matériaux ou pièces que vous possédez déjà."
+                        ></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">5</span>
+
+                    <div>
+                        <h2>Photos, vidéos et documents</h2>
+                        <p>Les visuels sont souvent indispensables pour qu’un artisan estime correctement les travaux.</p>
+                    </div>
+                </div>
+
+                <div class="tm-request-wizard__upload-grid">
+                    <label class="tm-request-wizard__upload">
+                        <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple>
+
+                        <span class="tm-request-wizard__upload-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                                <circle cx="8.5" cy="9" r="1.5"></circle>
+                                <path d="m21 15-5-5L5 20"></path>
+                            </svg>
+                        </span>
+
+                        <span>
+                            <b>Ajouter des photos</b>
+                            <small>Vue générale, problème de près, équipement et environnement.</small>
+                        </span>
+                    </label>
+
+                    <label class="tm-request-wizard__upload">
+                        <input type="file" name="documents[]" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+
+                        <span class="tm-request-wizard__upload-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <path d="M14 2v6h6"></path>
+                                <path d="M9 13h6"></path>
+                                <path d="M9 17h6"></path>
+                            </svg>
+                        </span>
+
+                        <span>
+                            <b>Ajouter des documents</b>
+                            <small>Plan, facture, diagnostic, notice ou référence produit.</small>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="tm-request-wizard__photo-guide">
+                    <b>Photos recommandées</b>
+
+                    <div>
+                        <span>1. Une vue générale de la pièce</span>
+                        <span>2. Une photo rapprochée du problème</span>
+                        <span>3. Les raccordements ou arrivées</span>
+                        <span>4. La plaque signalétique de l’équipement</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">6</span>
+
+                    <div>
+                        <h2>Logement et accès au chantier</h2>
+                        <p>L’artisan doit pouvoir anticiper les contraintes de déplacement et d’intervention.</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.propertyType.vars.id }}">Type de lieu</label>
+
+                        {{ form_widget(form.propertyType, {attr: {class: 'form-select'}}) }}
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="tm-request-room">Zone concernée</label>
+
+                        <select class="form-select" id="tm-request-room" name="room">
+                            <option value="" selected disabled>Sélectionnez</option>
+                            <option value="bathroom">Salle de bain</option>
+                            <option value="kitchen">Cuisine</option>
+                            <option value="toilet">Toilettes</option>
+                            <option value="utility">Buanderie</option>
+                            <option value="basement">Cave ou sous-sol</option>
+                            <option value="outside">Extérieur</option>
+                            <option value="multiple">Plusieurs zones</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.surfaceM2.vars.id }}">Surface concernée</label>
+
+                        <div class="input-group">
+                            {{ form_widget(form.surfaceM2, {
+                                attr: {class: 'form-control', min: 0, step: '0.01', placeholder: '8'}
+                            }) }}
+                            <span class="input-group-text">m²</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="tm-request-floor">Étage</label>
+
+                        <input class="form-control" id="tm-request-floor" name="floor"
+                               type="text" placeholder="Exemple : 4e étage">
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="tm-request-elevator">Ascenseur</label>
+
+                        <select class="form-select" id="tm-request-elevator" name="elevator">
+                            <option value="" selected disabled>Sélectionnez</option>
+                            <option value="yes">Oui</option>
+                            <option value="no">Non</option>
+                            <option value="ground">Rez-de-chaussée</option>
+                            <option value="not-applicable">Non concerné</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="tm-request-parking">Stationnement</label>
+
+                        <select class="form-select" id="tm-request-parking" name="parking">
+                            <option value="" selected disabled>Sélectionnez</option>
+                            <option value="private">Place privée disponible</option>
+                            <option value="street">Stationnement dans la rue</option>
+                            <option value="paid">Stationnement payant</option>
+                            <option value="difficult">Accès difficile</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label" for="{{ form.accessDetails.vars.id }}">
+                            Contraintes d’accès ou informations importantes
+                        </label>
+
+                        {{ form_widget(form.accessDetails, {
+                            attr: {
+                                class: 'form-control',
+                                rows: 5,
+                                maxlength: 1000,
+                                placeholder: 'Exemple : escalier étroit, accès par cour intérieure, coupure d’eau uniquement à certaines heures, règlement de copropriété...'
+                            }
+                        }) }}
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">7</span>
+
+                    <div>
+                        <h2>Budget, urgence et disponibilités</h2>
+                        <p>Ces informations permettent à l’artisan de proposer une offre réaliste.</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <span class="form-label d-block">Niveau d’urgence</span>
+
+                        <div class="tm-request-wizard__urgency-grid">
+                            <label>
+                                <input type="radio" name="{{ form.urgency.vars.full_name }}" value="normal">
+                                <span>
+                                    <b>Projet planifié</b>
+                                    <small>Dans les prochaines semaines ou prochains mois.</small>
+                                </span>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="{{ form.urgency.vars.full_name }}" value="soon">
+                                <span>
+                                    <b>Rapidement</b>
+                                    <small>Intervention souhaitée sous une à deux semaines.</small>
+                                </span>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="{{ form.urgency.vars.full_name }}" value="urgent">
+                                <span>
+                                    <b>Urgent</b>
+                                    <small>Intervention nécessaire dans les prochains jours.</small>
+                                </span>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="{{ form.urgency.vars.full_name }}" value="emergency">
+                                <span>
+                                    <b>Situation critique</b>
+                                    <small>Dégât en cours ou équipement indispensable hors service.</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.budgetMin.vars.id }}">Budget minimum</label>
+
+                        <div class="input-group">
+                            {{ form_widget(form.budgetMin, {
+                                attr: {class: 'form-control', min: 0, step: '0.01', placeholder: '2 500'}
+                            }) }}
+                            <span class="input-group-text">€</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.budgetMax.vars.id }}">Budget maximum</label>
+
+                        <div class="input-group">
+                            {{ form_widget(form.budgetMax, {
+                                attr: {class: 'form-control', min: 0, step: '0.01', placeholder: '5 000'}
+                            }) }}
+                            <span class="input-group-text">€</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="tm-request-budget-mode">Souplesse du budget</label>
+
+                        <select class="form-select" id="tm-request-budget-mode" name="budgetMode">
+                            <option value="" selected disabled>Sélectionnez</option>
+                            <option value="strict">Budget strict</option>
+                            <option value="flexible">Flexible selon la solution</option>
+                            <option value="unknown">Je souhaite d’abord une estimation</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="{{ form.desiredStartAt.vars.id }}">
+                            Date de démarrage souhaitée
+                        </label>
+
+                        {{ form_widget(form.desiredStartAt, {attr: {class: 'form-control'}}) }}
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label" for="{{ form.availabilityNote.vars.id }}">
+                            Disponibilités pour une visite
+                        </label>
+
+                        {{ form_widget(form.availabilityNote, {
+                            attr: {
+                                class: 'form-control',
+                                maxlength: 255,
+                                placeholder: 'Exemple : semaine après 17 h et samedi matin'
+                            }
+                        }) }}
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">8</span>
+
+                    <div>
+                        <h2>Adresse des travaux</h2>
+                        <p>Votre adresse exacte reste protégée avant l’acceptation d’un devis.</p>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label" for="{{ form.addressLine1.vars.id }}">Adresse</label>
+
+                        {{ form_widget(form.addressLine1, {
+                            attr: {
+                                class: 'form-control',
+                                autocomplete: 'street-address',
+                                placeholder: 'Numéro et nom de la voie'
+                            }
+                        }) }}
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.postalCode.vars.id }}">Code postal</label>
+
+                        {{ form_widget(form.postalCode, {
+                            attr: {class: 'form-control', autocomplete: 'postal-code', placeholder: '69006'}
+                        }) }}
+                        {{ form_errors(form.postalCode) }}
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.city.vars.id }}">Ville</label>
+
+                        {{ form_widget(form.city, {
+                            attr: {class: 'form-control', autocomplete: 'address-level2', placeholder: 'Lyon'}
+                        }) }}
+                        {{ form_errors(form.city) }}
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label" for="{{ form.district.vars.id }}">Quartier</label>
+
+                        {{ form_widget(form.district, {
+                            attr: {class: 'form-control', placeholder: 'Lyon 6e'}
+                        }) }}
+                    </div>
+                </div>
+
+                <div class="tm-request-wizard__privacy">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="5" y="11" width="14" height="10" rx="2"></rect>
+                        <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+                    </svg>
+
+                    <div>
+                        <b>Adresse confidentielle</b>
+                        <p>
+                            Avant votre accord, l’artisan voit uniquement le code postal,
+                            la ville et le quartier.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__section">
+                <div class="tm-request-wizard__section-head">
+                    <span class="tm-request-wizard__step">9</span>
+
+                    <div>
+                        <h2>Comment l’artisan peut-il vous répondre ?</h2>
+                        <p>Choisissez les moyens de contact que vous acceptez.</p>
+                    </div>
+                </div>
+
+                <div class="tm-request-wizard__contact-grid">
+                    <label class="tm-request-wizard__contact">
+                        <input type="checkbox" name="contactMethods[]" value="message" checked>
+                        <span>
+                            <b>Messagerie TrouveMoi</b>
+                            <small>Échange écrit depuis votre espace personnel.</small>
+                        </span>
+                    </label>
+
+                    <label class="tm-request-wizard__contact">
+                        <input type="checkbox" name="contactMethods[]" value="phone">
+                        <span>
+                            <b>Appel téléphonique</b>
+                            <small>L’artisan peut vous appeler pour obtenir des précisions.</small>
+                        </span>
+                    </label>
+
+                    <label class="tm-request-wizard__contact">
+                        <input type="checkbox" name="contactMethods[]" value="visit">
+                        <span>
+                            <b>Visite technique</b>
+                            <small>L’artisan peut proposer un rendez-vous avant le devis.</small>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="mt-3">
+                    <label class="form-label" for="tm-request-contact-note">
+                        Consignes de contact
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        id="tm-request-contact-note"
+                        name="contactNote"
+                        rows="4"
+                        placeholder="Exemple : merci d’envoyer un message avant de téléphoner. Je suis disponible après 18 h."
+                    ></textarea>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__final-check">
+                <div class="tm-request-wizard__final-check-icon">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="m8.5 12.5 2.5 2.5 5-5.5"></path>
+                    </svg>
+                </div>
+
+                <div>
+                    <h2>Votre demande est presque prête</h2>
+                    <p>
+                        Avant l’envoi, vérifiez que le problème actuel, le résultat souhaité,
+                        les photos, le budget et vos disponibilités sont bien renseignés.
+                    </p>
+                </div>
+            </section>
+
+        </div>
+
+        <aside class="tm-request-wizard__sidebar">
+
+            <section class="dash-card tm-request-wizard__summary">
+                <div class="dash-card__header">
+                    <div>
+                        <h2>Votre progression</h2>
+                        <p class="tm-request-wizard__summary-subtitle">9 étapes pour une demande complète</p>
+                    </div>
+
+                    <strong>58 %</strong>
+                </div>
+
+                <div class="tm-request-wizard__progress">
+                    <span></span>
+                </div>
+
+                <div class="tm-request-wizard__summary-list">
+                    <div class="is-complete">
+                        <span>1</span>
+                        <div><b>Besoin principal</b><small>Complété</small></div>
+                    </div>
+
+                    <div class="is-complete">
+                        <span>2</span>
+                        <div><b>Situation actuelle</b><small>Complété</small></div>
+                    </div>
+
+                    <div>
+                        <span>3</span>
+                        <div><b>Résultat souhaité</b><small>À compléter</small></div>
+                    </div>
+
+                    <div>
+                        <span>4</span>
+                        <div><b>Équipements</b><small>À compléter</small></div>
+                    </div>
+
+                    <div>
+                        <span>5</span>
+                        <div><b>Photos et documents</b><small>Recommandé</small></div>
+                    </div>
+
+                    <div>
+                        <span>6</span>
+                        <div><b>Logement et accès</b><small>À compléter</small></div>
+                    </div>
+
+                    <div>
+                        <span>7</span>
+                        <div><b>Budget et calendrier</b><small>À compléter</small></div>
+                    </div>
+
+                    <div>
+                        <span>8</span>
+                        <div><b>Adresse</b><small>À compléter</small></div>
+                    </div>
+
+                    <div>
+                        <span>9</span>
+                        <div><b>Contact</b><small>À compléter</small></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dash-card tm-request-wizard__quality">
+                <div class="dash-card__header">
+                    <h2>Qualité de la demande</h2>
+                </div>
+
+                <div class="tm-request-wizard__quality-score">
+                    <span>Bonne</span>
+                    <div><i></i><i></i><i></i><i></i><i></i></div>
+                </div>
+
+                <ul>
+                    <li class="is-done">Titre clair</li>
+                    <li class="is-done">Problème expliqué</li>
+                    <li>Ajouter au moins 3 photos</li>
+                    <li>Préciser les dimensions</li>
+                    <li>Indiquer une fourchette de budget</li>
+                </ul>
+            </section>
+
+            <section class="dash-card tm-request-wizard__artisan-receives">
+                <div class="dash-card__header">
+                    <h2>L’artisan recevra</h2>
+                </div>
+
+                <ul>
+                    <li>Votre problème détaillé</li>
+                    <li>Le résultat souhaité</li>
+                    <li>Les dimensions et équipements</li>
+                    <li>Les photos et documents</li>
+                    <li>Le budget et les dates</li>
+                    <li>Les contraintes d’accès</li>
+                </ul>
+            </section>
+
+            <div class="conseil tm-request-wizard__tip">
+                <p class="conseil__titre mb-0">
+                    Plus votre demande est précise, plus le devis sera fiable
+                </p>
+
+                <p>
+                    Les artisans répondent plus facilement aux demandes contenant
+                    des photos, des dimensions et une description claire du résultat attendu.
+                </p>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <div class="tm-request-wizard__actions">
+        <div class="tm-request-wizard__save-state">
+            <span></span>
+
+            <div>
+                <b>Brouillon enregistré</b>
+                <small>Votre demande n’a pas encore été envoyée</small>
+            </div>
+        </div>
+
+        <div class="tm-request-wizard__action-buttons">
+            <button class="btn btn-dash-ghost" type="button">
+                Enregistrer
+            </button>
+
+            <button class="btn btn-dash-ghost" type="button">
+                Prévisualiser
+            </button>
+
+            <button class="btn btn-dash-primary" type="submit">
+                Envoyer à l’artisan
+            </button>
+        {{ form_end(form, {render_rest: false}) }}
+    </div>
+
+</div>
+
+
+{% endblock %}
